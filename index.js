@@ -1,7 +1,7 @@
 const TelegramBot = require("node-telegram-bot-api");
 const fs = require("fs");
 
-//const SpamWatch = require("spamwatch");
+//consta SpamWatch = require("spamwatch");
 
 //const reverseImageSearch = require("node-reverse-image-search");
 const raejs = require("@jodacame/raejs");
