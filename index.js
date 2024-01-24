@@ -2275,7 +2275,7 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   }
   if (action === "5") {
     text =
-      "Los comandos para este modúlo se encuentran a continuación:\n\n/anime <búsqueda/nombre de anime>: Encuentra información de un anime desde la fuente de anilist.\n\n/manga <búsqueda/nombre del manga>: El bot responde con la información detallada de la consulta(Mangas en emisión, finalizados y novelas ligeras). \n\n/caracter <búsqueda/personaje>: Encuentra a tus personajes favoritos con este comando y obtienes su información detallada. \n\n/wallpaper, /w: Encuentra Wallpapers random de anime(SFW), el bot responderá con la imagen y el documento. \n\n/2wallpaper, /2w: El bot responde con grupos de imagenes aleatorias. \n\n/iwall <búsqueda>: Encuentra wallpapers de anime a partir de la consulta que se realize.";
+      "Los comandos para este modúlo se encuentran a continuación:\n\n/anime <búsqueda/nombre de anime>: Encuentra información de un anime desde la fuente de anilist.\n\n/manga <búsqueda/nombre del manga>: El bot responde con la información detallada de la consulta(Mangas en emisión, finalizados y novelas ligeras). \n\n/caracter <búsqueda/personaje>: Encuentra a tus personajes favoritos con este comando y obtienes su información detallada. \n\n/awallpaper, /w: Encuentra Wallpapers random de anime(SFW), el bot responderá con la imagen y el documento. \n\n/2wallpaper, /2w: El bot responde con grupos de imagenes aleatorias. \n\n/iwall <búsqueda>: Encuentra wallpapers de anime a partir de la consulta que se realize.";
   }
   if (action === "6") {
     text =
@@ -2283,7 +2283,7 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   }
   if (action === "7") {
     text =
-      "En construcción...";
+      "Con Gawr Gura puedes modificar tus bienvenidas y establecer de forma personales las que mas nos agraden.\n\n/welcome <on/off>: Activa o desactiva las bienvenidas con las que Gawr Gura saluda por defecto a los nuevos usuarios.\n\nNota: por defecto se encuentra desactivado y al activarlo las bienvenidas se eliminaran pasado los 5 minutos.";
   }
   if (action === "8") {
     text =
@@ -2310,7 +2310,7 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   }
   if (action === "15") {
     text =
-      "En construcción...";
+      "Con Gawr Gura puedes establecer reglas para tus grupos de forma personalizada...\n\n/setrules: Establece las nuevas reglas para tu grupo; no se admite archivos multimedia, unicamente texto.\n\n/rules: Consulta las reglas de tu grupo.\n\n/clearrules: Limpia las reglas de tu grupo o elimina las que esten establecidas.";
   }
 
   if (action === "16") {
@@ -3605,7 +3605,7 @@ bot.onText(/^\/tv/, function (msg) {
 });
 
 
-bot.onText(/^\/wallpaper|^\/w/, function (msg) {
+bot.onText(/^\/awallpaper/, function (msg) {
   try {
     const wall = randomanime.anime();
     bot.sendPhoto(msg.chat.id, wall).then;
@@ -5637,7 +5637,7 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   }
 });
 
-bot.on("message", function (msg) {
+/* bot.on("message", function (msg) {
   try {
     var chatId = msg.chat.id;
     var chatitle = msg.chat.title;
@@ -5724,7 +5724,7 @@ bot.on("message", function (msg) {
   } catch (e) {
     console.log(e);
   }
-});
+}); */
 
 /*bot.onText(/\/nanime/, function (msg) {
   try {
@@ -6137,7 +6137,7 @@ bot.on('new_chat_members', (msg) => {
         console.error(`Error al expulsar automáticamente al usuario ${userId}:`, error.message);
       }
     } else {
-      console.log(`Usuario con ID ${userId} permitido en el grupo.`);
+      console.log(`...`);
     }
   });
 });
@@ -6245,3 +6245,264 @@ bot.on('message', (msg) => {
     }, 1000);
   }
 }); */
+
+//Reglas
+const rulesFile = 'rules.json';
+
+bot.onText(/\/setrules/, (msg) => {
+  handleCommandWithAdminCheck(msg, (chatId) => {
+    // Envía un mensaje indicando al usuario que envíe las reglas
+    bot.sendMessage(chatId, 'Titán, por favor envía las reglas del grupo en el siguiente mensaje🐋. *(¡Solo admito texto!)*', {parse_mode: "Markdown"});
+
+    // Manejador para recibir las reglas
+    bot.once('text', (rulesMsg) => {
+      const rules = rulesMsg.text;
+
+      // Almacena las reglas en el archivo JSON
+      saveRules(chatId, rules);
+
+      // Envía un mensaje de confirmación
+      bot.sendMessage(chatId, '¡Reglas guardadas correctamente capitán🐋! *Recuerda consultarlas con el comando /rules.*' , {parse_mode: "Markdown"});
+    });
+  });
+});
+
+// Manejador de comando /rules
+bot.onText(/\/rules/, (msg) => {
+  handleCommandWithAdminCheck(msg, (chatId) => {
+    // Lee las reglas del archivo JSON
+    const rules = getRules(chatId);
+
+    // Envía las reglas al grupo
+    if (rules) {
+      bot.sendMessage(chatId, `🐋_Reglas del grupito:_ \n${rules}`, {parse_mode: "Markdown"});
+    } else {
+      bot.sendMessage(chatId, '*¡No hay reglas establecidas para este grupito titán🐋!*', {parse_mode: "Markdown"});
+    }
+  });
+});
+
+// Manejador de comando /clearrules
+bot.onText(/\/clearrules/, (msg) => {
+  handleCommandWithAdminCheck(msg, (chatId) => {
+    // Verifica si hay reglas para el grupo
+    const existingRules = getRules(chatId);
+
+    if (existingRules) {
+      // Elimina las reglas del grupo
+      deleteRules(chatId);
+
+      // Envía un mensaje de confirmación
+      bot.sendMessage(chatId, '*Reglas eliminadas correctamente capitán🐋.*', {parse_mode:"Markdown"});
+    } else {
+      bot.sendMessage(chatId, '*No hay reglas establecidas para este grupo titán🐋.*', {parse_mode: "Markdown"});
+    }
+  });
+});
+
+// Función para manejar los comandos con verificación de administrador
+function handleCommandWithAdminCheck(msg, callback) {
+  const chatId = msg.chat.id;
+  const userId = msg.from.id;
+
+  // Obtiene información del grupo
+  bot.getChatMember(chatId, userId).then((chatMember) => {
+    // Verifica si el usuario es administrador
+    if (chatMember.status === 'administrator' || chatMember.status === 'creator') {
+      // Ejecuta el código específico del comando
+      callback(chatId);
+    } else {
+      bot.sendMessage(chatId, '*¡Solo los administradores pueden utilizar este comando titán🐋!*', {parse_mode: "Markdown"});
+    }
+  }).catch((err) => {
+    console.error(err);
+  });
+}
+
+// Función para almacenar las reglas en el archivo JSON
+function saveRules(chatId, rules) {
+  let data = {};
+  try {
+    data = JSON.parse(fs.readFileSync(rulesFile));
+  } catch (err) {}
+
+  data[chatId] = { rules };
+
+  fs.writeFileSync(rulesFile, JSON.stringify(data, null, 2));
+}
+
+// Función para obtener las reglas desde el archivo JSON
+function getRules(chatId) {
+  try {
+    const data = JSON.parse(fs.readFileSync(rulesFile));
+    return data[chatId] ? data[chatId].rules : null;
+  } catch (err) {
+    return null;
+  }
+}
+
+// Función para eliminar las reglas de un grupo
+function deleteRules(chatId) {
+  try {
+    const data = JSON.parse(fs.readFileSync(rulesFile));
+    if (data[chatId]) {
+      delete data[chatId];
+      fs.writeFileSync(rulesFile, JSON.stringify(data, null, 2));
+    }
+  } catch (err) {}
+}
+
+const welcomeConfigFile = 'welcome_config.json';
+
+// Crea el bot con el token
+
+// Manejador de comando /welcome on
+bot.onText(/\/welcome on/, (msg) => {
+  handleCommandWithAdminCheck(msg, (chatId) => {
+    // Obtiene la configuración actual
+    const currentConfig = getWelcomeConfig(chatId) || {};
+    
+    // Activa la funcionalidad de bienvenida aleatoria
+    currentConfig.isActive = true;
+
+    // Actualiza la configuración en el archivo JSON
+    saveWelcomeConfig(chatId, currentConfig);
+
+    bot.sendMessage(chatId, '*Funcionalidad de bienvenida activada titán ahora todos seran saludados🐋. ¡Bienvenidos!*', {parse_mode: "Markdown"});
+  });
+});
+
+// Manejador de comando /welcome off
+bot.onText(/\/welcome off/, (msg) => {
+  handleCommandWithAdminCheck(msg, (chatId) => {
+    // Obtiene la configuración actual
+    const currentConfig = getWelcomeConfig(chatId) || {};
+    
+    // Desactiva la funcionalidad de bienvenida aleatoria
+    currentConfig.isActive = false;
+
+    // Actualiza la configuración en el archivo JSON
+    saveWelcomeConfig(chatId, currentConfig);
+
+    bot.sendMessage(chatId, '*Funcionalidad de bienvenida desactivada titán🐋.*', {parse_mode: "Markdown"});
+  });
+});
+
+// Manejador de nuevo miembro en el grupo
+bot.on('new_chat_members', (msg) => {
+  const chatId = msg.chat.id;
+
+  // Obtiene la configuración actual
+  const currentConfig = getWelcomeConfig(chatId);
+
+  // Verifica si la funcionalidad de bienvenida está activada para el grupo
+  if (currentConfig && currentConfig.isActive) {
+    // Obtiene 5 mensajes de bienvenida aleatorios
+    const welcomeMessages = getRandomWelcomeMessages(5);
+
+    // Envía los mensajes de bienvenida al grupo por cada nuevo miembro
+    msg.new_chat_members.forEach((member, index) => {
+      // Envía el mensaje de bienvenida
+      bot.sendMessage(chatId, `${welcomeMessages[index]}\n\n¡Bienvenido, [${member.first_name}](tg://user?id=${msg.from.id})!`, {parse_mode: "Markdown"}).then((sentMsg) => {
+        // Establece un temporizador para borrar el mensaje después de 5 minutos (300,000 ms)
+        setTimeout(() => {
+          bot.deleteMessage(chatId, sentMsg.message_id);
+        }, 300000);
+      });
+    });
+  }
+});
+
+// Función para verificar si el usuario es administrador
+function isUserAdmin(msg) {
+  const userId = msg.from.id;
+  const chatId = msg.chat.id;
+
+  return new Promise((resolve, reject) => {
+    bot.getChatMember(chatId, userId).then((chatMember) => {
+      if (chatMember.status === 'administrator' || chatMember.status === 'creator') {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    }).catch((err) => {
+      reject(err);
+    });
+  });
+}
+
+// Función para manejar los comandos con verificación de administrador
+function handleCommandWithAdminCheck(msg, callback) {
+  isUserAdmin(msg).then((isAdmin) => {
+    if (isAdmin) {
+      const chatId = msg.chat.id;
+      callback(chatId);
+    } else {
+      bot.sendMessage(msg.chat.id, '*Solo los administradores pueden utilizar este comando titán🐋.*', {parse_mode: "Markdown"});
+    }
+  }).catch((err) => {
+    console.error(err);
+  });
+}
+
+// Función para obtener la configuración de bienvenida desde el archivo JSON
+function getWelcomeConfig(chatId) {
+  try {
+    const data = JSON.parse(fs.readFileSync(welcomeConfigFile));
+    return data[chatId] || null;
+  } catch (err) {
+    return null;
+  }
+}
+
+// Función para guardar la configuración de bienvenida en el archivo JSON
+function saveWelcomeConfig(chatId, config) {
+  let data = {};
+  try {
+    data = JSON.parse(fs.readFileSync(welcomeConfigFile));
+  } catch (err) {}
+
+  data[chatId] = config;
+
+  fs.writeFileSync(welcomeConfigFile, JSON.stringify(data, null, 2));
+}
+
+// Función para obtener mensajes de bienvenida aleatorios
+function getRandomWelcomeMessages(count) {
+  const welcomeMessages = [
+    '¡Bienvenido al grupo!',
+    'Es un placer tenerte con nosotros.',
+    '¡Hola! Bienvenido a la comunidad.',
+    '¡Saludos! Estamos felices de que te hayas unido.',
+    '¡Bienvenido! Esperamos que disfrutes tu estancia aquí.',
+    `¿Es este el cielo?, porque se siente como si tu y yo nos dirigiéramos a un lugar mágico.`,
+    `¡E-mail recibido: un nuevo usuario en el chat!`,
+    `Hola nuevo usuario, ahora tenemos una cita en el Minecraftt.`,
+    `¡Atención, ninja recién llegado! es tu dojo para compartir y disfrutar del mundo ninja.`,
+    `¿Te gusta el pan?`,
+    `¡Bienvenido al viaje isekai! Donde cada mensaje es una nueva dimensión. ¡Disfruta tu estancia!`,
+    `¿Qué hace una persona tan atractiva, divertida y original como tú aquí?`,
+    `Estoy buscando dioses para una nueva religión y lo siento mucho, pero acabo de escogerte.`,
+    `Los ojos sharingan sirven para predecir los movimientos y mis ojos para ver tú entrada al chat.`,
+    `Excelente nueva parada para charlar sobre anime. ¡Listo para comenzar la aventura!.`,
+    `Ni todos los artículos de Wikipedia podrán definir lo felíz que me siento que estés aquí.`,
+    `¡Tu llegada hizó, que digievolucionará mi corazón!`,
+    `No somos calcetines, pero creó que haríamos un gran par.`,
+    `Bueno aquí estoy. ¿Cuáles son tus otros dos deceos?.`,
+    `Estamos en presencia de una especia extinta:`,
+    `¡Saludos, otaku valiente! es tu nueva guarida para hablar de anime y hacer nuevos amigos.`,
+    `¿Sabías que acabas de unirte al mejor grupo de todos?`,
+    `¡Has entrado al gremio de hechiceros! Aquí cada miembro tiene su propio hechizo mágico. ¡Que empiece la magia!`,
+    `¡Hola, ingresaste al rincón más kawaii de Telegram. ¡Prepárate para derretirte de ternura!`,
+    `¡Estoy segura que en este chat harás grandes amigos!`,
+  ];
+
+  const randomMessages = [];
+
+  for (let i = 0; i < count; i++) {
+    const randomIndex = Math.floor(Math.random() * welcomeMessages.length);
+    randomMessages.push(welcomeMessages[randomIndex]);
+  }
+
+  return randomMessages;
+}
