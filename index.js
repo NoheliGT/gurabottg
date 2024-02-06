@@ -41,9 +41,9 @@ app
   })
 
 
-/*BETA = 1989987277:AAEk1n7WZWSCdiaRq6JsGeyibv7NpRSK_Dc*/
+/*BETA = 1989987277:AAFBKzjLvPkyFBHzJQ-UaJlOfe12T3ln2dU*/
 /*ORIGINAL = 1785797976:AAG96u7KAB4Ee6pUUBPE7FmdXyYKCYGqXHE*/
-const bot = new TelegramBot("1785797976:AAG96u7KAB4Ee6pUUBPE7FmdXyYKCYGqXHE", {
+const bot = new TelegramBot("1989987277:AAFBKzjLvPkyFBHzJQ-UaJlOfe12T3ln2dU", {
   polling: true,
 });
 
@@ -6249,25 +6249,21 @@ bot.on('message', (msg) => {
 //Reglas
 const rulesFile = 'rules.json';
 
-bot.onText(/\/setrules/, (msg) => {
+/* bot.onText(/\/setrules/, (msg) => {
   handleCommandWithAdminCheck(msg, (chatId) => {
     // Envía un mensaje indicando al usuario que envíe las reglas
     bot.sendMessage(chatId, 'Titán, por favor envía las reglas del grupo en el siguiente mensaje🐋. *(¡Solo admito texto!)*', {parse_mode: "Markdown"});
 
-    // Manejador para recibir las reglas
     bot.once('text', (rulesMsg) => {
       const rules = rulesMsg.text;
 
-      // Almacena las reglas en el archivo JSON
       saveRules(chatId, rules);
 
-      // Envía un mensaje de confirmación
       bot.sendMessage(chatId, '¡Reglas guardadas correctamente capitán🐋! *Recuerda consultarlas con el comando /rules.*' , {parse_mode: "Markdown"});
     });
   });
 });
 
-// Manejador de comando /rules
 bot.onText(/\/rules/, (msg) => {
   handleCommandWithAdminCheck(msg, (chatId) => {
     // Lee las reglas del archivo JSON
@@ -6351,12 +6347,12 @@ function deleteRules(chatId) {
     }
   } catch (err) {}
 }
-
+ */
 const welcomeConfigFile = 'welcome_config.json';
 
 // Crea el bot con el token
 
-// Manejador de comando /welcome on
+/* // Manejador de comando /welcome on
 bot.onText(/\/welcome on/, (msg) => {
   handleCommandWithAdminCheck(msg, (chatId) => {
     // Obtiene la configuración actual
@@ -6465,6 +6461,236 @@ function saveWelcomeConfig(chatId, config) {
   data[chatId] = config;
 
   fs.writeFileSync(welcomeConfigFile, JSON.stringify(data, null, 2));
+}
+
+// Función para obtener mensajes de bienvenida aleatorios
+function getRandomWelcomeMessages(count) {
+  const welcomeMessages = [
+    '¡Bienvenido al grupo!',
+    'Es un placer tenerte con nosotros.',
+    '¡Hola! Bienvenido a la comunidad.',
+    '¡Saludos! Estamos felices de que te hayas unido.',
+    '¡Bienvenido! Esperamos que disfrutes tu estancia aquí.',
+    `¿Es este el cielo?, porque se siente como si tu y yo nos dirigiéramos a un lugar mágico.`,
+    `¡E-mail recibido: un nuevo usuario en el chat!`,
+    `Hola nuevo usuario, ahora tenemos una cita en el Minecraftt.`,
+    `¡Atención, ninja recién llegado! es tu dojo para compartir y disfrutar del mundo ninja.`,
+    `¿Te gusta el pan?`,
+    `¡Bienvenido al viaje isekai! Donde cada mensaje es una nueva dimensión. ¡Disfruta tu estancia!`,
+    `¿Qué hace una persona tan atractiva, divertida y original como tú aquí?`,
+    `Estoy buscando dioses para una nueva religión y lo siento mucho, pero acabo de escogerte.`,
+    `Los ojos sharingan sirven para predecir los movimientos y mis ojos para ver tú entrada al chat.`,
+    `Excelente nueva parada para charlar sobre anime. ¡Listo para comenzar la aventura!.`,
+    `Ni todos los artículos de Wikipedia podrán definir lo felíz que me siento que estés aquí.`,
+    `¡Tu llegada hizó, que digievolucionará mi corazón!`,
+    `No somos calcetines, pero creó que haríamos un gran par.`,
+    `Bueno aquí estoy. ¿Cuáles son tus otros dos deceos?.`,
+    `Estamos en presencia de una especia extinta:`,
+    `¡Saludos, otaku valiente! es tu nueva guarida para hablar de anime y hacer nuevos amigos.`,
+    `¿Sabías que acabas de unirte al mejor grupo de todos?`,
+    `¡Has entrado al gremio de hechiceros! Aquí cada miembro tiene su propio hechizo mágico. ¡Que empiece la magia!`,
+    `¡Hola, ingresaste al rincón más kawaii de Telegram. ¡Prepárate para derretirte de ternura!`,
+    `¡Estoy segura que en este chat harás grandes amigos!`,
+  ];
+
+  const randomMessages = [];
+
+  for (let i = 0; i < count; i++) {
+    const randomIndex = Math.floor(Math.random() * welcomeMessages.length);
+    randomMessages.push(welcomeMessages[randomIndex]);
+  }
+
+  return randomMessages;
+}
+ */
+bot.onText(/\/setrules/, (msg) => {
+  handleCommandWithAdminCheck(msg, (chatId) => {
+    bot.sendMessage(chatId, 'Titán, por favor envía las reglas del grupo en el siguiente mensaje🐋. *(¡Solo admito texto!)*', {parse_mode: "Markdown"});
+
+    bot.once('text', (rulesMsg) => {
+      const rules = rulesMsg.text;
+
+      // Guardar reglas en Firestore
+      db.collection('rules').doc(chatId.toString()).set({ rules })
+        .then(() => {
+          bot.sendMessage(chatId, '¡Reglas guardadas correctamente capitán🐋! *Recuerda consultarlas con el comando /rules.*', {parse_mode: "Markdown"});
+        })
+        .catch((error) => {
+          console.error(error);
+          bot.sendMessage(chatId, 'Ha ocurrido un error al guardar las reglas.');
+        });
+    });
+  });
+});
+
+// Comando para obtener reglas
+bot.onText(/\/rules/, (msg) => {
+  handleCommandWithAdminCheck(msg, (chatId) => {
+    // Obtener reglas desde Firestore
+    db.collection('rules').doc(chatId.toString()).get()
+      .then(doc => {
+        const rules = doc.exists ? doc.data().rules : null;
+        if (rules) {
+          bot.sendMessage(chatId, `🐋_Reglas del grupito:_ \n${rules}`, {parse_mode: "Markdown"});
+        } else {
+          bot.sendMessage(chatId, '*¡No hay reglas establecidas para este grupito titán🐋!*', {parse_mode: "Markdown"});
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        bot.sendMessage(chatId, 'Ha ocurrido un error al obtener las reglas.');
+      });
+  });
+});
+
+// Comando para limpiar reglas
+bot.onText(/\/clearrules/, (msg) => {
+  handleCommandWithAdminCheck(msg, (chatId) => {
+    // Eliminar reglas desde Firestore
+    db.collection('rules').doc(chatId.toString()).delete()
+      .then(() => {
+        bot.sendMessage(chatId, '*Reglas eliminadas correctamente capitán🐋.*', {parse_mode:"Markdown"});
+      })
+      .catch((error) => {
+        console.error(error);
+        bot.sendMessage(chatId, 'Ha ocurrido un error al eliminar las reglas.');
+      });
+  });
+});
+
+// Función para manejar comandos con verificación de administrador
+function handleCommandWithAdminCheck(msg, callback) {
+  const chatId = msg.chat.id;
+  const userId = msg.from.id;
+
+  bot.getChatMember(chatId, userId).then((chatMember) => {
+    if (chatMember.status === 'administrator' || chatMember.status === 'creator') {
+      callback(chatId);
+    } else {
+      bot.sendMessage(chatId, '*¡Solo los administradores pueden utilizar este comando titán🐋!*', {parse_mode: "Markdown"});
+    }
+  }).catch((err) => {
+    console.error(err);
+  });
+}
+
+
+// Manejador de comando /welcome on
+bot.onText(/\/welcome on/, (msg) => {
+  handleCommandWithAdminCheck(msg, (chatId) => {
+    // Obtiene la configuración actual
+    getWelcomeConfig(chatId).then((currentConfig) => {
+      currentConfig = currentConfig || {};
+
+      // Activa la funcionalidad de bienvenida aleatoria
+      currentConfig.isActive = true;
+
+      // Actualiza la configuración en Firestore
+      db.collection('welcomeConfig').doc(chatId.toString()).set(currentConfig)
+        .then(() => {
+          bot.sendMessage(chatId, '*Funcionalidad de bienvenida activada titán ahora todos serán saludados🐋. ¡Bienvenidos!*', {parse_mode: "Markdown"});
+        })
+        .catch((error) => {
+          console.error(error);
+          bot.sendMessage(chatId, 'Ha ocurrido un error al activar la funcionalidad de bienvenida.');
+        });
+    }).catch((error) => {
+      console.error(error);
+      bot.sendMessage(chatId, 'Ha ocurrido un error al activar la funcionalidad de bienvenida.');
+    });
+  });
+});
+
+// Manejador de comando /welcome off
+bot.onText(/\/welcome off/, (msg) => {
+  handleCommandWithAdminCheck(msg, (chatId) => {
+    // Obtiene la configuración actual
+    getWelcomeConfig(chatId).then((currentConfig) => {
+      currentConfig = currentConfig || {};
+
+      // Desactiva la funcionalidad de bienvenida aleatoria
+      currentConfig.isActive = false;
+
+      // Actualiza la configuración en Firestore
+      db.collection('welcomeConfig').doc(chatId.toString()).set(currentConfig)
+        .then(() => {
+          bot.sendMessage(chatId, '*Funcionalidad de bienvenida desactivada titán🐋.*', {parse_mode: "Markdown"});
+        })
+        .catch((error) => {
+          console.error(error);
+          bot.sendMessage(chatId, 'Ha ocurrido un error al desactivar la funcionalidad de bienvenida.');
+        });
+    }).catch((error) => {
+      console.error(error);
+      bot.sendMessage(chatId, 'Ha ocurrido un error al desactivar la funcionalidad de bienvenida.');
+    });
+  });
+});
+
+// Manejador de nuevo miembro en el grupo
+bot.on('new_chat_members', (msg) => {
+  const chatId = msg.chat.id;
+
+  // Obtiene la configuración actual
+  getWelcomeConfig(chatId).then((currentConfig) => {
+    // Verifica si la funcionalidad de bienvenida está activada para el grupo
+    if (currentConfig && currentConfig.isActive) {
+      // Obtiene 5 mensajes de bienvenida aleatorios
+      const welcomeMessages = getRandomWelcomeMessages(5);
+
+      // Envía los mensajes de bienvenida al grupo por cada nuevo miembro
+      msg.new_chat_members.forEach((member, index) => {
+        // Envía el mensaje de bienvenida
+        bot.sendMessage(chatId, `${welcomeMessages[index]}\n\n¡Bienvenido, [${member.first_name}](tg://user?id=${msg.from.id})!`, {parse_mode: "Markdown"}).then((sentMsg) => {
+          // Establece un temporizador para borrar el mensaje después de 5 minutos (300,000 ms)
+          setTimeout(() => {
+            bot.deleteMessage(chatId, sentMsg.message_id);
+          }, 300000);
+        });
+      });
+    }
+  }).catch((error) => {
+    console.error(error);
+  });
+});
+
+// Función para obtener la configuración de bienvenida desde Firestore
+function getWelcomeConfig(chatId) {
+  return db.collection('welcomeConfig').doc(chatId.toString()).get()
+    .then(doc => doc.exists ? doc.data() : null)
+    .catch(err => null);
+}
+
+// Función para verificar si el usuario es administrador
+function isUserAdmin(msg) {
+  const userId = msg.from.id;
+  const chatId = msg.chat.id;
+
+  return new Promise((resolve, reject) => {
+    bot.getChatMember(chatId, userId).then((chatMember) => {
+      if (chatMember.status === 'administrator' || chatMember.status === 'creator') {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    }).catch((err) => {
+      reject(err);
+    });
+  });
+}
+
+// Función para manejar los comandos con verificación de administrador
+function handleCommandWithAdminCheck(msg, callback) {
+  isUserAdmin(msg).then((isAdmin) => {
+    if (isAdmin) {
+      const chatId = msg.chat.id;
+      callback(chatId);
+    } else {
+      bot.sendMessage(msg.chat.id, '*Solo los administradores pueden utilizar este comando titán🐋.*', {parse_mode: "Markdown"});
+    }
+  }).catch((err) => {
+    console.error(err);
+  });
 }
 
 // Función para obtener mensajes de bienvenida aleatorios
