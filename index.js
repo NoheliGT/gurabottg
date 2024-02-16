@@ -6981,7 +6981,7 @@ bot.on('message', (msg) => {
       bot.sendMessage(chatId, `*Respuesta anónima recibida de ${senderName} ${senderUsername}🐋:* \n\n\n${msg.text}`, { parse_mode: "Markdown" });
 
       // Enviar un mensaje de confirmación solo al remitente original del mensaje anónimo.
-      bot.sendMessage(senderUserId, `*Respuesta anónima enviada con éxito a titán🐋.*`, { parse_mode: "Markdown" });
+      bot.sendMessage(msg.from.id, `*Respuesta anónima enviada con éxito a titán🐋.*`, { parse_mode: "Markdown" });
 
       // Eliminar la información del mensaje anónimo una vez recibida la respuesta.
       delete anonymousMessages[userId];
