@@ -6950,7 +6950,7 @@ bot.onText(/\/anonimo (.+)/, async (msg, match) => {
             anonymousMessages[targetUserId] = { senderUserId, chatId, message };
 
             // Solicitar al usuario que envíe una respuesta.
-            bot.sendMessage(targetUserId, '🚨En el siguiente mensaje, envía tu respuesta *(solo texto)*.', {parse_mode: "Markdown"});
+            bot.sendMessage(targetUserId, '🚨En el siguiente mensaje *(SIN RESPONDER A ESTE)*, envía tu respuesta *(SOLO TEXTO)*.', {parse_mode: "Markdown"});
             
             // Confirmar al remitente del comando que el mensaje ha sido enviado.
             bot.sendMessage(chatId, '*¡Mensaje anónimo enviado con éxito🐋!*', {parse_mode: "Markdown"});
@@ -6969,20 +6969,21 @@ bot.onText(/\/anonimo (.+)/, async (msg, match) => {
     }
 });
 
-// Manejar respuestas a mensajes anónimos.
 bot.on('message', (msg) => {
-    const userId = msg.from.id.toString();
-    
-    if (anonymousMessages[userId]) {
-        const { senderUserId, chatId, message } = anonymousMessages[userId];
-        
-        // Enviar la respuesta al chat donde se usó el comando.
-        bot.sendMessage(chatId, `*Respuesta anónima recibida🐋:* \n\n\n${msg.text}`, {parse_mode: "Markdown"});
-        
-        // Enviar un mensaje de confirmación al remitente original del mensaje anónimo.
-        bot.sendMessage(senderUserId, '*Respuesta anónima enviada con éxito titán🐋.*', {parse_mode: "Markdown"});
-        
-        // Eliminar la información del mensaje anónimo una vez recibida la respuesta.
-        delete anonymousMessages[userId];
-    }
+  const userId = msg.from.id.toString();
+
+  if (anonymousMessages[userId]) {
+      const { senderUserId, chatId, message } = anonymousMessages[userId];
+      const senderName = msg.from.first_name || '';
+      const senderUsername = msg.from.username ? `(${msg.from.id})` : '';
+
+      // Enviar la respuesta al chat donde se usó el comando.
+      bot.sendMessage(chatId, `*Respuesta anónima recibida de ${senderName} ${senderUsername}🐋:* \n\n\n${msg.text}`, { parse_mode: "Markdown" });
+
+      // Enviar un mensaje de confirmación solo al remitente original del mensaje anónimo.
+      bot.sendMessage(senderUserId, `*Respuesta anónima enviada con éxito a titán🐋.*`, { parse_mode: "Markdown" });
+
+      // Eliminar la información del mensaje anónimo una vez recibida la respuesta.
+      delete anonymousMessages[userId];
+  }
 });
