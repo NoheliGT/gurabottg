@@ -18,6 +18,8 @@ const wall = new AnimeWallpaper();
 const moment = require('moment');
 var express = require("express");
 
+const { createCanvas, loadImage } = require('canvas');
+
 //const pokemoninfo = require("pokemoninfo"); uu
 var convertapi = require("convertapi")("RGaQlTBWCjkfw889");
 var tcpp = require('tcp-ping');
@@ -6732,3 +6734,255 @@ function getRandomWelcomeMessages(count) {
 
   return randomMessages;
 }
+
+
+////
+/* // Manejar el estado de la pregunta activa
+let preguntaActiva = false;
+
+// Manejar el comando /quiz
+bot.onText(/\/quiz/, async (msg) => {
+  // Consultar el estado de la pregunta activa en Firebase
+  const estadoPreguntaDoc = await db.collection('estado').doc('pregunta').get();
+  const estadoPregunta = estadoPreguntaDoc.exists ? estadoPreguntaDoc.data().activa : false;
+
+  if (estadoPregunta) {
+    // Hay una pregunta en curso, informar al usuario
+    bot.sendMessage(msg.chat.id, 'Ya hay una pregunta activa. Espera a que alguien la responda.');
+  } else {
+    // Obtener una pregunta aleatoria (aquí debes implementar tu lógica)
+    const preguntaAleatoria = obtenerPreguntaAleatoria();
+
+    // Enviar la pregunta al chat
+    bot.sendMessage(msg.chat.id, preguntaAleatoria);
+
+    // Cambiar el estado de la pregunta activa en Firebase
+    await db.collection('estado').doc('pregunta').set({ activa: true });
+  }
+});
+
+// Manejar las respuestas a la pregunta
+bot.on('message', async (msg) => {
+  if (preguntaActiva && msg.text) {
+    // Obtener la respuesta correcta de la pregunta (aquí debes implementar tu lógica)
+    const respuestaCorrecta = obtenerRespuestaCorrecta();
+
+    if (msg.text.toLowerCase() === respuestaCorrecta.toLowerCase()) {
+      // Otorgar un punto al usuario y almacenar en Firebase
+      await otorgarPunto(msg.from.id);
+
+      // Informar al usuario que la respuesta es correcta y ha ganado un punto
+      bot.sendMessage(msg.chat.id, `¡Respuesta correcta! Ganaste un punto.`);
+    } else {
+      // Informar al usuario que la respuesta es incorrecta
+      bot.sendMessage(msg.chat.id, `Respuesta incorrecta. Inténtalo de nuevo.`);
+    }
+
+    // Cambiar el estado de la pregunta activa
+    preguntaActiva = false;
+
+    // Actualizar el estado de la pregunta activa en Firebase
+    await db.collection('estado').doc('pregunta').set({ activa: false });
+  }
+});
+
+// Array de preguntas y respuestas
+const preguntas = [
+  { pregunta: '¿Cuál es la capital de Francia?', respuesta: 'París' },
+  { pregunta: '¿Cuál es el río más largo del mundo?', respuesta: 'Amazonas' },
+  { pregunta: '¿Cuál es el planeta más grande del sistema solar?', respuesta: 'Júpiter' },
+  // Agrega más preguntas según sea necesario
+];
+
+// Función para obtener una pregunta aleatoria
+function obtenerPreguntaAleatoria() {
+  const preguntaIndex = Math.floor(Math.random() * preguntas.length);
+  return preguntas[preguntaIndex].pregunta;
+}
+
+// Función para obtener la respuesta correcta de la pregunta
+function obtenerRespuestaCorrecta() {
+  const preguntaIndex = Math.floor(Math.random() * preguntas.length);
+  return preguntas[preguntaIndex].respuesta;
+} */
+
+
+/* bot.onText(/\/reaccion/, async (msg) => {
+  const chatId = msg.chat.id;
+
+  // Verificar si el mensaje original es un texto
+  if (msg.reply_to_message && msg.reply_to_message.text) {
+      const originalMessage = msg.reply_to_message.text;
+
+      // Crear la imagen con el texto original utilizando node-canvas
+      const canvas = createCanvas(400, 200);
+      const ctx = canvas.getContext('2d');
+
+      // Configurar el diseño de la imagen (ajusta según tus necesidades)
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = '20px Arial';
+      ctx.fillStyle = 'black';
+      ctx.fillText(originalMessage, 10, 70);
+
+      // Guardar la imagen en un buffer
+      const buffer = canvas.toBuffer('image/png');
+
+      // Guardar el buffer en un archivo temporal en el servidor
+      const tempFilePath = './download/temp.png';
+      fs.writeFileSync(tempFilePath, buffer);
+
+      // Enviar la imagen como sticker con los botones de reacción en un solo mensaje
+      bot.sendSticker(chatId, tempFilePath, {
+          reply_markup: {
+              inline_keyboard: [
+                  [{ text: 'Me gusta', callback_data: 'like' }],
+                  [{ text: 'No me gusta', callback_data: 'dislike' }]
+              ]
+          }
+      });
+
+      // Eliminar el archivo temporal después de enviarlo
+      fs.unlinkSync(tempFilePath);
+  } else {
+      // Enviar un mensaje indicando que el comando debe ser respondido a un mensaje de texto
+      bot.sendMessage(chatId, 'El comando /reaccion debe ser respondido a un mensaje de texto.');
+  }
+});
+
+// Manejar las respuestas a los botones de reacción
+bot.on('callback_query', (callbackQuery) => {
+  const chatId = callbackQuery.message.chat.id;
+  const userId = callbackQuery.from.id;
+  const data = callbackQuery.data;
+
+  // Aquí puedes implementar la lógica para contabilizar las reacciones (guardar en una base de datos, por ejemplo)
+  if (data === 'like') {
+      // Incrementar el contador de me gusta
+      console.log(`Usuario ${userId} le dio Me gusta.`);
+  } else if (data === 'dislike') {
+      // Incrementar el contador de no me gusta
+      console.log(`Usuario ${userId} le dio No me gusta.`);
+  }
+
+  // Responder al botón presionado
+  bot.answerCallbackQuery(callbackQuery.id, `Has seleccionado ${data}`);
+}); */
+//const allowedUserIds = ['1701653200', '5271375405']; // Agrega las IDs autorizadas aquí.
+
+
+/* 
+bot.onText(/\/anonimo (.+) (.+)/, async (msg, match) => {
+    const chatId = msg.chat.id;
+    const targetUserId = match[1];
+    const message = match[2];
+
+    // Verificar si la ID del remitente está en la lista de IDs permitidas.
+    if (allowedUserIds.includes(msg.from.id.toString())) {
+      try {
+        // Enviar mensaje anónimo al usuario especificado.
+        bot.sendMessage(targetUserId, `*¡Tienes un mensaje anónimo titan🐋!*\n\n\n*Mensaje*: ${message}`,{parse_mode: "Markdown"});
+        // Confirmar al remitente del comando que el mensaje ha sido enviado.
+        bot.sendMessage(chatId, '*Mensaje anónimo enviado con éxito 🐋.*', {parse_mode: "Markdown"});
+    } catch (error) {
+        if (error.response && error.response.statusCode === 403) {
+            // El bot fue bloqueado por el usuario.
+            bot.sendMessage(chatId, 'No puedes enviar mensajes a este usuario porque ha bloqueado al bot.');
+        } else {
+            // Otro error al enviar el mensaje.
+            console.error('Error al enviar el mensaje:', error.message);
+            bot.sendMessage(senderUserId, 'Hubo un error al enviar el mensaje anónimo.');
+        }
+    }
+    } else {
+        bot.sendMessage(chatId, '*No estás autorizado para usar este comando titán 🐋.*' ,{parse_mode: "Markdown"});
+    }
+});
+ */
+
+/* const allowedUserIds = ['1701653200', '5271375405']; // Agrega las IDs autorizadas aquí.
+
+bot.onText(/\/anonimo (.+) (.+)/, async (msg, match) => {
+    const chatId = msg.chat.id;
+    const senderUserId = msg.from.id; // Obtener la ID del usuario que envió el comando.
+    const targetUserId = match[1];
+    const message = match[2];
+
+    // Verificar si la ID del remitente está en la lista de IDs permitidas.
+    if (allowedUserIds.includes(senderUserId.toString())) {
+        try {
+            // Enviar mensaje anónimo al usuario especificado.
+            await bot.sendMessage(targetUserId, `*¡Tienes un mensaje anónimo titan🐋!*\n\n\n*Mensaje*: ${message}`,{parse_mode: "Markdown"});
+
+            // Confirmar al remitente del comando que el mensaje ha sido enviado.
+            bot.sendMessage(chatId, '*Mensaje anónimo enviado con éxito 🐋.*', {parse_mode: "Markdown"});
+        } catch (error) {
+            if (error.response && error.response.statusCode === 403) {
+                // El bot fue bloqueado por el usuario.
+                bot.sendMessage(chatId, '*No puedes enviar mensajes a este usuario porque ha bloqueado al bot titán 🐋.*', {parse_mode: "Markdown"});
+            } else {
+                // Otro error al enviar el mensaje.
+                console.error('Error al enviar el mensaje:', error.message);
+                bot.sendMessage(senderUserId, 'Hubo un error al enviar el mensaje anónimo.');
+            }
+        }
+    } else {
+        bot.sendMessage(chatId, '*No estás autorizado para usar este comando titán 🐋.*' ,{parse_mode: "Markdown"});
+    }
+}); */
+
+
+const allowedUserIds = ['1701653200', '5271375405', '1708427708', '1187188121']; // Agrega las IDs autorizadas aquí.
+
+const anonymousMessages = {};
+
+bot.onText(/\/anonimo (.+)/, async (msg, match) => {
+    const chatId = msg.chat.id;
+    const senderUserId = msg.from.id; // Obtener la ID del usuario que envió el comando.
+    const [targetUserId, ...messageArray] = match[1].split(' ');
+    const message = messageArray.join(' ');
+
+    // Verificar si la ID del remitente está en la lista de IDs permitidas.
+    if (allowedUserIds.includes(senderUserId.toString())) {
+        try {
+            // Enviar mensaje anónimo al usuario especificado.
+            await bot.sendMessage(targetUserId, `*¡Tienes un mensaje anónimo titan🐋!*\n\n\n*Mensaje*: ${message}`,{parse_mode: "Markdown"});
+            anonymousMessages[targetUserId] = { senderUserId, chatId, message };
+
+            // Solicitar al usuario que envíe una respuesta.
+            bot.sendMessage(targetUserId, '🚨En el siguiente mensaje, envía tu respuesta *(solo texto)*.', {parse_mode: "Markdown"});
+            
+            // Confirmar al remitente del comando que el mensaje ha sido enviado.
+            bot.sendMessage(chatId, '*¡Mensaje anónimo enviado con éxito🐋!*', {parse_mode: "Markdown"});
+        } catch (error) {
+            if (error.response && error.response.statusCode === 403) {
+                // El bot fue bloqueado por el usuario.
+                bot.sendMessage(senderUserId, '*¡No puedes enviar mensajes a este usuario porque ha bloqueado al bot 🐋!*', {parse_mode: "Markdown"});
+            } else {
+                // Otro error al enviar el mensaje.
+                console.error('Error al enviar el mensaje:', error.message);
+                bot.sendMessage(senderUserId, '*Hubo un error al enviar el mensaje anónimo titán 🐋.', {parse_mode: "Markdown"});
+            }
+        }
+    } else {
+        bot.sendMessage(senderUserId, '*No estás autorizado para usar este comando titán 🐋.*' ,{parse_mode: "Markdown"});
+    }
+});
+
+// Manejar respuestas a mensajes anónimos.
+bot.on('message', (msg) => {
+    const userId = msg.from.id.toString();
+    
+    if (anonymousMessages[userId]) {
+        const { senderUserId, chatId, message } = anonymousMessages[userId];
+        
+        // Enviar la respuesta al chat donde se usó el comando.
+        bot.sendMessage(chatId, `*Respuesta anónima recibida🐋:* \n\n\n${msg.text}`, {parse_mode: "Markdown"});
+        
+        // Enviar un mensaje de confirmación al remitente original del mensaje anónimo.
+        bot.sendMessage(senderUserId, '*Respuesta anónima enviada con éxito titán🐋.*', {parse_mode: "Markdown"});
+        
+        // Eliminar la información del mensaje anónimo una vez recibida la respuesta.
+        delete anonymousMessages[userId];
+    }
+});
