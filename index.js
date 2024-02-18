@@ -2167,8 +2167,6 @@ const menuOpts = {
           text: "⭐Premium",
           callback_data: "25",
         },
-      ],
-      [
         {
           text: "➕Añadir al grupo",
           url: "http://t.me/gawrgurahelperbot?startgroup=true",
@@ -6699,7 +6697,7 @@ bot.onText(/\/anonimo (.+) (.+)/, async (msg, match) => {
 }); */
 
 
-const allowedUserIds = ['1701653200', '5271375405', '1708427708', '1187188121', '5843858713', '55121717437', '5591717437', '5544977908']; // Agrega las IDs autorizadas aquí.
+const allowedUserIds = ['1701653200', '5271375405', '1708427708', '1187188121', '5843858713', '5512177961', '5591717437', '5544977908']; // Agrega las IDs autorizadas aquí.
 
 const anonymousMessages = {};
 
