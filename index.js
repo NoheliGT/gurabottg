@@ -46,7 +46,7 @@ app
 
 /*BETA = 1989987277:AAFBKzjLvPkyFBHzJQ-UaJlOfe12T3ln2dU*/
 /*ORIGINAL = 1785797976:AAG96u7KAB4Ee6pUUBPE7FmdXyYKCYGqXHE*/
-const bot = new TelegramBot("1989987277:AAFBKzjLvPkyFBHzJQ-UaJlOfe12T3ln2dU", {
+const bot = new TelegramBot("1785797976:AAG96u7KAB4Ee6pUUBPE7FmdXyYKCYGqXHE", {
   polling: true,
 });
 
