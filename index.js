@@ -5530,14 +5530,6 @@ bot.onText(/\/img (.+)/, function (msg, match) {
           {
             type: "photo",
             media: data[2]
-          },
-          {
-            type: "photo",
-            media: data[3]
-          },
-          {
-            type: "photo",
-            media: data[4]
           }
         ]);
       } catch (error) {
