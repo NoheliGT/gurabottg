@@ -5,6 +5,8 @@ const requestPromise = require('request-promise');
 
 //const reverseImageSearch = require("node-reverse-image-search");
 const raejs = require("@jodacame/raejs");
+const {search} = require("pinterest-dl");
+
 
 var telefile = require("telefile");
 const AnimeScraper = require("exa-anime-scraper");
@@ -5420,9 +5422,6 @@ bot.onText(/\/qtcompatibles/, (msg) => {
 });
 
 
-
-
-
 bot.onText(/\/reverse/, (msg) => {
   const chatId = msg.chat.id;
   // Verifica si el mensaje es una respuesta a otro mensaje
@@ -5492,7 +5491,7 @@ bot.onText(/^\/donar/, (msg) => {
 });
 
 
-bot.onText(/\/img (.+)/, function (msg, match) {
+/* bot.onText(/\/img (.+)/, function (msg, match) {
   var d = match[1];
   try{
     (async () => {
@@ -5511,11 +5510,50 @@ bot.onText(/\/img (.+)/, function (msg, match) {
   }catch(e){
     console.log(e);
   }
+}); */
+
+bot.onText(/\/img (.+)/, function (msg, match) {
+  var d = match[1];
+  try{
+    async function main(){
+      const data = await search(d);
+      try {
+        bot.sendMediaGroup(msg.chat.id, [
+          {
+            type: "photo",
+            media: data[0]
+          },
+          {
+            type: "photo",
+            media: data[1]
+          },
+          {
+            type: "photo",
+            media: data[2]
+          },
+          {
+            type: "photo",
+            media: data[3]
+          },
+          {
+            type: "photo",
+            media: data[4]
+          }
+        ]);
+      } catch (error) {
+        console.log(error);
+        bot.sendMessage(msg.chat.id, "Parece que hubo un error en la búsqueda:(",);
+      }
+    }
+    main()
+  }catch(e){
+    console.log(e);
+  }
 });
 
 
 
-/*bot.onText(/\/img (.+)/, function (msg, match) {
+/* bot.onText(/\/lola (.+)/, function (msg, match) {
 
     var d = match[1];
     try{
@@ -5538,7 +5576,7 @@ bot.onText(/\/img (.+)/, function (msg, match) {
     }catch(e){
       console.log(e);
     }
-});*/
+}); */
 
 
 
