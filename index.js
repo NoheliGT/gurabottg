@@ -6,7 +6,7 @@ const requestPromise = require('request-promise');
 //const reverseImageSearch = require("node-reverse-image-search");
 const raejs = require("@jodacame/raejs");
 const {search} = require("pinterest-dl");
-
+const { youtube } = require('btch-downloader')
 
 var telefile = require("telefile");
 const AnimeScraper = require("exa-anime-scraper");
@@ -21,6 +21,7 @@ const moment = require('moment');
 var express = require("express");
 
 const { createCanvas, loadImage } = require('canvas');
+const axios = require('axios');
 
 
 //const pokemoninfo = require("pokemoninfo"); uu
@@ -294,6 +295,53 @@ bot.onText(/^\/chatid/, (msg) => {
   bot.sendMessage(chatId, `<b>🔏ID del chat:</b> <code>${chatId}</code>`, {
     parse_mode: "HTML",
   });
+});
+
+
+
+const usuariosAutorizados = ['1701653200', '1812043697', '929203318'];
+
+bot.onText(/\/musica (.+)/, async function (msg, match) {
+  const chatId = msg.chat.id;
+  const userId = msg.from.id;
+  const url = match[1];
+
+  // Verificar si el usuario está autorizado
+  if (!usuariosAutorizados.includes(userId.toString())) {
+    bot.sendMessage(chatId, "Lo siento, no estás autorizado para usar este comando titán❌.");
+    return;
+  }
+
+  try {
+    bot.sendMessage(chatId, "*🎶Descargando música titán...* ¡Espera un momento por favor⚠️!", {parse_mode: "Markdown"});
+    const data = await youtube(url);
+    const mp3Url = data.mp3;
+
+    // Descargar el archivo MP3
+    const mp3FileName = `music_${Date.now()}.mp3`;
+    const mp3FileStream = fs.createWriteStream(mp3FileName);
+    const response = await axios.get(mp3Url, { responseType: 'stream' });
+    response.data.pipe(mp3FileStream);
+
+    // Cuando la descarga esté completa
+    mp3FileStream.on('finish', () => {
+      // Enviar el archivo MP3 como respuesta
+      bot.sendAudio(chatId, mp3FileName)
+        .then(() => {
+          // Borrar el archivo temporal
+          fs.unlinkSync(mp3FileName);
+          console.log("Borrado.")
+          bot.sendMessage(chatId, "*¡🎶Tu música está lista, titán!*", {parse_mode: "Markdown"});
+        })
+        .catch((error) => {
+          console.error('Error al enviar el archivo de audio:', error);
+          bot.sendMessage(chatId, "Error en la descarga:(")
+        });
+    });
+  } catch (error) {
+    console.error('Error al descargar la música:', error);
+    bot.sendMessage(chatId, "Error en la descarga:(")
+  }
 });
 
 /**************************************************REACCIONES**************************************************/
@@ -741,6 +789,8 @@ bot.onText(/^\/qr/, function (msg) {
     { parse_mode: "Markdown" }
   );
 });
+
+
 
 /**************************************************PIN Y UNPIN**************************************************/
 
@@ -2327,7 +2377,7 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   }
   if (action === "25") {
     text =
-      "Los comandos siguientes son supercomandos para usuarios que participen en dinámicas o aporten donaciones al bot (módulo en desarrollo).\n\n/anonimo <ID> <mensaje>: Envia un mensaje a cualquier usuario de forma anónima (no sabría quien eres, pero tú sí porque regresa los datos del usuario en sus respuestas).";
+      "Los comandos siguientes son supercomandos para usuarios que participen en dinámicas o aporten donaciones al bot (módulo en desarrollo).\n\n/anonimo <ID> <mensaje>: Envia un mensaje a cualquier usuario de forma anónima (no sabría quien eres, pero tú sí porque regresa los datos del usuario en sus respuestas\n\n/musica <URLYT>: ¡Descarga música de YT!.";
   }
   if (action === "29") {
     text =
