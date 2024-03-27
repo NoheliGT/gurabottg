@@ -512,7 +512,6 @@ bot.on('callback_query', async (query) => {
       console.error('Error al descargar la imagen:', error);
     });
 }); */
-
 bot.onText(/\/anime (.+)/, async function (msg, match) {
   const chatId = msg.chat.id;
   const userId = msg.from.id;
@@ -538,6 +537,52 @@ bot.onText(/\/anime (.+)/, async function (msg, match) {
     bot.sendMessage(chatId, '¡🔎Búsqueda encontrada! \n\n➡️ Selecciona un anime para ver la información completa titán:', keyboard);
   }).catch((error) => {
     console.error(error);
+  });
+});
+
+bot.on('callback_query', async (query) => {
+  const animeId = query.data;
+  const selectedAnime = animeList.find((anime) => anime.id === animeId);
+
+  if (!selectedAnime || !selectedAnime.title) {
+    // Si no se encuentra el anime o no tiene título, enviar un mensaje de error
+    bot.sendMessage(query.message.chat.id, '❌ No se encontró información completa para este anime.', { parse_mode: 'Markdown' }).catch((error) => {
+      console.error('Error al enviar el mensaje:', error);
+    });
+    return;
+  }
+
+  // Construir el mensaje con las validaciones para cada campo
+  let message = `*🥋 ${selectedAnime.title}*\n`;
+
+  // Agregar la sinopsis si está disponible
+  if (selectedAnime.synopsis) {
+    message += `_➡️ Sinopsis:_ ${selectedAnime.synopsis}\n`;
+  } else {
+    message += '_➡️ Sinopsis:_ Sin información de sinopsis.\n';
+  }
+
+  // Agregar el rating si está disponible
+  if (selectedAnime.rating) {
+    message += `_⭐ Rating:_ ${selectedAnime.rating}\n`;
+  } else {
+    message += '_⭐ Rating:_ Sin información de rating.\n';
+  }
+
+  // Agregar el tipo si está disponible
+  if (selectedAnime.type) {
+    message += `_➡️ Tipo:_ ${selectedAnime.type}\n`;
+  } else {
+    message += '_➡️ Tipo:_ Sin información de tipo.\n';
+  }
+
+  // Agregar el enlace para ver más si está disponible
+  const moreInfoLink = selectedAnime.url || '#';
+  message += `[Ver más](${moreInfoLink})`;
+
+  // Enviar el mensaje
+  bot.sendMessage(query.message.chat.id, message, { parse_mode: 'Markdown' }).catch((error) => {
+    console.error('Error al enviar el mensaje:', error);
   });
 });
 
