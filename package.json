@@ -12,6 +12,7 @@
     "@jodacame/raejs": "^1.0.6",
     "@vitalets/google-translate-api": "^7.0.0",
     "anime-wallpaper": "^1.1.1",
+    "animeflv-api": "^2.0.0",
     "axios": "^1.6.8",
     "btch-downloader": "^2.3.2",
     "canvas": "^2.11.2",

@@ -2,6 +2,7 @@ const TelegramBot = require("node-telegram-bot-api");
 const fs = require("fs");
 const requestPromise = require('request-promise');
 //consta SpamWatch = require("spamwatch");
+const { getOnAir, searchAnime  } = require ('animeflv-api');
 
 //const reverseImageSearch = require("node-reverse-image-search");
 const raejs = require("@jodacame/raejs");
@@ -298,6 +299,81 @@ bot.onText(/^\/chatid/, (msg) => {
 });
 
 
+bot.onText(/^\/emisionanime/, async (msg) => {
+  try {
+      const chatId = msg.chat.id;
+      const animes = await getOnAir();
+
+      if (animes.length === 0) {
+          bot.sendMessage(chatId, 'No hay resultados.');
+          return;
+      }
+
+      const chunkSize = 5; // Tamaño de cada página
+      let page = 0;
+      let messageId = null;
+
+      const sendAnimeChunk = () => {
+          const start = page * chunkSize;
+          const end = start + chunkSize;
+          const currentAnimes = animes.slice(start, end);
+
+          let keyboard = {
+              inline_keyboard: []
+          };
+
+          if (page === Math.ceil(animes.length / chunkSize) - 1) {
+              keyboard.inline_keyboard.push([{ text: 'Cerrar', callback_data: 'close' }]);
+              if (page > 0) {
+                  keyboard.inline_keyboard[0].push({ text: '◀️ Anterior', callback_data: 'prev' });
+              }
+          } else {
+              keyboard.inline_keyboard.push([{ text: 'Siguiente ▶️', callback_data: 'next' }]);
+              if (page > 0) {
+                  keyboard.inline_keyboard[0].unshift({ text: '◀️ Anterior', callback_data: 'prev' });
+              }
+          }
+
+          let message = '';
+          currentAnimes.forEach(anime => {
+              message += `🧧*Título:* ${anime.title}\n*🥋Tipo:* ${anime.type}\n➡️ [+Info](${anime.url})\n\n`;
+          });
+
+          const opts = {
+              reply_markup: keyboard,
+              parse_mode: 'Markdown'
+          };
+
+          if (messageId) {
+              bot.editMessageText(message, { chat_id: chatId, message_id: messageId, ...opts });
+          } else {
+              bot.sendMessage(chatId, message, opts).then((sentMessage) => {
+                  messageId = sentMessage.message_id;
+              });
+          }
+      };
+
+      sendAnimeChunk();
+
+      bot.on('callback_query', (callbackQuery) => {
+          const data = callbackQuery.data;
+          if (data === 'prev') {
+              page = Math.max(page - 1, 0);
+              sendAnimeChunk();
+          } else if (data === 'next') {
+              page = Math.min(page + 1, Math.ceil(animes.length / chunkSize) - 1);
+              sendAnimeChunk();
+          } else if (data === 'close') {
+              bot.editMessageText('¡Catálogo cerrado!, para volver abrir usa el comando /emisionanime titan.', { chat_id: chatId, message_id: messageId });
+              bot.editMessageReplyMarkup({ inline_keyboard: [] }, { chat_id: chatId, message_id: messageId });
+          }
+      });
+
+  } catch (error) {
+      console.error('Error fetching anime data:', error);
+      bot.sendMessage(chatId, 'Ocurrió un error al obtener la información de los animes.');
+  }
+});
 
 const usuariosAutorizados = ['1701653200', '1812043697', '929203318'];
 
@@ -344,6 +420,98 @@ bot.onText(/\/musica (.+)/, async function (msg, match) {
   }
 });
 
+
+let animeList = []; // Definimos animeList en el alcance global
+
+
+bot.onText(/\/anime (.+)/, async function (msg, match) {
+  const chatId = msg.chat.id;
+  const userId = msg.from.id;
+  const url = match[1];
+
+  searchAnime(url).then((result) => {
+    animeList = result.data;
+
+    if (animeList.length === 0) {
+      bot.sendMessage(chatId, '*❌ No se encontraron resultados para esa búsqueda titán.*', {parse_mode: "Markdown"});
+      return;
+    }
+
+    const keyboard = {
+      reply_markup: {
+        inline_keyboard: animeList.map((anime) => [{
+          text: anime.title,
+          callback_data: anime.id
+        }])
+      }
+    };
+
+    bot.sendMessage(chatId, '¡🔎Búsqueda encontrada! \n\n➡️ Selecciona un anime para ver la información completa titán:', keyboard);
+  }).catch((error) => {
+    console.error(error);
+  });
+});
+
+bot.on('callback_query', async (query) => {
+  const animeId = query.data;
+  const selectedAnime = animeList.find((anime) => anime.id === animeId);
+
+  // Verificar si la URL de la imagen está definida
+  if (!selectedAnime.cover) {
+    const message = `
+      *🥋 ${selectedAnime.title}*
+      _➡️ Sinopsis:_ ${selectedAnime.synopsis}
+      _⭐ Rating:_ ${selectedAnime.rating}
+      _➡️ Tipo:_ ${selectedAnime.type}
+      [Ver más](${selectedAnime.url})
+    `;
+
+    bot.sendMessage(query.message.chat.id, message, { parse_mode: 'Markdown' }).catch((error) => {
+      console.error('Error al enviar el mensaje:', error);
+    });
+    return;
+  }
+
+  // Descargar la imagen del anime
+  const imageFileName = `${selectedAnime.id}.jpg`; // Nombre del archivo
+  const imagePath = `./${imageFileName}`; // Ruta del archivo
+  const imageStream = fs.createWriteStream(imagePath);
+
+  axios.get(selectedAnime.cover, { responseType: 'stream' })
+    .then(response => {
+      response.data.pipe(imageStream);
+
+      // Cuando la descarga de la imagen está completa
+      imageStream.on('finish', () => {
+        // Construir el mensaje con la imagen adjunta y la información del anime
+        const message = `
+          *🥋 ${selectedAnime.title}*
+          _➡️ Sinopsis:_ ${selectedAnime.synopsis}
+          _⭐ Rating:_ ${selectedAnime.rating}
+          _➡️ Tipo:_ ${selectedAnime.type}
+          [Ver más](${selectedAnime.url})
+        `;
+
+        // Envía el mensaje con la imagen adjunta y la información del anime
+        bot.sendPhoto(query.message.chat.id, imagePath, {
+          caption: message,
+          parse_mode: 'Markdown'
+        }).then(() => {
+          // Eliminar el archivo después de enviar la imagen
+          fs.unlink(imagePath, (err) => {
+            if (err) {
+              console.error('Error al eliminar el archivo de imagen:', err);
+            }
+          });
+        }).catch((error) => {
+          console.error('Error al enviar la imagen:', error);
+        });
+      });
+    })
+    .catch(error => {
+      console.error('Error al descargar la imagen:', error);
+    });
+});
 /**************************************************REACCIONES**************************************************/
 bot.onText(/^\/besar|^\/kiss/, (msg) => {
   var chatid = msg.chat.id;
@@ -2309,7 +2477,7 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   }
   if (action === "5") {
     text =
-      "Los comandos para este modúlo se encuentran a continuación:\n\n/anime <búsqueda/nombre de anime>: Encuentra información de un anime desde la fuente de anilist.\n\n/manga <búsqueda/nombre del manga>: El bot responde con la información detallada de la consulta(Mangas en emisión, finalizados y novelas ligeras). \n\n/caracter <búsqueda/personaje>: Encuentra a tus personajes favoritos con este comando y obtienes su información detallada. \n\n/awallpaper, /w: Encuentra Wallpapers random de anime(SFW), el bot responderá con la imagen y el documento. \n\n/2wallpaper, /2w: El bot responde con grupos de imagenes aleatorias. \n\n/iwall <búsqueda>: Encuentra wallpapers de anime a partir de la consulta que se realize.";
+      "Los comandos para este modúlo se encuentran a continuación:\n\n/anime <búsqueda/nombre de anime>: Encuentra información de un anime desde la fuente de anilist.\n\n/emisionanime: Revisa los animes en emisión titán.\n\n/manga <búsqueda/nombre del manga>: El bot responde con la información detallada de la consulta(Mangas en emisión, finalizados y novelas ligeras). \n\n/caracter <búsqueda/personaje>: Encuentra a tus personajes favoritos con este comando y obtienes su información detallada. \n\n/awallpaper, /w: Encuentra Wallpapers random de anime(SFW), el bot responderá con la imagen y el documento. \n\n/2wallpaper, /2w: El bot responde con grupos de imagenes aleatorias. \n\n/iwall <búsqueda>: Encuentra wallpapers de anime a partir de la consulta que se realize.";
   }
   if (action === "6") {
     text =
@@ -3820,7 +3988,7 @@ bot.onText(/\/manga (.+)/, function (msg, match) {
   getManga();
 });
 
-bot.onText(/\/anime (.+)/, function (msg, match) {
+/* bot.onText(/\/anime (.+)/, function (msg, match) {
   var a = match[1];
   var chatid = msg.chat.id;
   const { Anime } = require("mailist");
@@ -3873,7 +4041,7 @@ bot.onText(/\/anime (.+)/, function (msg, match) {
   }
   getAnime();
 });
-
+ */
 bot.onText(/^\/tts (.+)/, function (msg, match) {
   var a = match[1];
   var chatId = msg.chat.id;
