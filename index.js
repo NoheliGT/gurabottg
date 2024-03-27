@@ -50,7 +50,7 @@ app
 
 /*BETA = 1989987277:AAFBKzjLvPkyFBHzJQ-UaJlOfe12T3ln2dU*/
 /*ORIGINAL = 1785797976:AAG96u7KAB4Ee6pUUBPE7FmdXyYKCYGqXHE*/
-const bot = new TelegramBot("1785797976:AAG96u7KAB4Ee6pUUBPE7FmdXyYKCYGqXHE", {
+const bot = new TelegramBot("1989987277:AAFBKzjLvPkyFBHzJQ-UaJlOfe12T3ln2dU", {
   polling: true,
 });
 
@@ -421,97 +421,8 @@ bot.onText(/\/musica (.+)/, async function (msg, match) {
 });
 
 
-let animeList = []; // Definimos animeList en el alcance global
+let animeList = []; // Variable global para almacenar la lista de animes
 
-
-/* bot.onText(/\/anime (.+)/, async function (msg, match) {
-  const chatId = msg.chat.id;
-  const userId = msg.from.id;
-  const url = match[1];
-
-  searchAnime(url).then((result) => {
-    animeList = result.data;
-
-    if (animeList.length === 0) {
-      bot.sendMessage(chatId, '*❌ No se encontraron resultados para esa búsqueda titán.*', {parse_mode: "Markdown"});
-      return;
-    }
-
-    const keyboard = {
-      reply_markup: {
-        inline_keyboard: animeList.map((anime) => [{
-          text: anime.title,
-          callback_data: anime.id
-        }])
-      }
-    };
-
-    bot.sendMessage(chatId, '¡🔎Búsqueda encontrada! \n\n➡️ Selecciona un anime para ver la información completa titán:', keyboard);
-  }).catch((error) => {
-    console.error(error);
-  });
-});
-
-bot.on('callback_query', async (query) => {
-  const animeId = query.data;
-  const selectedAnime = animeList.find((anime) => anime.id === animeId);
-
-  // Verificar si la URL de la imagen está definida
-  if (!selectedAnime.cover) {
-    const message = `
-      *🥋 ${selectedAnime.title}*
-      _➡️ Sinopsis:_ ${selectedAnime.synopsis}
-      _⭐ Rating:_ ${selectedAnime.rating}
-      _➡️ Tipo:_ ${selectedAnime.type}
-      [Ver más](${selectedAnime.url})
-    `;
-
-    bot.sendMessage(query.message.chat.id, message, { parse_mode: 'Markdown' }).catch((error) => {
-      console.error('Error al enviar el mensaje:', error);
-    });
-    return;
-  }
-
-  // Descargar la imagen del anime
-  const imageFileName = `${selectedAnime.id}.jpg`; // Nombre del archivo
-  const imagePath = `./${imageFileName}`; // Ruta del archivo
-  const imageStream = fs.createWriteStream(imagePath);
-
-  axios.get(selectedAnime.cover, { responseType: 'stream' })
-    .then(response => {
-      response.data.pipe(imageStream);
-
-      // Cuando la descarga de la imagen está completa
-      imageStream.on('finish', () => {
-        // Construir el mensaje con la imagen adjunta y la información del anime
-        const message = `
-          *🥋 ${selectedAnime.title}*
-          _➡️ Sinopsis:_ ${selectedAnime.synopsis}
-          _⭐ Rating:_ ${selectedAnime.rating}
-          _➡️ Tipo:_ ${selectedAnime.type}
-          [Ver más](${selectedAnime.url})
-        `;
-
-        // Envía el mensaje con la imagen adjunta y la información del anime
-        bot.sendPhoto(query.message.chat.id, imagePath, {
-          caption: message,
-          parse_mode: 'Markdown'
-        }).then(() => {
-          // Eliminar el archivo después de enviar la imagen
-          fs.unlink(imagePath, (err) => {
-            if (err) {
-              console.error('Error al eliminar el archivo de imagen:', err);
-            }
-          });
-        }).catch((error) => {
-          console.error('Error al enviar la imagen:', error);
-        });
-      });
-    })
-    .catch(error => {
-      console.error('Error al descargar la imagen:', error);
-    });
-}); */
 // Función para manejar el comando '/anime'
 function handleAnimeCommand(msg, match) {
   const chatId = msg.chat.id;
@@ -520,7 +431,7 @@ function handleAnimeCommand(msg, match) {
 
   searchAnime(url)
     .then((result) => {
-      const animeList = result.data;
+      animeList = result.data; // Almacenar la lista de animes en la variable global
 
       if (animeList.length === 0) {
         bot.sendMessage(chatId, '*❌ No se encontraron resultados para esa búsqueda.*', { parse_mode: "Markdown" });
@@ -531,7 +442,7 @@ function handleAnimeCommand(msg, match) {
         reply_markup: {
           inline_keyboard: animeList.map((anime) => [{
             text: anime.title,
-            callback_data: `anime_${anime.id}` // Modificar el formato del callback_data si es necesario
+            callback_data: `anime_${anime.id}` // Utilizar el ID del anime en las consultas de callback
           }])
         }
       };
@@ -572,6 +483,7 @@ bot.on('callback_query', async (query) => {
     });
   }
 });
+
 /**************************************************REACCIONES**************************************************/
 bot.onText(/^\/besar|^\/kiss/, (msg) => {
   var chatid = msg.chat.id;
