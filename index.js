@@ -512,95 +512,65 @@ bot.on('callback_query', async (query) => {
       console.error('Error al descargar la imagen:', error);
     });
 }); */
-bot.onText(/\/anime (.+)/, async function (msg, match) {
+// Función para manejar el comando '/anime'
+function handleAnimeCommand(msg, match) {
   const chatId = msg.chat.id;
   const userId = msg.from.id;
   const url = match[1];
 
-  searchAnime(url).then((result) => {
-    animeList = result.data;
+  searchAnime(url)
+    .then((result) => {
+      const animeList = result.data;
 
-    if (animeList.length === 0) {
-      bot.sendMessage(chatId, '*❌ No se encontraron resultados para esa búsqueda titán.*', {parse_mode: "Markdown"});
+      if (animeList.length === 0) {
+        bot.sendMessage(chatId, '*❌ No se encontraron resultados para esa búsqueda.*', { parse_mode: "Markdown" });
+        return;
+      }
+
+      const keyboard = {
+        reply_markup: {
+          inline_keyboard: animeList.map((anime) => [{
+            text: anime.title,
+            callback_data: `anime_${anime.id}` // Modificar el formato del callback_data si es necesario
+          }])
+        }
+      };
+
+      bot.sendMessage(chatId, '¡🔎 Búsqueda encontrada! \n\n➡️ Selecciona un anime para ver la información completa:', keyboard);
+    })
+    .catch((error) => {
+      console.error(error);
+      bot.sendMessage(chatId, '*❌ Error al buscar anime. Por favor, intenta nuevamente más tarde.*', { parse_mode: "Markdown" });
+    });
+}
+
+// Manejar el comando '/anime'
+bot.onText(/\/anime (.+)/, handleAnimeCommand);
+
+// Manejar las consultas de callback relacionadas con anime
+bot.on('callback_query', async (query) => {
+  // Verificar si la consulta de callback está relacionada con anime
+  if (query.data.startsWith('anime_')) {
+    const animeId = query.data.substring(6); // Extraer el ID del anime desde la consulta de callback
+    const selectedAnime = animeList.find((anime) => anime.id === animeId);
+
+    if (!selectedAnime) {
+      bot.answerCallbackQuery(query.id, { text: '❌ No se encontró información para este anime.', show_alert: true });
       return;
     }
 
-    const keyboard = {
-      reply_markup: {
-        inline_keyboard: animeList.map((anime) => [{
-          text: anime.title,
-          callback_data: anime.id
-        }])
-      }
-    };
+    const message = `
+      *🥋 ${selectedAnime.title || 'Sin título'}*
+      _➡️ Sinopsis:_ ${selectedAnime.synopsis || 'Sin información de sinopsis.'}
+      _⭐ Rating:_ ${selectedAnime.rating || 'Sin información de rating.'}
+      _➡️ Tipo:_ ${selectedAnime.type || 'Sin información de tipo.'}
+      [Ver más](${selectedAnime.url || '#'})
+    `;
 
-    bot.sendMessage(chatId, '¡🔎Búsqueda encontrada! \n\n➡️ Selecciona un anime para ver la información completa titán:', keyboard);
-  }).catch((error) => {
-    console.error(error);
-  });
-});
-
-bot.on('callback_query', async (query) => {
-  const animeId = query.data;
-  const selectedAnime = animeList.find((anime) => anime.id === animeId);
-
-  if (!selectedAnime || !selectedAnime.title) {
-    // Si no se encuentra el anime o no tiene título, enviar un mensaje de error
-    bot.sendMessage(query.message.chat.id, '❌ No se encontró información completa para este anime.', { parse_mode: 'Markdown' }).catch((error) => {
+    bot.sendMessage(query.message.chat.id, message, { parse_mode: 'Markdown' }).catch((error) => {
       console.error('Error al enviar el mensaje:', error);
     });
-    return;
   }
-
-  // Construir el mensaje con las validaciones para cada campo
-  let message = `*🥋 ${selectedAnime.title}*\n`;
-
-  // Agregar la sinopsis si está disponible
-  if (selectedAnime.synopsis) {
-    message += `_➡️ Sinopsis:_ ${selectedAnime.synopsis}\n`;
-  } else {
-    message += '_➡️ Sinopsis:_ Sin información de sinopsis.\n';
-  }
-
-  // Agregar el rating si está disponible
-  if (selectedAnime.rating) {
-    message += `_⭐ Rating:_ ${selectedAnime.rating}\n`;
-  } else {
-    message += '_⭐ Rating:_ Sin información de rating.\n';
-  }
-
-  // Agregar el tipo si está disponible
-  if (selectedAnime.type) {
-    message += `_➡️ Tipo:_ ${selectedAnime.type}\n`;
-  } else {
-    message += '_➡️ Tipo:_ Sin información de tipo.\n';
-  }
-
-  // Agregar el enlace para ver más si está disponible
-  const moreInfoLink = selectedAnime.url || '#';
-  message += `[Ver más](${moreInfoLink})`;
-
-  // Enviar el mensaje
-  bot.sendMessage(query.message.chat.id, message, { parse_mode: 'Markdown' }).catch((error) => {
-    console.error('Error al enviar el mensaje:', error);
-  });
-});
-
-bot.on('callback_query', async (query) => {
-  const animeId = query.data;
-  const selectedAnime = animeList.find((anime) => anime.id === animeId);
-
-  const message = `
-    *🥋 ${selectedAnime.title}*
-    _➡️ Sinopsis:_ ${selectedAnime.synopsis}
-    _⭐ Rating:_ ${selectedAnime.rating}
-    _➡️ Tipo:_ ${selectedAnime.type}
-    [Ver más](${selectedAnime.url})
-  `;
-
-  bot.sendMessage(query.message.chat.id, message, { parse_mode: 'Markdown' }).catch((error) => {
-    console.error('Error al enviar el mensaje:', error);
-  });
 });
 /**************************************************REACCIONES**************************************************/
 bot.onText(/^\/besar|^\/kiss/, (msg) => {
