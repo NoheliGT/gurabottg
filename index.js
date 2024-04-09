@@ -3,11 +3,11 @@ const fs = require("fs");
 const requestPromise = require('request-promise');
 //consta SpamWatch = require("spamwatch");
 const { getOnAir, searchAnime  } = require ('animeflv-api');
-
 //const reverseImageSearch = require("node-reverse-image-search");
 const raejs = require("@jodacame/raejs");
 const {search} = require("pinterest-dl");
 const { youtube } = require('btch-downloader')
+
 
 var telefile = require("telefile");
 const AnimeScraper = require("exa-anime-scraper");
@@ -73,6 +73,71 @@ firebase.initializeApp({
 });
 
 const db = firebase.firestore();
+
+// Comando /loteria
+// Comando /loteria
+bot.onText(/\/loteria(?:\s+(\d+))?/, async (msg, match) => {
+  const chatId = msg.chat.id;
+  const userId = msg.from.id.toString();
+  const username = msg.from.first_name;
+  const number = match[1] ? parseInt(match[1]) : null; // Comprobar si se proporcionó un número
+
+  // Si no se proporcionó un número o si está fuera del rango 1 al 25, enviar un mensaje de instrucción
+  if (!number || number < 1 || number > 25) {
+    bot.sendMessage(chatId, '🐳Por favor, elige un número titán dentro del rango del 1 al 25 para jugar a la lotería.\n\nEjemplo: /lotewin 23');
+    return;
+  }
+
+  // Verificar si han pasado al menos 10 minutos desde el último juego
+  const lastPlaySnapshot = await db.collection('lottery').doc(userId).get();
+  if (lastPlaySnapshot.exists) {
+    const lastPlayTime = lastPlaySnapshot.data().timestamp;
+    const currentTime = Date.now();
+    const elapsedTime = currentTime - lastPlayTime;
+    if (elapsedTime < 600000) {
+      bot.sendMessage(chatId, '🖐️Debes esperar al menos 10 minutos para el siguiente intento titán.');
+      return;
+    }
+  }
+
+  // Generar número aleatorio
+  const randomNum = Math.floor(Math.random() * 25) + 1;
+
+  // Verificar si acertó
+  if (number === randomNum) {
+    // Incrementar puntos
+    await db.collection('users').doc(userId).set(
+      { username, points: firebase.firestore.FieldValue.increment(1) },
+      { merge: true }
+    );
+    bot.sendMessage(chatId, `¡🐳Felicidades ${username}! Acertaste el número🥳. Has ganado ➕1 punto titán.`);
+  } else {
+    bot.sendMessage(chatId, `❌Lo siento ${username}, el número ganador era ${randomNum}. Inténtalo de nuevo titán.`);
+  }
+
+  // Registrar el tiempo del último juego
+  await db.collection('lottery').doc(userId).set({ timestamp: Date.now() });
+});
+
+
+bot.onText(/\/top/, async (msg) => {
+  const chatId = msg.chat.id;
+
+  // Obtener los 10 usuarios con más puntos
+  const topUsersSnapshot = await db.collection('users')
+    .orderBy('points', 'desc')
+    .limit(10)
+    .get();
+
+  let topUsersMessage = '🏅Top 10 usuarios en loteria global (Gawr Gura):\n\n';
+  topUsersSnapshot.forEach((doc, index) => {
+    const userData = doc.data();
+    const name = msg.from.first_name || userData.username || 'Usuario sin nombre';
+    topUsersMessage += `🏆🐋. ${name} - ${userData.points} puntos\n`;
+  });
+
+  bot.sendMessage(chatId, topUsersMessage);
+})
 
 
 bot.onText(/\/eliminar_usuario (.+)/, (msg, match) => {
@@ -295,6 +360,16 @@ bot.onText(/^\/chatid/, (msg) => {
   const chatId = msg.chat.id;
   bot.sendMessage(chatId, `<b>🔏ID del chat:</b> <code>${chatId}</code>`, {
     parse_mode: "HTML",
+  });
+});
+
+bot.onText(/^\/memes/, (msg) => {
+  const chatId = msg.chat.id;
+  const memeUrl = spanishmemes.Meme(); // Obtener la URL del meme
+
+  // Enviar la imagen del meme al chat
+  bot.sendPhoto(chatId, memeUrl).catch((error) => {
+    console.error('Error al enviar el meme:', error);
   });
 });
 
@@ -2449,7 +2524,7 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   }
   if (action === "5") {
     text =
-      "Los comandos para este modúlo se encuentran a continuación:\n\n/anime <búsqueda/nombre de anime>: Encuentra información de un anime desde la fuente de anilist.\n\n/emisionanime: Revisa los animes en emisión titán.\n\n/manga <búsqueda/nombre del manga>: El bot responde con la información detallada de la consulta(Mangas en emisión, finalizados y novelas ligeras). \n\n/caracter <búsqueda/personaje>: Encuentra a tus personajes favoritos con este comando y obtienes su información detallada. \n\n/awallpaper, /w: Encuentra Wallpapers random de anime(SFW), el bot responderá con la imagen y el documento. \n\n/2wallpaper, /2w: El bot responde con grupos de imagenes aleatorias. \n\n/iwall <búsqueda>: Encuentra wallpapers de anime a partir de la consulta que se realize.";
+      "Los comandos para este modúlo se encuentran a continuación:\n\n/aquiz: Diviertete respondiendo la trivia con preguntas de anime, japón y cultura general.\n\n/anime <búsqueda/nombre de anime>: Encuentra información de un anime desde la fuente de anilist.\n\n/emisionanime: Revisa los animes en emisión titán.\n\n/manga <búsqueda/nombre del manga>: El bot responde con la información detallada de la consulta(Mangas en emisión, finalizados y novelas ligeras). \n\n/caracter <búsqueda/personaje>: Encuentra a tus personajes favoritos con este comando y obtienes su información detallada. \n\n/awallpaper, /w: Encuentra Wallpapers random de anime(SFW), el bot responderá con la imagen y el documento. \n\n/2wallpaper, /2w: El bot responde con grupos de imagenes aleatorias. \n\n/iwall <búsqueda>: Encuentra wallpapers de anime a partir de la consulta que se realize.";
   }
   if (action === "6") {
     text =
@@ -2461,7 +2536,7 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   }
   if (action === "8") {
     text =
-      "Otros comandos de ocio extras: \n/qtcompatibles: Responde al mensaje de un usuario para conocer que probabilidades hay tener éxito como pareja. \n\n/aquiz: Diviertete respondiendo la trivia con preguntas de anime, japón y cultura general. \n\n/basta: Responde acertijos y divertete pensando la respuesta.\n\n/kiss, /besar: Entregale un beso a un usuario haciendo reply a uno de sus mensajes. \n\n/hug, /abrazar: Responde un mensaje en el chat para darle un tierno abrazo. \n\n/golpear, /kill: Al hacer respuesta de un mensaje en el chat, el bot responde con esta emoción. \n\n/spank, /nalguear: Entrega una nalgadita al usuario en respuesta de uno de sus mensaje en el grupito. \n\n/pat, /cariciar: Responde a un mensaje para dar una tierna caricia.";
+      "Otros comandos de ocio extras: \n\n/loteria <1 al 25>: Diviertete jugando a la lotería y sal en el top global de usuarios con más puntos.\n/qtcompatibles: Responde al mensaje de un usuario para conocer que probabilidades hay tener éxito como pareja. \n\n/basta: Responde acertijos y divertete pensando la respuesta.\n\n/kiss, /besar: Entregale un beso a un usuario haciendo reply a uno de sus mensajes. \n\n/hug, /abrazar: Responde un mensaje en el chat para darle un tierno abrazo. \n\n/golpear, /kill: Al hacer respuesta de un mensaje en el chat, el bot responde con esta emoción. \n\n/spank, /nalguear: Entrega una nalgadita al usuario en respuesta de uno de sus mensaje en el grupito. \n\n/pat, /cariciar: Responde a un mensaje para dar una tierna caricia.";
   }
 
   if (action === "10") {
