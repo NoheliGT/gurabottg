@@ -84,7 +84,7 @@ bot.onText(/\/loteria(?:\s+(\d+))?/, async (msg, match) => {
 
   // Si no se proporcionó un número o si está fuera del rango 1 al 25, enviar un mensaje de instrucción
   if (!number || number < 1 || number > 25) {
-    bot.sendMessage(chatId, '🐳Por favor, elige un número titán dentro del rango del 1 al 25 para jugar a la lotería.\n\nEjemplo: /lotewin 23');
+    bot.sendMessage(chatId, '🐳Por favor, elige un número titán dentro del rango del 1 al 25 para jugar a la lotería.\n\nEjemplo: /loteria 23');
     return;
   }
 
