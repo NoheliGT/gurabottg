@@ -61,7 +61,7 @@ id(bot);
 abrazo(bot);
 
 
-//INICIO COMPLETOS
+//INICIO COMPLETOSSS
 
 const firebase = require('firebase/app');
 require('firebase/firestore');
