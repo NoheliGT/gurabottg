@@ -133,13 +133,13 @@ bot.onText(/\/top/, async (msg) => {
   let topUsersMessage = '🏅Top 10 usuarios en loteria global (Gawr Gura):\n\n';
   topUsersSnapshot.forEach((doc, index) => {
     const userData = doc.data();
-    const name = msg.from.first_name || userData.username || 'Usuario sin nombre';
-    topUsersMessage += `🏆🐋. ${name} - ${userData.points} puntos\n`;
+    const userId = doc.id;
+    const name = userData.username || 'Usuario sin nombre';
+    topUsersMessage += `🏆🐋. @${name} (${userId}) - ${userData.points} puntos\n`;
   });
 
   bot.sendMessage(chatId, topUsersMessage);
 })
-
 
 bot.onText(/\/eliminar_usuario (.+)/, (msg, match) => {
   const chatId = msg.chat.id;
