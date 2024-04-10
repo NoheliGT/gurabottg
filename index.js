@@ -135,7 +135,7 @@ bot.onText(/\/top/, async (msg) => {
     const userData = doc.data();
     const userId = doc.id;
     const name = userData.username || 'Usuario sin nombre';
-    topUsersMessage += `🏆🐋. @${name} (${userId}) - ${userData.points} puntos\n`;
+    topUsersMessage += `🏆🐋. ${name} (${userId}) - ${userData.points} puntos\n`;
   });
 
   bot.sendMessage(chatId, topUsersMessage);
