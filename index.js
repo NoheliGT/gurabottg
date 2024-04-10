@@ -76,9 +76,7 @@ firebase.initializeApp({
 });
 
 const db = firebase.firestore();
-
-// Comando /loteria
-// Comando /loteria
+// Comando /loteriaa
 bot.onText(/\/loteria(?:\s+(\d+))?/, async (msg, match) => {
   const chatId = msg.chat.id;
   const userId = msg.from.id.toString();
