@@ -388,6 +388,142 @@ bot.on('message', async (msg) => {
   }, { merge: true });
 });
  */
+let lastFishCommandTime = {};
+
+bot.onText(/\/fish/, (msg) => {
+  try {
+    const now = new Date().getTime();
+    const userId = msg.from.id;
+
+    // Comprobar si el usuario ha ejecutado el comando /fish antes y ha pasado menos de 15 minutos
+    if (lastFishCommandTime[userId] && now - lastFishCommandTime[userId] < 15 * 60 * 1000) {
+      const remainingTime = Math.ceil((15 * 60 * 1000 - (now - lastFishCommandTime[userId])) / 1000);
+      bot.sendMessage(msg.chat.id, `<b>Por favor</b> ${msg.from.first_name}, espera <code>${remainingTime}</code> segundos antes de usar el comando /fish nuevamente.`, {parse_mode: "HTML"});
+      return;
+    }
+
+    const fishEmojis = ['🐡', '🐟', '🐠', '🦀', '🦑', '🐬', '🦈', '🐊', '🐳'];
+    const fishNames = ['Blowfish', 'Pescado normal', 'Pez tropical', 'Cangrejo(s)', 'Calamar', 'Delfín(es)', 'Tiburón(es)', 'Cocodrilo(s)', 'Ballena(s)'];
+
+    // Generar un número aleatorio entre 1 y 100
+    const randomNumber = Math.floor(Math.random() * 100) + 1;
+
+    // Si el número aleatorio es mayor que 80, mostrar mensaje de que el cebo falló
+    if (randomNumber > 80) {
+      bot.sendMessage(msg.chat.id, "Al igual que en la vida real, *tu anzuelo falló titán.* \n\nVer tu pez: /myfish", {parse_mode: "Markdown"});
+      return;
+    }
+
+    // Generar un número aleatorio para seleccionar un pez
+    const randomIndex = Math.floor(Math.random() * fishEmojis.length);
+    const selectedFish = fishNames[randomIndex];
+    const selectedEmoji = fishEmojis[randomIndex];
+
+    // Mensaje de respuesta
+    const message = `*¡🎣Buen anzuelo titán!* Atrapaste un(a) ${selectedFish}: ${selectedEmoji} \n\n*Ver tu pez:* /myfish`;
+    bot.sendMessage(msg.chat.id, message, {parse_mode: "Markdown"});
+
+    // Guardar el pez atrapado en Firestore
+    db.collection('peces').add({
+      userId: msg.from.id,
+      fish: selectedFish,
+      emoji: selectedEmoji
+    });
+
+    // Actualizar el tiempo de ejecución del comando /fish para el usuario
+    lastFishCommandTime[userId] = now;
+  } catch (error) {
+    console.error('Error al procesar el comando /fish:', error);
+    bot.sendMessage(msg.chat.id, 'Ocurrió un error al procesar el comando. Por favor, inténtalo de nuevo más tarde.');
+  }
+});
+/////////////
+function getFishEmoji(fishName) {
+  switch (fishName) {
+    case 'Blowfish':
+      return '🐡';
+    case 'Pescado normal':
+      return '🐟';
+    case 'Pez tropical':
+      return '🐠';
+    case 'Cangrejo(s)':
+      return '🦀';
+    case 'Calamar':
+      return '🦑';
+    case 'Delfín(es)':
+      return '🐬';
+    case 'Tiburón(es)':
+      return '🦈';
+    case 'Cocodrilo(s)':
+      return '🐊';
+    case 'Ballena(s)':
+      return '🐳';
+    default:
+      return ''; // Devolver cadena vacía si el nombre del pez no coincide con ninguno de los casos anteriores
+  }
+}
+
+// Comando /myfish
+bot.onText(/\/myfish/, async (msg) => {
+  try {
+    // Consultar los peces atrapados por el usuario desde Firestore
+    const userId = msg.from.id;
+    const userPecesRef = db.collection('peces').where('userId', '==', userId);
+    const snapshot = await userPecesRef.get();
+
+    // Obtener el primer nombre del usuario
+    const firstName = msg.from.first_name;
+
+    // Mensaje de respuesta
+    let message;
+    if (snapshot.empty) {
+      message = `No tienes ningún pez en tu colección, ${firstName}. ¡Empieza a atrapar algunos!`;
+    } else {
+      message = `Peces de ${firstName}:\n`;
+      const fishCounts = {};
+      snapshot.forEach(doc => {
+        const fish = doc.data().fish;
+        if (fishCounts[fish]) {
+          fishCounts[fish]++;
+        } else {
+          fishCounts[fish] = 1;
+        }
+      });
+
+      // Construir el mensaje de respuesta
+      Object.keys(fishCounts).forEach(fish => {
+        const emoji = getFishEmoji(fish); // Obtener el emoji correspondiente al pez usando la función auxiliar
+        const fishName = fishCounts[fish] > 1 ? fish : fish.substring(0, fish.length); // Conservar el nombre completo si es más de 1
+        message += `${emoji} - ${fishName}: ${fishCounts[fish]}\n`;
+      });
+
+      // Calcular el total de peces
+      const totalFish = snapshot.size;
+      message += `\n🐠🦑🐊 - Todos los peces: ${totalFish}`;
+    }
+
+    // Configuración del botón
+    const keyboard = {
+      inline_keyboard: [
+        [
+          { text: 'Ver noticias', url: 'https://t.me/Gawrguranoticias' }
+        ]
+      ]
+    };
+
+    // Opciones del mensaje
+    const options = {
+      reply_markup: JSON.stringify(keyboard)
+    };
+
+    // Enviar el mensaje con el botón
+    bot.sendMessage(msg.chat.id, message, options);
+  } catch (error) {
+    console.error('Error al procesar el comando /myfish:', error);
+    bot.sendMessage(msg.chat.id, 'Ocurrió un error al procesar el comando. Por favor, inténtalo de nuevo más tarde.');
+  }
+});
+/////////////////
 // Comando /loteriaa
 bot.onText(/\/loteria(?:\s+(\d+))?/, async (msg, match) => {
   const chatId = msg.chat.id;
@@ -2260,7 +2396,7 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   }
   if (action === "8") {
     text =
-      "Otros comandos de ocio extras: \n\n/loteria <1 al 25>: Diviertete jugando a la lotería y sal en el top global de usuarios con más puntos.\n/qtcompatibles: Responde al mensaje de un usuario para conocer que probabilidades hay tener éxito como pareja. \n\n/basta: Responde acertijos y divertete pensando la respuesta.\n\n/kiss, /besar: Entregale un beso a un usuario haciendo reply a uno de sus mensajes. \n\n/hug, /abrazar: Responde un mensaje en el chat para darle un tierno abrazo. \n\n/golpear, /kill: Al hacer respuesta de un mensaje en el chat, el bot responde con esta emoción. \n\n/spank, /nalguear: Entrega una nalgadita al usuario en respuesta de uno de sus mensaje en el grupito. \n\n/pat, /cariciar: Responde a un mensaje para dar una tierna caricia.";
+      "Otros comandos de ocio extras: \n\n/loteria <1 al 25>: Diviertete jugando a la lotería y sal en el top (/top) global de usuarios con más puntos.\n\n/fish: ¡Atrapa peces! consulta tu colección con /myfish.\n\n\n/qtcompatibles: Responde al mensaje de un usuario para conocer que probabilidades hay tener éxito como pareja. \n\n/basta: Responde acertijos y divertete pensando la respuesta.\n\n/kiss, /besar: Entregale un beso a un usuario haciendo reply a uno de sus mensajes. \n\n/hug, /abrazar: Responde un mensaje en el chat para darle un tierno abrazo. \n\n/golpear, /kill: Al hacer respuesta de un mensaje en el chat, el bot responde con esta emoción. \n\n/spank, /nalguear: Entrega una nalgadita al usuario en respuesta de uno de sus mensaje en el grupito. \n\n/pat, /cariciar: Responde a un mensaje para dar una tierna caricia.";
   }
 
   if (action === "10") {

@@ -420,7 +420,24 @@ module.exports = function (bot){
               explanation:
                 "Es presentada como una adolescente fuerte y sentimental que puede transformarse en una justiciera con el poder de manipular el trueno y el relámpago.",
               is_anonymous: "false",
-            },
+            }
+          ],
+          [
+            "¿En qué serie de anime el personaje principal es conocido como Hokage?",
+            [
+              "One piece",
+              "Naruto",
+              "Dragón Ball Z",
+              "Bleach",
+            ],
+            {
+              type: "quiz",
+              correct_option_id: 1,
+              open_period: 2,
+              explanation:
+                "El protagonista lleva una banda ninja en la frente.",
+              is_anonymous: "false",
+            }
           ],
         ];
         var ma = Math.random();
