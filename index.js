@@ -48,7 +48,7 @@ const bot = new TelegramBot("1785797976:AAGjLNTIAEuVTHvX9AvNO9qEDFKwNMmZgXM", {
 /* const client = new SpamWatch.Client(
   "BfIfgL9JHEcMouxYYDrvkeA8lIQo5zwjjICiObGqn1fx_8hTKdDXGhGMftQgYwXJ"
 ); */
-
+//
 //MODULOS
 const kissCommand = require('./commands/besar');
 const quizanime = require('./commands/quizanime');
@@ -67,12 +67,12 @@ const firebase = require('firebase/app');
 require('firebase/firestore');
 
 firebase.initializeApp({
-  apiKey: "AIzaSyD_wXpg2fm85WVi4EfLpd3VEi_Tr8fd3rk",
-  authDomain: "noge-cb2c3.firebaseapp.com",
-  projectId: "noge-cb2c3",
-  storageBucket: "noge-cb2c3.appspot.com",
-  messagingSenderId: "197756782660",
-  appId: "1:197756782660:web:f06b93916cde7b517b9411"
+  apiKey: "AIzaSyDp3d8ZCgYkFz46RpJTLMAje32QUyXfc6g",
+  authDomain: "guratg-9d1d6.firebaseapp.com",
+  projectId: "guratg-9d1d6",
+  storageBucket: "guratg-9d1d6.appspot.com",
+  messagingSenderId: "597456760354",
+  appId: "1:597456760354:web:7cf75922c0b37d14cbe47b"
 });
 
 const db = firebase.firestore();
