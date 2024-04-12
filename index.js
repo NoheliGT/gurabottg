@@ -76,6 +76,169 @@ firebase.initializeApp({
 });
 
 const db = firebase.firestore();
+
+let messageCount = {};
+
+// Manejamos el comando /all
+bot.onText(/\/chattop/, (msg) => {
+  const chatId = msg.chat.id;
+  const messageId = msg.message_id;
+
+  // Verifica si el mensaje fue enviado desde un chat privado
+  if (msg.chat.type === 'private') {
+    bot.sendMessage(chatId, 'Este comando solo funciona en grupos titán❌.');
+    return;
+  }
+
+  // Creamos los botones inline para las opciones
+  const options = {
+    reply_markup: JSON.stringify({
+      inline_keyboard: [
+        [{ text: '🕺Grupo', callback_data: 'group' }, { text: '🌐Global', callback_data: 'global' }]
+      ]
+    })
+  };
+
+  // Enviamos el mensaje con los botones inline
+  bot.sendMessage(chatId, '¿🏆Qué top quieres revisar titán?', options)
+    .then(sentMessage => {
+      // Guardamos el mensaje ID para poder editarlo luego
+      const messageId = sentMessage.message_id;
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+});
+
+// Manejamos las respuestas a los botones inline
+bot.on('callback_query', async (callbackQuery) => {
+  const chatId = callbackQuery.message.chat.id;
+  const messageId = callbackQuery.message.message_id;
+  const data = callbackQuery.data;
+
+  // Dependiendo del botón presionado, mostramos el top correspondiente
+  if (data === 'group') {
+    showGroupTop(chatId, messageId);
+  } else if (data === 'global') {
+    showGlobalTop(chatId, messageId);
+  } else if (data === 'menu') {
+    // Si se presiona el botón de regresar, editamos el mensaje para mostrar el menú principal
+    bot.editMessageText('¿🏆Qué top quieres revisar titán?', {
+      chat_id: chatId,
+      message_id: messageId,
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: '🕺Grupo', callback_data: 'group' }, { text: '🌐Global', callback_data: 'global' }]
+        ]
+      }
+    });
+  }
+});
+
+// Función para mostrar el top del grupo
+async function showGroupTop(chatId, messageId) {
+  // Obtenemos todos los mensajes del grupo
+  const messages = await db.collection('messages').where('chatId', '==', chatId).get();
+  
+  // Obtenemos el nombre del grupo
+  const groupInfo = await bot.getChat(chatId);
+  const groupName = groupInfo.title;
+
+  // Reiniciamos el recuento de mensajes
+  messageCount = {};
+
+  // Contamos los mensajes por usuario
+  messages.forEach(doc => {
+    const userId = doc.data().userId;
+    if (messageCount[userId]) {
+      messageCount[userId]++;
+    } else {
+      messageCount[userId] = 1;
+    }
+  });
+
+  // Ordenamos los usuarios por la cantidad de mensajes
+  const topUsers = Object.entries(messageCount)
+                      .sort(([,a],[,b]) => b-a)
+                      .slice(0, 5);
+
+  let message = `🌡️Top 5 usuarios con más mensajes en ${groupName}:\n\n`;
+
+  // Obtener información de cada usuario y enviar el mensaje
+  for (const [userId, count] of topUsers) {
+    const user = await bot.getChatMember(chatId, userId);
+    message += `🏅. ${user.user.first_name} ${user.user.last_name || ''}: ${count}\n`;
+  }
+
+  // Editamos el mensaje original con el nuevo mensaje y los botones
+  bot.editMessageText(message, {
+    chat_id: chatId,
+    message_id: messageId,
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: 'Regresar', callback_data: 'menu' }]
+      ]
+    }
+  });
+}
+
+// Función para mostrar el top global
+async function showGlobalTop(chatId, messageId) {
+  // Obtenemos todos los mensajes de todos los grupos
+  const messages = await db.collection('messages').get();
+  
+  // Reiniciamos el recuento de mensajes
+  messageCount = {};
+
+  // Contamos los mensajes por usuario
+  messages.forEach(doc => {
+    const userId = doc.data().userId;
+    if (messageCount[userId]) {
+      messageCount[userId]++;
+    } else {
+      messageCount[userId] = 1;
+    }
+  });
+
+  // Ordenamos los usuarios por la cantidad de mensajes
+  const topUsers = Object.entries(messageCount)
+                      .sort(([,a],[,b]) => b-a)
+                      .slice(0, 5);
+
+  let message = '🌡️Top 5 usuarios con más mensajes global:\n\n';
+
+  // Obtener información de cada usuario y enviar el mensaje
+  for (const [userId, count] of topUsers) {
+    const user = await bot.getChatMember(chatId, userId);
+    message += `🏅. ${user.user.first_name} ${user.user.last_name || ''}: ${count}\n`;
+  }
+
+  // Editamos el mensaje original con el nuevo mensaje y los botones
+  bot.editMessageText(message, {
+    chat_id: chatId,
+    message_id: messageId,
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: 'Regresar al menú principal', callback_data: 'menu' }]
+      ]
+    }
+  });
+}
+
+// Manejamos los nuevos mensajes y los guardamos en la base de datos
+bot.on('message', async (msg) => {
+  const chatId = msg.chat.id;
+  const userId = msg.from.id;
+  const messageId = msg.message_id;
+
+  // Guardamos el mensaje en la base de datos
+  await db.collection('messages').add({
+    chatId: chatId,
+    userId: userId,
+    messageId: messageId
+  });
+});
+
 // Comando /loteriaa
 bot.onText(/\/loteria(?:\s+(\d+))?/, async (msg, match) => {
   const chatId = msg.chat.id;
