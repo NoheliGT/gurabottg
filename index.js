@@ -384,7 +384,7 @@ bot.on('message', async (msg) => {
   // Actualizamos el registro de mensajes por usuario en el grupo
   const groupMessagesRef = db.collection('groupMessages').doc(chatId);
   await groupMessagesRef.set({
-    [userId]: (await groupMessagesRef.get()).data()?.[userId] + 1 || 1
+    [userId]: firebase.firestore.FieldValue.increment(1)
   }, { merge: true });
 });
 
