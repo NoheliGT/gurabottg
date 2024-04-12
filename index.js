@@ -239,7 +239,7 @@ bot.on('message', async (msg) => {
   });
 }); */
 
-bot.onText(/\/chattop/, (msg) => {
+/* bot.onText(/\/chattop/, (msg) => {
   const chatId = msg.chat.id;
   const messageId = msg.message_id;
 
@@ -387,7 +387,7 @@ bot.on('message', async (msg) => {
     [userId]: firebase.firestore.FieldValue.increment(1)
   }, { merge: true });
 });
-
+ */
 // Comando /loteriaa
 bot.onText(/\/loteria(?:\s+(\d+))?/, async (msg, match) => {
   const chatId = msg.chat.id;
