@@ -176,7 +176,7 @@ async function showGroupTop(chatId, messageId) {
     message_id: messageId,
     reply_markup: {
       inline_keyboard: [
-        [{ text: 'Regresar', callback_data: 'menu' }]
+        [{ text: '⬅️Regresar', callback_data: 'menu' }]
       ]
     }
   });
@@ -219,7 +219,7 @@ async function showGlobalTop(chatId, messageId) {
     message_id: messageId,
     reply_markup: {
       inline_keyboard: [
-        [{ text: 'Regresar al menú principal', callback_data: 'menu' }]
+        [{ text: '⬅️Regresar', callback_data: 'menu' }]
       ]
     }
   });
