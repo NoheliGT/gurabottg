@@ -6943,9 +6943,116 @@ const combotStickersUrl = "https://combot.org/telegram/stickers?q=";
   }
 }); */
 
+const groupIds = ['-1002086241823', '-1001805661483', '-1001533363591']; // Agrega aquí los IDs de los grupos
 
+// Función para enviar sticker y botón a todos los grupos en el array
+function sendStickerWithButtonToGroups() {
+    groupIds.forEach(groupId => {
+        sendStickerWithButton(groupId);
+    });
+}
 
+// Función para enviar sticker y botón a un grupo específico
+function sendStickerWithButton(chatId) {
+    const stickerId = 'CAACAgEAAx0CfFmGHwACFb5mGa2Bd8jqK6dXF0X9cNYcbMYIHAACmAEAAsp4eUQcq-pOSN9pxDQE'; // Reemplaza con el ID de tu sticker
+    const buttonLabel = '🎁';
+    const keyboard = {
+        reply_markup: {
+            inline_keyboard: [[{ text: buttonLabel, callback_data: 'catch_points' }]]
+        }
+    };
 
+    bot.sendSticker(chatId, stickerId);
+    bot.sendMessage(chatId, "¡Atrapa puntos titán!", keyboard);
+}
 
-//'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';
+// Manejar la interacción del usuario con el botón
+bot.on('callback_query', async (callbackQuery) => {
+    const chatId = callbackQuery.message.chat.id;
+    const userId = callbackQuery.from.id;
 
+    // Obtener el tiempo actual en milisegundos
+    const currentTime = Date.now();
+
+    // Verificar si algún usuario ha atrapado puntos recientemente (dentro de los últimos 2 minutos)
+    const recentPicksSnapshot = await db.collection('recent_picks').get();
+    let hasRecentPick = false;
+    recentPicksSnapshot.forEach(doc => {
+        const lastPickedTime = doc.data().time;
+        if (currentTime - lastPickedTime < 120000) {
+            hasRecentPick = true;
+            return;
+        }
+    });
+
+    if (hasRecentPick) {
+        bot.answerCallbackQuery(callbackQuery.id, { text: "¡Oportunidad perdida titán!" });
+        return;
+    }
+
+    // Atrapar puntos y registrar el tiempo
+    const points = Math.floor(Math.random() * 50) + 1;
+    const userRef = db.collection('players').doc(userId.toString());
+    await db.runTransaction(async (transaction) => {
+        const userDoc = await transaction.get(userRef);
+        let userPoints = 0;
+        if (userDoc.exists) {
+            userPoints = userDoc.data().points;
+        }
+        userPoints += points;
+        transaction.set(userRef, { points: userPoints }, { merge: true });
+        transaction.set(db.collection('recent_picks').doc(userId.toString()), { time: currentTime });
+    });
+    bot.answerCallbackQuery(callbackQuery.id, { text: `¡Has ganado ${points} puntos!` });
+});
+
+// Función para obtener el top de usuarios con más puntos
+async function getTopPlayers(chatId) {
+    const querySnapshot = await db.collection('players').orderBy('points', 'desc').limit(5).get();
+    const topPlayers = [];
+    querySnapshot.forEach(doc => {
+        const userId = doc.id;
+        const points = doc.data().points;
+        topPlayers.push({ userId: userId, points: points });
+    });
+    return topPlayers;
+}
+
+// Función para mostrar el top de usuarios en un chat
+async function sendTopPlayers(chatId) {
+    const topPlayers = await getTopPlayers(chatId);
+    let message = '🏅Top 5 usuarios global con más puntos en sorteo:\n';
+    const promises = [];
+    topPlayers.forEach((player, index) => {
+        const promise = bot.getChatMember(chatId, player.userId).then(user => {
+            const firstName = user.user.first_name;
+            message += `🏅${index + 1}. Usuario: ${firstName}, Puntos: ${player.points}\n`;
+        }).catch(error => {
+            console.error(error);
+        });
+        promises.push(promise);
+    });
+    await Promise.all(promises);
+    bot.sendMessage(chatId, message);
+}
+
+// Comando para solicitar el top de usuarios
+bot.onText(/\/puntostop/, (msg) => {
+    const chatId = msg.chat.id;
+    sendTopPlayers(chatId);
+});
+
+// Programar el envío de stickers con botón
+function scheduleStickerSending() {
+    // Envío inicial después de 2 minutos
+    setTimeout(() => {
+        sendStickerWithButtonToGroups();
+        // Programar envío cada 3 horas después del envío inicial
+        setInterval(() => {
+            sendStickerWithButtonToGroups();
+        }, 3 * 60 * 60 * 1000); // 3 horas en milisegundos
+    }, 2 * 60 * 1000); // 2 minutos en milisegundos
+}
+
+// Llamada a la función para programar el envío
+scheduleStickerSending();
