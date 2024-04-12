@@ -67,12 +67,12 @@ const firebase = require('firebase/app');
 require('firebase/firestore');
 
 firebase.initializeApp({
-  apiKey: "AIzaSyDp3d8ZCgYkFz46RpJTLMAje32QUyXfc6g",
-  authDomain: "guratg-9d1d6.firebaseapp.com",
-  projectId: "guratg-9d1d6",
-  storageBucket: "guratg-9d1d6.appspot.com",
-  messagingSenderId: "597456760354",
-  appId: "1:597456760354:web:7cf75922c0b37d14cbe47b"
+  apiKey: "AIzaSyDmDpGZdg_ZzTOiia83C3W4cprdwgHlqIE",
+  authDomain: "gurabot-a5f12.firebaseapp.com",
+  projectId: "gurabot-a5f12",
+  storageBucket: "gurabot-a5f12.appspot.com",
+  messagingSenderId: "691315150914",
+  appId: "1:691315150914:web:b8039954644c4995801ddb"
 });
 
 const db = firebase.firestore();
