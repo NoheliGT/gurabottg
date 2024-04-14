@@ -583,10 +583,10 @@ bot.onText(/\/top/, async (msg) => {
     const userData = doc.data();
     const userId = doc.id;
     const name = userData.username || 'Usuario sin nombre';
-    topUsersMessage += `🏆🐋. ${name} (${userId}) - ${userData.points} puntos\n`;
+    topUsersMessage += `🏆. ${name} | <code>${userId})</code> ➡ ${userData.points} puntos\n`;
   });
 
-  bot.sendMessage(chatId, topUsersMessage);
+  bot.sendMessage(chatId, topUsersMessage, {parse_mode: "HTML"});
 })
 
 bot.onText(/\/eliminar_usuario (.+)/, (msg, match) => {
@@ -1134,25 +1134,14 @@ bot.onText(/^\/info(?: (\d+))?$/, async function onInfoCommand(msg, match) {
 /**************************************************LINK DE UN GRUPO**************************************************/
 bot.onText(/^\/chatlink/, function (msg) {
   var chatId = msg.chat.id;
-  var userId = msg.from.id;
-  var messageId = msg.message_id;
   var chatTitle = msg.chat.title;
 
-  bot.getChatMember(chatId, userId).then(function (user) {
-    if (user.status == "creator" || user.status == "administrator") {
-      bot.exportChatInviteLink(chatId).then(function (enlace) {
-        bot.sendMessage(
-          chatId,
-          "🐬_Enlace del grupo:_ " + chatTitle + "\n" + enlace,
-          { parse_mode: "Markdown" }
-        );
-      });
-    } else {
-      bot.sendMessage(
-        chatId,
-        "Solo el creador y administradores pueden usar este comando:("
-      );
-    }
+  bot.exportChatInviteLink(chatId).then(function (enlace) {
+    bot.sendMessage(
+      chatId,
+      "🐬_Enlace del grupo:_ " + chatTitle + "\n" + enlace,
+      { parse_mode: "Markdown" }
+    );
   });
 });
 /**************************************************BORRADO DE UN GRUPO**************************************************/
