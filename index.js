@@ -583,7 +583,7 @@ bot.onText(/\/top/, async (msg) => {
     const userData = doc.data();
     const userId = doc.id;
     const name = userData.username || 'Usuario sin nombre';
-    topUsersMessage += `🏆. ${name} | <code>${userId})</code> ➡ ${userData.points} puntos\n`;
+    topUsersMessage += `🏆. ${name} | <code>${userId}</code> ➡  <b>${userData.points}</b> puntos\n`;
   });
 
   bot.sendMessage(chatId, topUsersMessage, {parse_mode: "HTML"});
