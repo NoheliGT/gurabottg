@@ -63,7 +63,7 @@ id(bot);
 abrazo(bot);
 
 
-//INICIO COMPLETOSSS
+//INICIO COMPLETOSSSs
 
 const firebase = require('firebase/app');
 require('firebase/firestore');
