@@ -20,6 +20,8 @@ var express = require("express");
 const axios = require('axios');
 var convertapi = require("convertapi")("RGaQlTBWCjkfw889");
 var tcpp = require('tcp-ping');
+const { createCanvas, loadImage } = require('canvas');
+const path = require('path');
 
 const {
   GOOGLE_IMG_SCRAP,
@@ -6932,7 +6934,7 @@ const combotStickersUrl = "https://combot.org/telegram/stickers?q=";
   }
 }); */
 
-const groupIds = ['-1002086241823', '-1001805661483', '-1001533363591', '-1001533363591']; // Agrega aquí los IDs de los grupos
+/* const groupIds = ['-1002086241823', '-1001805661483', '-1001533363591', '-1001533363591']; // Agrega aquí los IDs de los grupos
 
 // Función para enviar sticker y botón a todos los grupos en el array
 function sendStickerWithButtonToGroups() {
@@ -7044,4 +7046,162 @@ function scheduleStickerSending() {
 }
 
 // Llamada a la función para programar el envío
-scheduleStickerSending();
+scheduleStickerSending(); */
+
+bot.onText(/\/q/, async (msg, match) => {
+  const chatId = msg.chat.id;
+
+  // Objeto para almacenar el recuento de reacciones por usuario
+  const reactionCount = {};
+
+  // Define la ruta a la imagen local que deseas utilizar
+  const defaultProfilePhotoPath = path.join(__dirname, 'icono.png');
+
+  // Función para crear el sticker
+  async function createSticker(chatId, messageText, repliedUserAlias, userProfilePhoto) {
+      const canvas = createCanvas(1150, 500); // Tamaño del lienzo
+      const ctx = canvas.getContext('2d');
+
+      // Cargar la imagen de fondo de la burbuja de chat
+      const backgroundImage = await loadImage('bubble.png'); // Cambia 'bubble.png' por la imagen de tu burbuja de chat
+
+      // Dibujar la imagen de fondo en el canvas
+      ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+
+      // Log para verificar el mensaje recuperado
+      console.log('Mensaje del usuario:', messageText);
+
+      // Cargar y dibujar la imagen de perfil del usuario (circular) o la imagen local
+      let profileImage;
+      if (userProfilePhoto) {
+          profileImage = await loadImage(userProfilePhoto);
+      } else {
+          profileImage = await loadImage(defaultProfilePhotoPath);
+      }
+
+      const imageSize = 200; // Tamaño de la imagen de perfil
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(110, 180, 100, 0, Math.PI * 2, true);
+      ctx.closePath();
+      ctx.clip();
+      ctx.drawImage(profileImage, 10, 50, imageSize, imageSize); // Dibuja la imagen de perfil como un círculo
+      ctx.restore();
+
+      // Configurar el texto del mensaje
+      ctx.font = 'bold 62px Arial';
+      ctx.fillStyle = 'white';
+      ctx.textAlign = 'center';
+
+      // Dividir el mensaje en líneas para que se ajuste correctamente en el sticker
+      const lines = breakLines(ctx, messageText, canvas.width - 20);
+
+      // Calcular la posición vertical inicial del texto
+      const initialY = canvas.height / 2 - (lines.length * 30) / 2;
+
+      // Dibujar cada línea de texto en el lienzo
+      lines.forEach((line, index) => {
+          ctx.fillText(line, canvas.width / 2, initialY + (index + 1) * 40);
+      });
+
+      // Agregar el alias del usuario en la esquina superior del sticker
+      ctx.font = 'bold 60px Arial';
+      ctx.fillStyle = '#24B7F7'; // Rojo
+      ctx.fillText('@' + repliedUserAlias, 550, 170);
+
+      // Convertir el canvas a una imagen en formato PNG
+      const stickerBuffer = canvas.toBuffer('image/png');
+
+      // Enviar el sticker al chat
+      bot.sendSticker(chatId, stickerBuffer, {
+          reply_markup: generateKeyboard()
+      });
+  }
+
+  // Función para dividir el texto en líneas que quepan dentro del ancho del lienzo
+  function breakLines(ctx, text, maxWidth) {
+      const words = text.split(' ');
+      const lines = [];
+      let currentLine = '';
+
+      words.forEach(word => {
+          const width = ctx.measureText(currentLine + ' ' + word).width;
+          if (width < maxWidth) {
+              currentLine += (currentLine === '' ? '' : ' ') + word;
+          } else {
+              lines.push(currentLine);
+              currentLine = word;
+          }
+      });
+
+      if (currentLine !== '') {
+          lines.push(currentLine);
+      }
+
+      return lines;
+  }
+
+  // Función para generar el teclado de respuesta con los botones emoji
+  function generateKeyboard() {
+      return {
+          inline_keyboard: [
+              [
+                  { text: `😆 ${reactionCount?.happy || 0}`, callback_data: 'happy' },
+                  { text: `🙂 ${reactionCount?.sad || 0}`, callback_data: 'sad' },
+                  { text: `😡 ${reactionCount?.like || 0}`, callback_data: 'like' }
+              ]
+          ]
+      };
+  }
+
+  // Manejador para las respuestas de los botones emoji
+  bot.on('callback_query', async (callbackQuery) => {
+      const data = callbackQuery.data;
+
+      // Incrementar el contador de reacciones según el emoji seleccionado
+      if (!reactionCount[data]) {
+          reactionCount[data] = 1;
+      } else {
+          reactionCount[data]++;
+      }
+
+      // Obtener el mensaje y actualizar los botones emoji
+      const messageId = callbackQuery.message.message_id;
+      const keyboard = generateKeyboard();
+      await bot.editMessageReplyMarkup(keyboard, {
+          chat_id: chatId,
+          message_id: messageId
+      });
+  });
+
+  // Verificar si el mensaje es una respuesta a otro mensaje
+  if (msg.reply_to_message && msg.reply_to_message.text) {
+      console.log('Mensaje del usuario:', msg.reply_to_message);
+      const repliedUserAlias = msg.reply_to_message.from.username;
+      const messageText = msg.reply_to_message.text;
+      const userProfilePhoto = await getUserProfilePhoto(msg.reply_to_message.from.id);
+
+      // Crear y enviar el sticker
+      await createSticker(chatId, messageText, repliedUserAlias, userProfilePhoto);
+  } else {
+      bot.sendMessage(chatId, 'Por favor responde a un mensaje con texto utilizando /q titán.');
+  }
+});
+
+// Función para obtener la foto de perfil del usuario
+async function getUserProfilePhoto(userId) {
+  try {
+      // Obtener información del usuario para obtener la foto de perfil
+      const userProfilePhotos = await bot.getUserProfilePhotos(userId, 0, 1);
+      if (userProfilePhotos.total_count > 0) {
+          const photo = userProfilePhotos.photos[0][0];
+          return bot.getFileLink(photo.file_id);
+      } else {
+          console.log('El usuario no tiene foto de perfil.');
+          return null;
+      }
+  } catch (error) {
+      console.error('Error al obtener la foto de perfil del usuario:', error);
+      return null;
+  }
+}
