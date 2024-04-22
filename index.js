@@ -20,9 +20,9 @@ var express = require("express");
 const axios = require('axios');
 var convertapi = require("convertapi")("RGaQlTBWCjkfw889");
 var tcpp = require('tcp-ping');
-const { createCanvas, loadImage } = require('canvas');
+/* const { createCanvas, loadImage } = require('canvas');
 const path = require('path');
-
+ */
 const {
   GOOGLE_IMG_SCRAP,
   GOOGLE_IMG_INVERSE_ENGINE_URL,
@@ -7048,7 +7048,7 @@ function scheduleStickerSending() {
 // Llamada a la función para programar el envío
 scheduleStickerSending(); */
 
-bot.onText(/\/q/, async (msg, match) => {
+/* bot.onText(/\/q/, async (msg, match) => {
   const chatId = msg.chat.id;
 
   // Objeto para almacenar el recuento de reacciones por usuario
@@ -7204,4 +7204,4 @@ async function getUserProfilePhoto(userId) {
       console.error('Error al obtener la foto de perfil del usuario:', error);
       return null;
   }
-}
+} */

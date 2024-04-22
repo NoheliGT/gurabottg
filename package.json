@@ -15,7 +15,6 @@
     "animeflv-api": "^2.0.0",
     "axios": "^1.6.8",
     "btch-downloader": "^2.3.2",
-    "canvas": "^2.11.2",
     "convertapi": "^1.11.2",
     "exa-anime-scraper": "^1.3.2",
     "express": "^4.18.2",
