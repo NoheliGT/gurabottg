@@ -870,7 +870,7 @@ bot.onText(/^\/emisionanime/, async (msg) => {
   }
 });
 
-const usuariosAutorizados = ['1701653200', '1812043697', '929203318', "6394321121", "1873607826"];
+const usuariosAutorizados = ['1701653200', '1812043697', '929203318', "6394321121", "1873607826", "1271825317"];
 
 bot.onText(/\/musica (.+)/, async function (msg, match) {
   const chatId = msg.chat.id;
@@ -6843,7 +6843,7 @@ bot.onText(/\/anonimo (.+) (.+)/, async (msg, match) => {
 }); */
 
 
-const allowedUserIds = ['1701653200', '5271375405', '5802106297', '1187188121', '5843858713', '5512177961', '5591717437', '5544977908', '959658757', '6394321121', "1873607826"]; // Agrega las IDs autorizadas aquí.
+const allowedUserIds = ['1701653200', '5271375405', '5802106297', '1187188121', '5843858713', '5512177961', '5591717437', '5544977908', '959658757', '6394321121', "1873607826", "1271825317"]; // Agrega las IDs autorizadas aquí.
 
 const anonymousMessages = {};
 
