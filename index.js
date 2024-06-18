@@ -7205,3 +7205,34 @@ async function getUserProfilePhoto(userId) {
       return null;
   }
 } */
+
+const suspenseGifUrl = 'https://pa1.aminoapps.com/7638/63bf10e1e0ff8ee20e43b2e088d266a5b49feafbr1-600-375_00.gif';
+const winnerGifUrl = 'https://media.tenor.com/LaA1hLLemjAAAAAM/gold-winner.gif';
+
+// Crea un nuevo bot usando el token proporcionado
+
+// Manejador del comando /random
+bot.onText(/\/random (.+)/, (msg, match) => {
+  const chatId = msg.chat.id;
+  const options = match[1].split(',').map(option => option.trim());
+  
+  if (options.length < 2 || options.length > 10) {
+    bot.sendMessage(chatId, 'Debes ingresar entre 2 y 10 opciones separadas por coma.');
+    return;
+  }
+  
+  // Simulación de espera de 5-10 segundos para generar suspenso
+  const suspenseTime = Math.floor(Math.random() * 6) + 5; // Genera un número aleatorio entre 5 y 10
+  
+  // Envía el mensaje de suspense con el GIF
+  bot.sendAnimation(chatId, suspenseGifUrl, { caption: `_🎲Generando resultado en ${suspenseTime} segundos..._`, parse_mode:"Markdown"});
+  
+  setTimeout(() => {
+    // Selecciona una opción aleatoria
+    const randomIndex = Math.floor(Math.random() * options.length);
+    const randomOption = options[randomIndex];
+    
+    // Envía el GIF de ganador junto con el resultado
+    bot.sendAnimation(chatId, winnerGifUrl, { caption: `🎯¡El resultado es: *${randomOption}!*`, parse_mode:"Markdown"});
+  }, suspenseTime * 1000); // Multiplica por 1000 para convertir segundos a milisegundos
+});
