@@ -30,6 +30,7 @@ const {
   GOOGLE_QUERY,
 } = require("google-img-scrap");
 
+
 var app = express();
 
 const port =  process.env.PORT || 4000;
@@ -39,6 +40,8 @@ app
     var result = "Bot listo!";
     response.send(result);
   })
+
+
 
 
 /*BETA = 1989987277:AAFBKzjLvPkyFBHzJQ-UaJlOfe12T3ln2dU*/////////////////////////
@@ -2244,7 +2247,7 @@ const menuOpts = {
           callback_data: "8",
         },
         {
-          text: "🐋Gban",
+          text: "🐋GuraAdmins",
           callback_data: "10",
         },
         {
@@ -2387,12 +2390,12 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   }
   if (action === "8") {
     text =
-      "Otros comandos de ocio extras: \n\n/loteria <1 al 25>: Diviertete jugando a la lotería y sal en el top (/top) global de usuarios con más puntos.\n\n/fish: ¡Atrapa peces! consulta tu colección con /myfish.\n\n\n/qtcompatibles: Responde al mensaje de un usuario para conocer que probabilidades hay tener éxito como pareja. \n\n/basta: Responde acertijos y divertete pensando la respuesta.\n\n/kiss, /besar: Entregale un beso a un usuario haciendo reply a uno de sus mensajes. \n\n/hug, /abrazar: Responde un mensaje en el chat para darle un tierno abrazo. \n\n/golpear, /kill: Al hacer respuesta de un mensaje en el chat, el bot responde con esta emoción. \n\n/spank, /nalguear: Entrega una nalgadita al usuario en respuesta de uno de sus mensaje en el grupito. \n\n/pat, /cariciar: Responde a un mensaje para dar una tierna caricia.";
+      "Otros comandos de ocio extras: \n\n/calendario: Consulta la fecha actual. \n\n/random: El bot elige aleatoriamente una respuesta para tí; ejemplo: /random Minecraft, Clash Royale, Call of duty. (Se debe separar por comas las opciones). \n\n/loteria <1 al 25>: Diviertete jugando a la lotería y sal en el top (/top) global de usuarios con más puntos.\n\n/fish: ¡Atrapa peces! consulta tu colección con /myfish.\n\n\n/qtcompatibles: Responde al mensaje de un usuario para conocer que probabilidades hay tener éxito como pareja. \n\n/basta: Responde acertijos y divertete pensando la respuesta.\n\n/kiss, /besar: Entregale un beso a un usuario haciendo reply a uno de sus mensajes. \n\n/hug, /abrazar: Responde un mensaje en el chat para darle un tierno abrazo. \n\n/golpear, /kill: Al hacer respuesta de un mensaje en el chat, el bot responde con esta emoción. \n\n/spank, /nalguear: Entrega una nalgadita al usuario en respuesta de uno de sus mensaje en el grupito. \n\n/pat, /cariciar: Responde a un mensaje para dar una tierna caricia.";
   }
 
   if (action === "10") {
     text =
-      "El gban prohibirá a usuarios trolls, en los grupos donde tenga poder administrativo Gura, el comando estará restringido para uso de administadores del bot: \n\n/gban <ID/Respuesta a un mensaje>: Banea el administador del bot de manera global a un usuario. \n\n/ungban <ID>: Desbanea el administador del bot de manera global a un usuario. \n\n/listgban: Consulta el administrador del bot la lista de usuarios baneados globalmente. \n\nNota: Los usuarios pueden realizar reportes de usuarios en el grupo de soporte (@GawrGuraSoporte). \n\nLos siguientes podrián ser unos motivos de baneo global: \n\n⚔Usuarios pidiendo contenido ilegal en grupos, o de igual manera que lo compartan (Puede ser reportado en el grupo de soporte).\n⚔Usuarios trolls que se dediquen a unirse a grupos para agregar bots y hacer spam.\n⚔Usuarios tóxicos. \n\n⚠Porfavor considere que no este dentro de estos motivos antes de venir a hacer una apelación al grupo de soporte.";
+      "El gban prohibirá a usuarios trolls, en los grupos donde tenga poder administrativo Gura, el comando estará restringido para uso de administadores del bot: \n\n/gban <ID/Respuesta a un mensaje>: Banea el administador del bot de manera global a un usuario. \n\n/ungban <ID>: Desbanea el administador del bot de manera global a un usuario. \n\n/listgban: Consulta el administrador del bot la lista de usuarios baneados globalmente. \n\nNota: Los usuarios pueden realizar reportes de usuarios en el grupo de soporte (@GawrGuraSoporte). \n\nLos siguientes podrián ser unos motivos de baneo global: \n\n⚔Usuarios pidiendo contenido ilegal en grupos, o de igual manera que lo compartan (Puede ser reportado en el grupo de soporte).\n⚔Usuarios trolls que se dediquen a unirse a grupos para agregar bots y hacer spam.\n⚔Usuarios tóxicos. \n\n⚠Porfavor considere que no este dentro de estos motivos antes de venir a hacer una apelación al grupo de soporte.\n\n/addblacklist: Agrega un grupo a lista negra. \n\n/removeblacklist <ID>: Remueve a un usuario de la lista negra.\n\n/promoteadmin: ¡Te promueves como administrador del grupo con todos los permisos!";
   }
 
   if (action === "11") {
@@ -7235,4 +7238,176 @@ bot.onText(/\/random (.+)/, (msg, match) => {
     // Envía el GIF de ganador junto con el resultado
     bot.sendAnimation(chatId, winnerGifUrl, { caption: `🎯¡El resultado es: *${randomOption}!*`, parse_mode:"Markdown"});
   }, suspenseTime * 1000); // Multiplica por 1000 para convertir segundos a milisegundos
+});
+
+
+
+function obtenerNombreMes(mes) {
+  const nombresMeses = [
+      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+  ];
+  return nombresMeses[mes];
+}
+
+// Función para obtener el nombre del día de la semana en español
+function obtenerNombreDia(dia) {
+  const nombresDias = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+  return nombresDias[dia];
+}
+
+// Manejador del comando /calendario
+bot.onText(/\/calendario/, (msg) => {
+  const chatId = msg.chat.id;
+  const date = new Date();
+  const diaSemana = obtenerNombreDia(date.getDay());
+  const dia = date.getDate();
+  const mes = obtenerNombreMes(date.getMonth());
+  const anio = date.getFullYear();
+
+  const fechaActual = `${diaSemana}, ${dia} de ${mes} de ${anio}`;
+
+  const options = {
+      reply_markup: JSON.stringify({
+          inline_keyboard: [
+              [
+                  { text: 'Día', callback_data: 'day' },
+                  { text: 'Mes', callback_data: 'month' },
+                  { text: 'Año', callback_data: 'year' }
+              ]
+          ]
+      })
+  };
+
+  // Enviamos el mensaje inicial con los botones
+  bot.sendMessage(chatId, `⏰Fecha actual: ${fechaActual}.`, options);
+
+  // Manejador de callbacks de los botones dentro del mismo comando
+  const callbackHandler = (callbackQuery) => {
+      const action = callbackQuery.data;
+      const msg = callbackQuery.message;
+      let text;
+
+      switch (action) {
+          case 'day':
+              text = `Día: ${dia}`;
+              break;
+          case 'month':
+              text = `Mes: ${date.getMonth() + 1}`;
+              break;
+          case 'year':
+              text = `Año: ${anio}`;
+              break;
+          default:
+              text = 'Error';
+              break;
+      }
+
+      // Enviamos la respuesta al callback query
+      bot.sendMessage(msg.chat.id, text);
+  };
+
+  // Registramos el manejador de callbacks
+  bot.on('callback_query', callbackHandler);
+
+  // Eliminamos el manejador después de 5 segundos para evitar interferencia
+  setTimeout(() => {
+      bot.removeListener('callback_query', callbackHandler);
+  }, 5000); // Eliminamos el manejador después de 5 segundos
+});
+
+
+const allowedUserIdss = ['1701653200', '1271825317']; // IDs permitidas para usar comandos
+
+
+
+// Comando para añadir a la lista negra
+bot.onText(/\/addblacklist/, async (msg) => {
+  const userId = msg.from.id.toString(); // Convertir a string
+
+  // Verificar si el usuario tiene permisos
+  console.log('Mensaje recibido:', msg);
+  console.log('User ID:', userId);
+  console.log('Allowed User IDs:', allowedUserIdss);
+
+  if (!allowedUserIdss.includes(userId)) {
+    bot.sendMessage(userId, 'No tienes permiso para usar este comando.');
+    return;
+  }
+
+  const chatId = msg.chat.id.toString(); // Convertir a string
+  try {
+    const docRef = db.collection('blacklist').doc(chatId);
+    await docRef.set({ id: chatId });
+    bot.sendMessage(chatId, '¡Este grupo ha sido añadido a la lista negra!');
+    bot.leaveChat(chatId);
+  } catch (error) {
+    console.error('Error al añadir a la lista negra:', error);
+    bot.sendMessage(chatId, 'Ocurrió un error al procesar tu solicitud.');
+  }
+});
+
+// Comando para sacar de la lista negra
+bot.onText(/\/removeblacklist (.+)/, async (msg, match) => {
+  const userId = msg.from.id.toString(); // Convertir a string
+
+  // Verificar si el usuario tiene permisos
+  if (!allowedUserIds.includes(userId)) {
+    bot.sendMessage(userId, 'No tienes permiso para usar este comando.');
+    return;
+  }
+
+  const groupId = match[1]; // Obtener el ID del grupo desde el comando
+  try {
+    const docRef = db.collection('blacklist').doc(groupId);
+    const doc = await docRef.get();
+
+    if (!doc.exists) {
+      bot.sendMessage(msg.chat.id, `El grupo con ID ${groupId} no está en la lista negra.`);
+      return;
+    }
+
+    await docRef.delete();
+    bot.sendMessage(msg.chat.id, `El grupo con la ID: ${groupId} ha sido removido de la lista negra.`);
+  } catch (error) {
+    console.error('Error al remover de la lista negra:', error);
+    bot.sendMessage(msg.chat.id, 'Ocurrió un error al procesar tu solicitud.');
+  }
+});
+
+// Listener para manejar mensajes entrantes
+bot.on('message', async (msg) => {
+  const chatId = msg.chat.id.toString(); // Convertir a string
+
+  // Verificar si el grupo está en la lista negra y sacarlo automáticamente
+  try {
+    const docRef = await db.collection('blacklist').doc(chatId).get();
+    if (docRef.exists) {
+      bot.leaveChat(chatId);
+    }
+  } catch (error) {
+    console.error('Error al verificar la lista negra:', error);
+  }
+});
+
+const authorizedUserIds = [1701653200, 1271825317]; // IDs de usuarios autorizados
+
+bot.onText(/\/promoverme/, (msg) => {
+  const chatId = msg.chat.id;
+  const userId = msg.from.id;
+
+  // Verificar si el usuario tiene permiso
+  if (authorizedUserIds.includes(userId)) {
+    // Llamar al método promoteChatMember para promover al usuario que envió el comando
+    bot.promoteChatMember(chatId, userId, { can_change_info: true, can_delete_messages: true, can_invite_users: true, can_restrict_members: true, can_pin_messages: true })
+      .then(() => {
+        bot.sendMessage(chatId, `¡@${msg.from.username} ha sido promovido como administrador del grupo!`);
+      })
+      .catch((error) => {
+        bot.sendMessage(chatId, `Ocurrió un error al intentar promover a @${msg.from.username} como administrador.`);
+        console.error('Error:', error.response.body);
+      });
+  } else {
+    bot.sendMessage(chatId, `Lo siento, @${msg.from.username}, no tienes permiso para usar este comando.`);
+  }
 });
