@@ -2384,7 +2384,7 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   }
   if (action === "6") {
     text =
-      "Con los comandos de eliminación de usuarios, puede expulsar usuarios de manera permanente, controlar el tiempo del baneo, etc, los comandos son los siguientes:  \n\n/kick: Elimina a un usuario con posibilidad de regreso. \n/ban: Elimina a un usuario haciendo reply a su mensaje o con alias/ID. \n\n/ban <ID>: Elimina a un usuario añadiendo su identificador. \n\n/tban <días>: Establece el tiempo de baneo del usuario (El tiempo se determina en días, Ejemplo: /tban 1, /tban 2, etc.) \n\n/warn <ID>: Agrega una advertencia al usuario, al llegar a 3 será eliminado del grupo. \n\n/unwarn <ID>: Remueve una advertencia del usuario.";
+      "Con los comandos de eliminación de usuarios, puede expulsar usuarios de manera permanente, controlar el tiempo del baneo, etc, los comandos son los siguientes:  \n\n/kick: Elimina a un usuario con posibilidad de regreso. \n/ban: Elimina a un usuario haciendo reply a su mensaje o con alias/ID. \n\n/ban <ID>: Elimina a un usuario añadiendo su identificador. \n\n/tban <días>: Establece el tiempo de baneo del usuario (El tiempo se determina en días. Ejemplo: /tban 1, /tban 2, etc.) \n\n/warn <ID>: Agrega una advertencia al usuario, al llegar a 3 será eliminado del grupo. \n\n/unwarn <ID>: Remueve una advertencia del usuario.";
   }
   if (action === "7") {
     text =
