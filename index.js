@@ -21,6 +21,9 @@ const axios = require('axios');
 var convertapi = require("convertapi")("RGaQlTBWCjkfw889");
 var tcpp = require('tcp-ping');
 /* const { createCanvas, loadImage } = require('canvas');
+
+
+
 const path = require('path');
  */
 const {
@@ -2377,7 +2380,7 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   }
   if (action === "5") {
     text =
-      "Los comandos para este modúlo se encuentran a continuación:\n\n/aquiz: Diviertete respondiendo la trivia con preguntas de anime, japón y cultura general.\n\n/anime <búsqueda/nombre de anime>: Encuentra información de un anime desde la fuente de anilist.\n\n/emisionanime: Revisa los animes en emisión titán.\n\n/manga <búsqueda/nombre del manga>: El bot responde con la información detallada de la consulta(Mangas en emisión, finalizados y novelas ligeras). \n\n/caracter <búsqueda/personaje>: Encuentra a tus personajes favoritos con este comando y obtienes su información detallada. \n\n/awallpaper, /w: Encuentra Wallpapers random de anime(SFW), el bot responderá con la imagen y el documento. \n\n/2wallpaper, /2w: El bot responde con grupos de imagenes aleatorias. \n\n/iwall <búsqueda>: Encuentra wallpapers de anime a partir de la consulta que se realize.";
+      "Los comandos para este modúlo se encuentran a continuación:\n\n/quiz: Diviertete respondiendo la trivia con preguntas de anime, japón y cultura general.\n\n/anime <búsqueda/nombre de anime>: Encuentra información de un anime desde la fuente de anilist.\n\n/emisionanime: Revisa los animes en emisión titán.\n\n/manga <búsqueda/nombre del manga>: El bot responde con la información detallada de la consulta(Mangas en emisión, finalizados y novelas ligeras). \n\n/caracter <búsqueda/personaje>: Encuentra a tus personajes favoritos con este comando y obtienes su información detallada. \n\n/wallhaven <busqueda>: Encuentra Wallpapers de Wallhaven.cc. \n\n/wallpaper <busqueda>: Encuentra Wallpapers de Wallpaper.com. Si el comando no tiene búqueda el bot genera una imagen aleatoria de free4kwallpapers.com, el bot responderá con la imagen y el documento.\n\n/zerochan <búsqueda>: Encuentra wallpapers de anime (ZeroChan) a partir de la consulta que se realize.";
   }
   if (action === "6") {
     text =
@@ -3707,7 +3710,7 @@ bot.onText(/^\/tv/, function (msg) {
 });
 
 
-bot.onText(/^\/awallpaper/, function (msg) {
+/* bot.onText(/\/wallpaper/, function (msg) {
   try {
     const wall = randomanime.anime();
     bot.sendPhoto(msg.chat.id, wall).then;
@@ -3717,10 +3720,10 @@ bot.onText(/^\/awallpaper/, function (msg) {
   } catch (err) {
     console.log(err);
   }
-});
+}); */
 
 
-bot.onText(/^\/2wallpaper|^\/2w/, function (msg) {
+/* bot.onText(/^\/2wallpaper|^\/2w/, function (msg) {
   async function Wallpaper3() {
     try {
       const wallpaper = await wall.getAnimeWall3();
@@ -3753,18 +3756,26 @@ bot.onText(/^\/2wallpaper|^\/2w/, function (msg) {
 
   Wallpaper3();
 });
+ */
 
+/* bot.onText(/\/iwall (.+)/, (msg, match) => {
+  var a = match[1];
+  try {
+    (async () => {
+      const wallpaper = await wall.search({ title: `${a}`}, AnimeSource.ZeroChan);
+      return console.log(wallpaper)
+    })(); 
+  } catch (error) {
+    console.log(error);
 
-bot.onText(/\/iwall (.+)/, (msg, match) => {
- 
-/*   (async () => {
-    const wallpaper = await wall.ho({ title: `${a}` }, AnimeSource.WallHaven);
-    return console.log(wallpaper)
-  })(); */
-bot.sendMessage(msg.chat.id, "El comando se encuentra temporalmente desactivado:(")
-/*   async function Wallpaper2() {
+  }
+}); */
+
+/* bot.onText(/\/wallpaper (.+)/, function (msg, match) {
+  var palabra = match[1];
+  async function WallpaperBusqueda() {
     try {
-      const wallpaper = await wall.getAnimeWall2(a);
+      const wallpaper = await wall.search({ title: `${palabra}` }, AnimeSource.Wallpapers);
       bot
         .sendMediaGroup(msg.chat.id, [
           {
@@ -3783,17 +3794,173 @@ bot.sendMessage(msg.chat.id, "El comando se encuentra temporalmente desactivado:
             type: "photo",
             media: wallpaper[5].image,
           },
+          {
+            type: "photo",
+            media: wallpaper[6].image,
+          },
+          {
+            type: "photo",
+            media: wallpaper[7].image,
+          },
         ])
         .catch((err) => {
-          console.error(err);
-          bot.sendMessage(chatid, "Algo no ha salido como esperaba:(");
+          bot.sendMessage(msg.chat.id, "Algo no ha salido como esperaba:(");
         });
-    } catch (err) {
-      console.log(err);
+    } catch (e) {
+      console.log(e);
     }
   }
 
-  Wallpaper2(); */
+  WallpaperBusqueda();
+});
+ */
+bot.onText(/\/wallpaper(.*)/, function (msg, match) {
+  // Obtener la palabra de búsqueda eliminando espacios al inicio y al final
+  var palabra = match[1].trim();
+
+  // Verificar si la palabra está vacía
+  if (!palabra) {
+    // Si no se proporciona ningún valor de búsqueda
+    try {
+      const wall = randomanime.anime();
+      bot.sendPhoto(msg.chat.id, wall).then;
+      bot.sendDocument(msg.chat.id, wall).catch((err) => {
+        bot.sendMessage(msg.chat.id, "Algo no ha salido como esperaba:(");
+      });
+    } catch (err) {
+      console.log(err);
+    }
+    return;
+  }
+
+  async function WallpaperBusqueda() {
+    try {
+      const wallpaper = await wall.search({ title: `${palabra}` }, AnimeSource.Wallpapers);
+      bot.sendMediaGroup(msg.chat.id, [
+        {
+          type: "photo",
+          media: wallpaper[0].image,
+        },
+        {
+          type: "photo",
+          media: wallpaper[1].image,
+        },
+        {
+          type: "photo",
+          media: wallpaper[3].image,
+        },
+        {
+          type: "photo",
+          media: wallpaper[5].image,
+        },
+        {
+          type: "photo",
+          media: wallpaper[6].image,
+        },
+        {
+          type: "photo",
+          media: wallpaper[7].image,
+        },
+      ]).catch((err) => {
+        bot.sendMessage(msg.chat.id, "Algo no ha salido como esperaba :(");
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  WallpaperBusqueda();
+});
+
+
+bot.onText(/\/wallhaven (.+)/, function (msg, match) {
+  var palabra = match[1];
+  async function WallpaperBusqueda() {
+    try {
+      const wallpaper = await wall.search({ title: `${palabra}` }, AnimeSource.WallHaven);
+      console.log(wallpaper); 
+      bot
+        .sendMediaGroup(msg.chat.id, [
+          {
+            type: "photo",
+            media: wallpaper[0].image,
+          },
+          {
+            type: "photo",
+            media: wallpaper[1].image,
+          },
+          {
+            type: "photo",
+            media: wallpaper[3].image,
+          },
+          {
+            type: "photo",
+            media: wallpaper[5].image,
+          },
+          {
+            type: "photo",
+            media: wallpaper[6].image,
+          },
+          {
+            type: "photo",
+            media: wallpaper[7].image,
+          },
+        ])
+        .catch((err) => {
+          bot.sendMessage(msg.chat.id, "Algo no ha salido como esperaba:(");
+        });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  WallpaperBusqueda();
+});
+
+bot.onText(/\/zerochan (.+)/, function (msg, match) {
+  var palabra = match[1];
+  
+  async function WallpaperBusqueda() {
+    try {
+      const wallpaper = await wall.search({ title: `${palabra}` }, AnimeSource.ZeroChan);
+
+      // Función para obtener la URL de la imagen (maneja thumbnail o image)
+      function getImageUrl(item) {
+        return item.image || item.thumbnail;
+      }
+
+      // Extraer las URLs de las imágenes válidas
+      const urls = wallpaper.map(item => getImageUrl(item)).filter(url => url);
+/*       console.log(urls);
+ */
+      if (urls.length > 0) {
+        // Crear los botones con los enlaces a las imágenes
+        const buttons = urls.slice(0, 10).map(url => ({
+          text: "Ver imagen",
+          url: url
+        }));
+
+        const options = {
+          reply_markup: {
+            inline_keyboard: buttons.map(button => [{ text: button.text, url: button.url }])
+          }
+        };
+
+        bot.sendMessage(msg.chat.id, "¡🐋Búsqueda encontrada! Aquí tienes las imágenes:", options)
+          .catch((err) => {
+            console.error(err);
+            bot.sendMessage(msg.chat.id, "Algo no ha salido como esperaba:(");
+          });
+      } else {
+        bot.sendMessage(msg.chat.id, "No se encontraron imágenes válidas.");
+      }
+    } catch (e) {
+      console.error(e);
+      bot.sendMessage(msg.chat.id, "Algo no ha salido como esperaba:(");
+    }
+  }
+
+  WallpaperBusqueda();
 });
 /**************************************************************************************************** */
 /* bot.onText(/\/sol (.+)/, function (msg, match) {
@@ -7688,7 +7855,7 @@ bot.on('message', async (msg) => {
   }
 });
 
-// Manejar el comando '/ultimos_eliminados'
+/* // Manejar el comando '/ultimos_eliminados'
 bot.onText(/\/ultimos_eliminados/, (msg) => {
   const chatId = msg.chat.id;
   const filename = 'mensajes_eliminados.txt';
@@ -7701,4 +7868,5 @@ bot.onText(/\/ultimos_eliminados/, (msg) => {
           bot.sendDocument(chatId, Buffer.from(data), { caption: 'Últimos mensajes eliminados' });
       }
   });
-});
+}); */
+
