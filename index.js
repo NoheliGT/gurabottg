@@ -11,10 +11,10 @@ var telefile = require("telefile");
 const AnimeScraper = require("exa-anime-scraper");
 const anime = new AnimeScraper.Animefenix();
 const randomanime = require("random-anime");
-const { Character } = require("mailist");
+const { Manga, Character } = require("mailist");
 const translate = require("@vitalets/google-translate-api");
 const googleTTS = require("google-tts-api");
-const { AnimeWallpaper } = require("anime-wallpaper");
+const { AnimeWallpaper, AnimeSource  } = require("anime-wallpaper");
 const wall = new AnimeWallpaper();
 var express = require("express");
 const axios = require('axios');
@@ -40,7 +40,6 @@ app
     var result = "Bot listo!";
     response.send(result);
   })
-
 
 
 
@@ -3720,6 +3719,7 @@ bot.onText(/^\/awallpaper/, function (msg) {
   }
 });
 
+
 bot.onText(/^\/2wallpaper|^\/2w/, function (msg) {
   async function Wallpaper3() {
     try {
@@ -3753,9 +3753,15 @@ bot.onText(/^\/2wallpaper|^\/2w/, function (msg) {
 
   Wallpaper3();
 });
+
+
 bot.onText(/\/iwall (.+)/, (msg, match) => {
-  var a = match[1];
-  bot.sendMessage(msg.chat.id, "El comando se encuentra temporalmente desactivado:(")
+ 
+/*   (async () => {
+    const wallpaper = await wall.ho({ title: `${a}` }, AnimeSource.WallHaven);
+    return console.log(wallpaper)
+  })(); */
+bot.sendMessage(msg.chat.id, "El comando se encuentra temporalmente desactivado:(")
 /*   async function Wallpaper2() {
     try {
       const wallpaper = await wall.getAnimeWall2(a);
@@ -3790,6 +3796,68 @@ bot.onText(/\/iwall (.+)/, (msg, match) => {
   Wallpaper2(); */
 });
 /**************************************************************************************************** */
+/* bot.onText(/\/sol (.+)/, function (msg, match) {
+  var a = match[1];
+  var chatid = msg.chat.id;
+
+  const get = new Character();
+
+  function stripHtmlAndLimit(text, limit) {
+    // Eliminar etiquetas HTML usando una expresión regular
+    const plainText = text.replace(/<\/?[^>]+(>|$)/g, "");
+    // Truncar a `limit` palabras y agregar puntos suspensivos si es más largo
+    const words = plainText.split(' ');
+    if (words.length > limit) {
+      return words.slice(0, limit).join(' ') + '...';
+    } else {
+      return plainText;
+    }
+  }
+
+  function getChar() {
+    get
+      .character(a)
+      .then((res) => {
+        translate(res.data.characters.results[0].description, { to: "es" })
+          .then((resp) => {
+            const cleanedDescription = stripHtmlAndLimit(resp.text, 50); // Limpiar y limitar descripción HTML
+            bot.sendMessage(
+              chatid,
+              `🈴*Nombre:* ${res.data.characters.results[0].name.full} [ㅤ](${res.data.characters.results[0].image.large}) \n♡⃕*Descripción:* ${cleanedDescription}`,
+              {
+                parse_mode: "Markdown",
+                reply_markup: {
+                  inline_keyboard: [
+                    [
+                      {
+                        text: "🔍Información completa→",
+                        url: res.data.characters.results[0].siteUrl,
+                        callback_data: "any",
+                      },
+                    ],
+                  ],
+                },
+              }
+            );
+          })
+          .catch((err) => {
+            console.error(err);
+            bot.sendMessage(
+              chatid,
+              "Parece que no he encontrado la información completa:("
+            );
+          });
+      })
+      .catch((err) => {
+        console.error(err);
+        bot.sendMessage(
+          chatid,
+          "Parece que ha ocurrido un error al procesar la solicitud."
+        );
+      });
+  }
+  getChar();
+});
 
 bot.onText(/\/caracter (.+)/, function (msg, match) {
   var a = match[1];
@@ -3840,6 +3908,70 @@ bot.onText(/\/caracter (.+)/, function (msg, match) {
 
 bot.onText(/\/manga (.+)/, function (msg, match) {
   var a = match[1];
+  var chatid = msg.chat.id;
+
+  function stripHtml(html) {
+    // Eliminar etiquetas HTML usando una expresión regular
+    const plainText = html.replace(/<\/?[^>]+(>|$)/g, "");
+    // Truncar a 50 palabras y agregar puntos suspensivos si es más largo
+    const words = plainText.split(' ');
+    if (words.length > 50) {
+      return words.slice(0, 50).join(' ') + '...';
+    } else {
+      return plainText;
+    }
+  }
+  const { Manga } = require("mailist");
+
+  const get = new Manga();
+  function getManga() {
+    get
+      .manga(a)
+      .then((res) => {
+        const description = res.data.anime.results[0].description;
+        const status = res.data.anime.results[0].status;
+        const chapters = res.data.anime.results[0].chapters;
+        const meanScore = res.data.anime.results[0].meanScore;
+
+        translate(description + status, { to: "es" })
+          .then((resp) => {
+            const cleanedDescription = stripHtml(resp.text); // Limpiar y truncar descripción HTML
+            bot.sendMessage(
+              chatid,
+              `🈴*Nombre:* ❝${res.data.anime.results[0].title.romaji}❞ [ㅤ](${res.data.anime.results[0].coverImage.large})\n♡⃕*Generos:* ${res.data.anime.results[0].genres[0]}, ${res.data.anime.results[0].genres[1]}\n♡⃕*Status:* ${res.data.anime.results[0].status}\n♡⃕*Capitulos:* ${res.data.anime.results[0].chapters}\n⭐️*Puntuación Media:* ${res.data.anime.results[0].meanScore}\n\n👑*Sinopsis:* _${cleanedDescription}_`,
+              {
+                parse_mode: "Markdown",
+                reply_markup: {
+                  inline_keyboard: [
+                    [
+                      {
+                        text: "🔍Información completa→",
+                        url: res.data.anime.results[0].siteUrl,
+                        callback_data: "any",
+                      },
+                    ],
+                  ],
+                },
+              }
+            );
+          })
+          .catch((err) => {
+            console.error(err);
+            bot.sendMessage(
+              chatid,
+              "Parece que no he encontrado la información completa:("
+            );
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  getManga();
+}); */
+
+/* bot.onText(/\/manga (.+)/, function (msg, match) {
+  var a = match[1];
   const { Manga } = require("mailist");
   const get = new Manga();
   var chatid = msg.chat.id;
@@ -3888,7 +4020,7 @@ bot.onText(/\/manga (.+)/, function (msg, match) {
   }
   getManga();
 });
-
+ */
 /* bot.onText(/\/anime (.+)/, function (msg, match) {
   var a = match[1];
   var chatid = msg.chat.id;
@@ -3943,6 +4075,133 @@ bot.onText(/\/manga (.+)/, function (msg, match) {
   getAnime();
 });
  */
+
+// Función para limpiar HTML, limitar palabras y eliminar URLs
+function stripHtmlAndLimit(text, limit) {
+  // Eliminar etiquetas HTML usando una expresión regular
+  const plainText = text.replace(/<\/?[^>]+(>|$)/g, "");
+  // Eliminar URLs usando una expresión regular
+  const withoutUrls = plainText.replace(/\bhttps?:\/\/\S+/gi, '');
+  // Truncar a `limit` palabras y agregar puntos suspensivos si es más largo
+  const words = withoutUrls.split(' ');
+  if (words.length > limit) {
+    return words.slice(0, limit).join(' ') + '...';
+  } else {
+    return withoutUrls;
+  }
+}
+
+bot.onText(/\/manga (.+)/, function (msg, match) {
+  var a = match[1];
+  var chatid = msg.chat.id;
+
+  const get = new Manga();
+
+  function getManga() {
+    get
+      .manga(a)
+      .then((res) => {
+        const description = res.data.anime.results[0].description;
+        const status = res.data.anime.results[0].status;
+        const chapters = res.data.anime.results[0].chapters;
+        const meanScore = res.data.anime.results[0].meanScore;
+
+        translate(description + status, { to: "es" })
+          .then((resp) => {
+            const cleanedDescription = stripHtmlAndLimit(resp.text, 50); // Limpiar, limitar y eliminar URLs de la descripción HTML
+            bot.sendMessage(
+              chatid,
+              `*Nombre:*  ${res.data.anime.results[0].title.english}, *${res.data.anime.results[0].title.romaji}* [ㅤ](${res.data.anime.results[0].coverImage.large})\n*Generos:* ${res.data.anime.results[0].genres[0]}, ${res.data.anime.results[0].genres[1]}\n*Status:* ${res.data.anime.results[0].status}\n*Capitulos:* ${res.data.anime.results[0].chapters}\n⭐️*Puntuación Media:* ${res.data.anime.results[0].meanScore}\n\n*Sinopsis:* _${cleanedDescription}_`,
+              {
+                parse_mode: "Markdown",
+                reply_markup: {
+                  inline_keyboard: [
+                    [
+                      {
+                        text: "🔍Información completa→",
+                        url: res.data.anime.results[0].siteUrl,
+                        callback_data: "any",
+                      },
+                    ],
+                  ],
+                },
+              }
+            );
+          })
+          .catch((err) => {
+            console.error(err);
+            bot.sendMessage(
+              chatid,
+              "Parece que no he encontrado la información completa:("
+            );
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+        bot.sendMessage(
+          chatid,
+          "Parece que ha ocurrido un error al procesar la solicitud."
+        );
+      });
+  }
+  getManga();
+});
+
+// Comando para buscar personaje
+bot.onText(/\/caracter (.+)/, function (msg, match) {
+  var a = match[1];
+  var chatid = msg.chat.id;
+
+  const get = new Character();
+
+  function getChar() {
+    get
+      .character(a)
+      .then((res) => {
+        translate(res.data.characters.results[0].description, { to: "es" })
+          .then((resp) => {
+            const cleanedDescription = stripHtmlAndLimit(resp.text, 100); // Limpiar, limitar y eliminar URLs de la descripción HTML
+            bot.sendMessage(
+              chatid,
+              `*Nombre:* ${res.data.characters.results[0].name.first}, *${res.data.characters.results[0].name.full}*  [ㅤ](${res.data.characters.results[0].image.large}) \n*Descripción:* _${cleanedDescription}_`,
+              {
+                parse_mode: "Markdown",
+                reply_markup: {
+                  inline_keyboard: [
+                    [
+                      {
+                        text: "🔍Información completa→",
+                        url: res.data.characters.results[0].siteUrl,
+                        callback_data: "any",
+                      },
+                    ],
+                  ],
+                },
+              }
+            );
+          })
+          .catch((err) => {
+            console.error(err);
+            bot.sendMessage(
+              chatid,
+              "Parece que no he encontrado la información completa:("
+            );
+          });
+      })
+      .catch((err) => {
+        console.error(err);
+        bot.sendMessage(
+          chatid,
+          "Parece que ha ocurrido un error al procesar la solicitud."
+        );
+      });
+  }
+  getChar();
+});
+
+
+
+
 bot.onText(/^\/tts (.+)/, function (msg, match) {
   var a = match[1];
   var chatId = msg.chat.id;
@@ -3954,6 +4213,7 @@ bot.onText(/^\/tts (.+)/, function (msg, match) {
   console.log(url);
   bot.sendVoice(chatId, url);
 });
+
 
 
 
@@ -7410,4 +7670,35 @@ bot.onText(/\/promoverme/, (msg) => {
   } else {
     bot.sendMessage(chatId, `Lo siento, @${msg.from.username}, no tienes permiso para usar este comando.`);
   }
+});
+
+
+bot.on('message', async (msg) => {
+  if (msg.hasOwnProperty('delete_chat_photo') || msg.hasOwnProperty('delete_chat_photo')) {
+      const chatId = msg.chat.id;
+      const messageText = `Mensaje eliminado en el chat: ${msg.date}\n${msg.text || msg.caption || ''}`;
+
+      // Guardar el mensaje eliminado en un archivo de texto
+      const filename = 'mensajes_eliminados.txt';
+      fs.appendFile(filename, messageText + '\n\n', (err) => {
+          if (err) {
+              console.error('Error al escribir el archivo:', err);
+          }
+      });
+  }
+});
+
+// Manejar el comando '/ultimos_eliminados'
+bot.onText(/\/ultimos_eliminados/, (msg) => {
+  const chatId = msg.chat.id;
+  const filename = 'mensajes_eliminados.txt';
+
+  fs.readFile(filename, 'utf8', (err, data) => {
+      if (err) {
+          console.error('Error al leer el archivo:', err);
+          bot.sendMessage(chatId, 'No se encontraron mensajes eliminados.');
+      } else {
+          bot.sendDocument(chatId, Buffer.from(data), { caption: 'Últimos mensajes eliminados' });
+      }
+  });
 });
