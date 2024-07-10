@@ -2380,7 +2380,7 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   }
   if (action === "5") {
     text =
-      "Los comandos para este modúlo se encuentran a continuación:\n\n/quiz: Diviertete respondiendo la trivia con preguntas de anime, japón y cultura general.\n\n/anime <búsqueda/nombre de anime>: Encuentra información de un anime desde la fuente de anilist.\n\n/emisionanime: Revisa los animes en emisión titán.\n\n/manga <búsqueda/nombre del manga>: El bot responde con la información detallada de la consulta(Mangas en emisión, finalizados y novelas ligeras). \n\n/caracter <búsqueda/personaje>: Encuentra a tus personajes favoritos con este comando y obtienes su información detallada. \n\n/wallhaven <busqueda>: Encuentra Wallpapers de Wallhaven.cc. \n\n/wallpaper <busqueda>: Encuentra Wallpapers de Wallpaper.com. Si el comando no tiene búqueda el bot genera una imagen aleatoria de free4kwallpapers.com, el bot responderá con la imagen y el documento.\n\n/zerochan <búsqueda>: Encuentra wallpapers de anime (ZeroChan) a partir de la consulta que se realize.";
+      "Los comandos para este modúlo se encuentran a continuación:\n\n/quiz: Diviertete respondiendo la trivia con preguntas de anime, japón y cultura general.\n\n/anime <búsqueda/nombre de anime>: Encuentra información de un anime desde la fuente de anilist.\n\n/emisionanime: Revisa los animes en emisión titán.\n\n/manga <búsqueda/nombre del manga>: El bot responde con la información detallada de la consulta(Mangas en emisión, finalizados y novelas ligeras). \n\n/character <búsqueda/personaje>: Encuentra a tus personajes favoritos con este comando y obtienes su información detallada. \n\n/wallhaven <busqueda>: Encuentra Wallpapers de Wallhaven.cc. \n\n/wallpaper <busqueda>: Encuentra Wallpapers de Wallpaper.com. Si el comando no tiene búqueda el bot genera una imagen aleatoria de free4kwallpapers.com, el bot responderá con la imagen y el documento.\n\n/zerochan <búsqueda>: Encuentra wallpapers de anime (ZeroChan) a partir de la consulta que se realize.";
   }
   if (action === "6") {
     text =
@@ -4316,7 +4316,7 @@ bot.onText(/\/manga (.+)/, function (msg, match) {
 });
 
 // Comando para buscar personaje
-bot.onText(/\/caracter (.+)/, function (msg, match) {
+bot.onText(/\/character (.+)/, function (msg, match) {
   var a = match[1];
   var chatid = msg.chat.id;
 
