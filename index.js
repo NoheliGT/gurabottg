@@ -7581,7 +7581,7 @@ const allowedUserIdss = ['1701653200', '1271825317']; // IDs permitidas para usa
 
 
 
-// Comando para añadir a la lista negra
+/* // Comando para añadir a la lista negra
 bot.onText(/\/addblacklist/, async (msg) => {
   const userId = msg.from.id.toString(); // Convertir a string
 
@@ -7648,7 +7648,7 @@ bot.on('message', async (msg) => {
   } catch (error) {
     console.error('Error al verificar la lista negra:', error);
   }
-});
+}); */
 
 const authorizedUserIds = [1701653200, 1271825317]; // IDs de usuarios autorizados
 
