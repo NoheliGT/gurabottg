@@ -3866,6 +3866,7 @@ bot.onText(/\/wallpaper(.*)/, function (msg, match) {
       });
     } catch (e) {
       console.log(e);
+      bot.sendMessage(msg.chat.id, "Algo no ha salido como esperaba :(");
     }
   }
 
