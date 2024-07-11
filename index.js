@@ -1399,7 +1399,7 @@ bot.onText(/^\/kick/, function (msg) {
   });
 });
 
-bot.onText(/^\/ban/, function (msg) {
+/* bot.onText(/^\/ban/, function (msg) {
   var chatId = msg.chat.id;
   var replyId = msg.reply_to_message.from.id;
   var userId = msg.from.id;
@@ -1428,7 +1428,7 @@ bot.onText(/^\/ban/, function (msg) {
       );
     }
   });
-});
+}); */
 
 
 
