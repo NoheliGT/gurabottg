@@ -610,7 +610,7 @@ bot.onText(/\/eliminar_usuario (.+)/, (msg, match) => {
 });
 
 
-bot.onText(/\/ban (.+)/, (msg, match) => {
+/* bot.onText(/\/ban (.+)/, (msg, match) => {
   const chatId = msg.chat.id;
   var userId = msg.from.id;
   const userIds = match[1];
@@ -634,7 +634,7 @@ bot.onText(/\/ban (.+)/, (msg, match) => {
       );
     }
   });
-});
+}); */
 //0.53.0
 bot.onText(/\/unban (.+)/, (msg, match) => {
   const chatId = msg.chat.id;
@@ -7871,3 +7871,90 @@ bot.onText(/\/ultimos_eliminados/, (msg) => {
   });
 }); */
 
+/////////////////////////////////////
+
+bot.onText(/\/ban/, (msg) => {
+  const chatId = msg.chat.id;
+  const fromId = msg.from.id;
+
+  // Verificar si el usuario es administrador
+  bot.getChatAdministrators(chatId).then(admins => {
+      const isAdmin = admins.some(admin => admin.user.id === fromId);
+      if (isAdmin) {
+          if (msg.reply_to_message) {
+              const userIdToBan = msg.reply_to_message.from.id;
+              bot.kickChatMember(chatId, userIdToBan).then(() => {
+                  // Enviar mensaje con botón de desbanear
+                  const opts = {
+                      reply_markup: {
+                          inline_keyboard: [[{
+                              text: '☑️Desbanear',
+                              callback_data: `unban_${userIdToBan}`
+                          }]]
+                      }
+                  };
+                  bot.sendMessage(chatId, `¡👻Usuario eliminado del grupo!\n\n[${msg.reply_to_message.from.id}]\n[${msg.reply_to_message.from.first_name}]`, opts);
+              }).catch(err => {
+                  bot.sendMessage(chatId, 'No se pudo banear al usuario.');
+              });
+          } else {
+              bot.sendMessage(chatId, 'Debes responder al mensaje del usuario que quieres banear.');
+          }
+      } else {
+          bot.sendMessage(chatId, 'Solo los administradores pueden usar este comando.');
+      }
+  });
+});
+
+// Manejador para desbaneo, específico del comando ban
+bot.on('callback_query', (callbackQuery) => {
+  const msg = callbackQuery.message;
+  const data = callbackQuery.data;
+
+  if (data.startsWith('unban_')) {
+      const userIdToUnban = data.split('_')[1];
+      const fromId = callbackQuery.from.id;
+
+      // Verificar si el usuario que presiona el botón es administrador
+      bot.getChatAdministrators(msg.chat.id).then(admins => {
+          const isAdmin = admins.some(admin => admin.user.id === fromId);
+          if (isAdmin) {
+              bot.unbanChatMember(msg.chat.id, userIdToUnban).then(() => {
+                  // Obtener la fecha y hora actuales
+                  const now = new Date();
+                  const dateTimeString = now.toLocaleString('es-MX', {
+                      timeZone: 'America/Mexico_City',
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      second: '2-digit'
+                  });
+
+                  // Editar el mensaje original para mostrar que el usuario ha sido desbaneado con fecha y hora
+                  bot.editMessageText(`✅ *Usuario desbaneado.*\n\n *Fecha y hora del desbaneo:* ${dateTimeString}`, {
+                      chat_id: msg.chat.id,
+                      message_id: msg.message_id,
+                      parse_mode: 'Markdown'
+                  }).catch(err => {
+                      console.error(err);
+                      bot.sendMessage(msg.chat.id, 'No se pudo editar el mensaje.');
+                  });
+              }).catch(err => {
+                  console.error(err);
+                  bot.sendMessage(msg.chat.id, 'No se pudo desbanear al usuario.');
+              });
+          } else {
+              // Notificar al usuario que no tiene permisos para desbanear
+              bot.answerCallbackQuery({
+                  callback_query_id: callbackQuery.id,
+                  text: "No tienes permiso para realizar esta acción.",
+                  show_alert: true
+              });
+          }
+      }).catch(err => {
+          console.error(err);
+      });
+  }
+});
