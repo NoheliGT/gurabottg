@@ -2415,7 +2415,7 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   }
   if (action === "15") {
     text =
-      "Con Gawr Gura puedes establecer reglas para tus grupos de forma personalizada...\n\n/setrules: Establece las nuevas reglas para tu grupo; no se admite archivos multimedia, unicamente texto.\n\n/rules: Consulta las reglas de tu grupo.\n\n/clearrules: Limpia las reglas de tu grupo o elimina las que esten establecidas.";
+      "Con Gawr Gura puedes establecer reglas para tus grupos de forma personalizada...\n\n/setrules: Establece las nuevas reglas para tu grupo respondiendo a un mensaje; no se admite archivos multimedia, unicamente texto.\n\n/rules: Consulta las reglas de tu grupo.\n\n/clearrules: Limpia las reglas de tu grupo o elimina las que esten establecidas.";
   }
 
   if (action === "16") {
@@ -6847,7 +6847,7 @@ bot.on('message', (msg) => {
 }); */
 
 
-bot.onText(/\/setrules/, (msg) => {
+/* bot.onText(/\/setrules/, (msg) => {
   handleCommandWithAdminCheck(msg, (chatId) => {
     bot.sendMessage(chatId, 'Titán, por favor envía las reglas del grupo en el siguiente mensaje🐋. *(¡Solo admito texto!)*', {parse_mode: "Markdown"});
 
@@ -6916,7 +6916,7 @@ function handleCommandWithAdminChecks(msg, callback) {
   }).catch((err) => {
     console.error(err);
   });
-}
+} */
 
 
 // Manejador de comando /welcome on
@@ -7895,10 +7895,10 @@ bot.onText(/\/ban/, (msg) => {
                   };
                   bot.sendMessage(chatId, `¡👻Usuario eliminado del grupo!\n\n[${msg.reply_to_message.from.id}]\n[${msg.reply_to_message.from.first_name}]`, opts);
               }).catch(err => {
-                  bot.sendMessage(chatId, 'No se pudo banear al usuario.');
+                  bot.sendMessage(chatId, 'No se pudo banear al usuario.\n¡Considera hacerme administradora del grupo para hacerme funcionar');
               });
           } else {
-              bot.sendMessage(chatId, 'Debes responder al mensaje del usuario que quieres banear.');
+              bot.sendMessage(chatId, 'Debes responder al mensaje del usuario que quieres banear titán.');
           }
       } else {
           bot.sendMessage(chatId, 'Solo los administradores pueden usar este comando.');
@@ -7956,5 +7956,131 @@ bot.on('callback_query', (callbackQuery) => {
       }).catch(err => {
           console.error(err);
       });
+  }
+});
+
+
+
+////////////////////////////////////
+// Comando /setreglas para administradores
+// Comando /setreglas para administradores
+
+bot.onText(/\/setrules/, async (msg) => {
+  const chatId = msg.chat.id;
+  const fromId = msg.from.id;
+
+  if (msg.chat.type !== 'private') {
+    try {
+      const chatMember = await bot.getChatMember(chatId, fromId);
+
+      if (chatMember.status === 'administrator' || chatMember.status === 'creator') {
+        if (msg.reply_to_message && msg.reply_to_message.text) {
+          const reglas = msg.reply_to_message.text;
+          await db.collection('group_rules').doc(chatId.toString()).set({
+            rules: reglas
+          });
+          bot.sendMessage(chatId, '¡Reglas establecidas correctamente✅!');
+        } else {
+          bot.sendMessage(chatId, '❌Por favor, responde a un mensaje de texto con las reglas del grupo.');
+        }
+      } else {
+        bot.sendMessage(chatId, '❌Solo los administradores pueden establecer las reglas.');
+      }
+    } catch (error) {
+      console.error(error);
+      bot.sendMessage(chatId, 'Hubo un error al establecer las reglas.');
+    }
+  } else {
+    bot.sendMessage(chatId, '❌Este comando solo funciona en grupos.');
+  }
+});
+
+// Comando /clearrules para limpiar las reglas del grupo
+bot.onText(/\/clearrules/, async (msg) => {
+  const chatId = msg.chat.id;
+  const fromId = msg.from.id;
+
+  if (msg.chat.type !== 'private') {
+    try {
+      const chatMember = await bot.getChatMember(chatId, fromId);
+
+      if (chatMember.status === 'administrator' || chatMember.status === 'creator') {
+        await db.collection('group_rules').doc(chatId.toString()).delete();
+        bot.sendMessage(chatId, 'Reglas del grupo eliminadas correctamente titán✅.');
+      } else {
+        bot.sendMessage(chatId, '❌Solo los administradores pueden limpiar las reglas del grupo titán.');
+      }
+    } catch (error) {
+      console.error(error);
+      bot.sendMessage(chatId, 'Hubo un error al limpiar las reglas del grupo.');
+    }
+  } else {
+    bot.sendMessage(chatId, '❌Este comando solo funciona en grupos.');
+  }
+});
+
+// Comando /rules para todos los usuarios
+bot.onText(/\/rules/, async (msg) => {
+  const chatId = msg.chat.id;
+
+  if (msg.chat.type !== 'private') {
+    try {
+      const doc = await db.collection('group_rules').doc(chatId.toString()).get();
+      if (doc.exists) {
+        const opts = {
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: 'Ver reglas', callback_data: `ver_reglas_${chatId}` }]
+            ]
+          }
+        };
+        bot.sendMessage(chatId, '✅Puedes ver las reglas del grupo aquí:', opts);
+      } else {
+        bot.sendMessage(chatId, '❌No hay reglas establecidas para este grupo.');
+      }
+    } catch (error) {
+      console.error(error);
+      bot.sendMessage(chatId, '❌Hubo un error al obtener las reglas del grupo.');
+    }
+  } else {
+    bot.sendMessage(chatId, '❌Este comando solo funciona en grupos.');
+  }
+});
+
+// Manejo del botón "Ver reglas" para usuarios no administradores
+bot.on('callback_query', async (query) => {
+  const data = query.data;
+  const chatId = query.message.chat.id;
+  const messageId = query.message.message_id;
+  const fromId = query.from.id;
+
+  if (data.startsWith('ver_reglas_')) {
+    const groupChatId = data.split('_')[2];
+
+    try {
+      const doc = await db.collection('group_rules').doc(groupChatId.toString()).get();
+      if (doc.exists) {
+        // Enviar las reglas por mensaje privado
+        await bot.sendMessage(fromId, `Reglas del grupo:\n\n${doc.data().rules}`);
+        // Editar el mensaje en el grupo
+        await bot.editMessageText('¡✅Enviado! Consulta las reglas de este grupo en el privado del bot.', {
+          chat_id: chatId,
+          message_id: messageId
+        });
+      } else {
+        await bot.sendMessage(fromId, '❌No hay reglas establecidas para este grupo.');
+        await bot.editMessageText('❌No hay reglas establecidas para este grupo.', {
+          chat_id: chatId,
+          message_id: messageId
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      await bot.sendMessage(fromId, '❌Hubo un error al obtener las reglas.');
+      await bot.editMessageText('❌Hubo un error al obtener las reglas.', {
+        chat_id: chatId,
+        message_id: messageId
+      });
+    }
   }
 });
