@@ -6,7 +6,7 @@ const { getOnAir, searchAnime  } = require ('animeflv-api');
 //const reverseImageSearch = require("node-reverse-image-search");
 const raejs = require("@jodacame/raejs");
 const {search} = require("pinterest-dl");
-const { youtube } = require('btch-downloader')
+//const { youtube } = require('btch-downloader')
 var telefile = require("telefile");
 const AnimeScraper = require("exa-anime-scraper");
 const anime = new AnimeScraper.Animefenix();
@@ -872,7 +872,7 @@ bot.onText(/^\/emisionanime/, async (msg) => {
   }
 });
 
-const usuariosAutorizados = ['1701653200', '1812043697', '929203318', "6394321121", "1873607826", "1271825317"];
+/* const usuariosAutorizados = ['1701653200', '1812043697', '929203318', "6394321121", "1873607826", "1271825317"];
 
 bot.onText(/\/musica (.+)/, async function (msg, match) {
   const chatId = msg.chat.id;
@@ -915,7 +915,7 @@ bot.onText(/\/musica (.+)/, async function (msg, match) {
     console.error('Error al descargar la música:', error);
     bot.sendMessage(chatId, "Error en la descarga:(")
   }
-});
+}); */
 
 
 let animeList = []; // Variable global para almacenar la lista de animes
