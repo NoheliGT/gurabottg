@@ -20,12 +20,8 @@ var express = require("express");
 const axios = require('axios');
 var convertapi = require("convertapi")("RGaQlTBWCjkfw889");
 var tcpp = require('tcp-ping');
-/* const { createCanvas, loadImage } = require('canvas');
+const { createCanvas, loadImage } = require('canvas');
 
-
-
-const path = require('path');
- */
 const {
   GOOGLE_IMG_SCRAP,
   GOOGLE_IMG_INVERSE_ENGINE_URL,
@@ -47,7 +43,7 @@ app
 
 
 /*BETA = 1989987277:AAFBKzjLvPkyFBHzJQ-UaJlOfe12T3ln2dU*/////////////////////////
-/*ORIGINAL = 1785797976:AAGjLNTIAEuVTHvX9AvNO9qEDFKwNMmZgXM*/
+/*ORIGINAL = 1785797976:AAGjLNTIAEuVTHvX9AvNO9qEDFKwNMmZgXM*/ 
 const bot = new TelegramBot("1785797976:AAGjLNTIAEuVTHvX9AvNO9qEDFKwNMmZgXM", {
   polling: true,
 });
@@ -610,7 +606,7 @@ bot.onText(/\/eliminar_usuario (.+)/, (msg, match) => {
 });
 
 
-/* bot.onText(/\/ban (.+)/, (msg, match) => {
+bot.onText(/\/ban (.+)/, (msg, match) => {
   const chatId = msg.chat.id;
   var userId = msg.from.id;
   const userIds = match[1];
@@ -634,8 +630,9 @@ bot.onText(/\/eliminar_usuario (.+)/, (msg, match) => {
       );
     }
   });
-}); */
+}); 
 //0.53.0
+
 bot.onText(/\/unban (.+)/, (msg, match) => {
   const chatId = msg.chat.id;
   var userIds = msg.from.id;
@@ -772,7 +769,7 @@ bot.onText(/^\/start/, (msg) => {
   {
     bot.sendPhoto(
       msg.from.id,
-      "https://pbs.twimg.com/media/ElgqJReWkAAw2Hj.jpg",
+      "https://images4.alphacoders.com/114/1140162.jpg",
       {
         caption: `*Hi, ¡Hi🦈!* [${msg.from.first_name}](tg://user?id=${msg.from.id}) \n\n_¡Has comenzado una aventura con muchos desafios conmigo Gawr Gura!, Ahora dejame mostrarte lo que puedo hacer por ti._  \n\n*¡Vamos!* dale a /help.`,
         parse_mode: "Markdown",
@@ -2388,7 +2385,7 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   }
   if (action === "7") {
     text =
-      "Con Gawr Gura puedes modificar tus bienvenidas y establecer de forma personales las que mas nos agraden.\n\n/welcome <on/off>: Activa o desactiva las bienvenidas con las que Gawr Gura saluda por defecto a los nuevos usuarios.\n\nNota: por defecto se encuentra desactivado y al activarlo las bienvenidas se eliminaran pasado los 5 minutos.";
+      "Con Gawr Gura puedes modificar tus bienvenidas y establecer de forma personales las que mas nos agraden.\n\n/captcha <on/off>: El administrador del grupo puede activar un captcha para el ingreso de nuevos miembros al grupo lo resuelvan en un lapso de 60 segundo; de lo contrario el bot lo expulsará (kick).\n\n/welcome <on/off>: Activa o desactiva las bienvenidas con las que Gawr Gura saluda por defecto a los nuevos usuarios.\n\nNota: por defecto se encuentra desactivado y al activarlo las bienvenidas se eliminaran pasado los 5 minutos.";
   }
   if (action === "8") {
     text =
@@ -8083,4 +8080,310 @@ bot.on('callback_query', async (query) => {
       });
     }
   }
+});
+
+
+///////////////////////////
+/* bot.onText(/\/captcha (.+)/, async (msg, match) => {
+  const chatId = msg.chat.id;
+  const userId = msg.from.id;
+  const action = match[1].toLowerCase();
+
+  // Verificar si el comando se usa en un chat privado
+  if (msg.chat.type === 'private') {
+      bot.sendMessage(chatId, 'Este comando solo funciona en grupos.');
+      return;
+  }
+
+  // Verificar si el bot es administrador
+  const botId = (await bot.getMe()).id;
+  const botChatMember = await bot.getChatMember(chatId, botId);
+  if (botChatMember.status !== 'administrator' && botChatMember.status !== 'creator') {
+      bot.sendMessage(chatId, 'No puedo activar el captcha porque no soy administrador del grupo.');
+      return;
+  }
+
+  // Verificar si el usuario es administrador
+  const chatMember = await bot.getChatMember(chatId, userId);
+  if (chatMember.status !== 'administrator' && chatMember.status !== 'creator') {
+      bot.sendMessage(chatId, 'No tienes los permisos para realizar esta acción.');
+      return;
+  }
+
+  // Verificar el estado actual del captcha
+  const captchaDoc = await db.collection('captchaStatus').doc(chatId.toString()).get();
+  const captchaStatus = captchaDoc.exists ? captchaDoc.data().enabled : false;
+
+  if (action === 'on') {
+      if (captchaStatus) {
+          bot.sendMessage(chatId, 'El captcha ya está activado.');
+      } else {
+          await db.collection('captchaStatus').doc(chatId.toString()).set({ enabled: true });
+          bot.sendMessage(chatId, 'Captcha activado.');
+      }
+  } else if (action === 'off') {
+      if (!captchaStatus) {
+          bot.sendMessage(chatId, 'El captcha ya está desactivado.');
+      } else {
+          await db.collection('captchaStatus').doc(chatId.toString()).set({ enabled: false });
+          bot.sendMessage(chatId, 'Captcha desactivado.');
+      }
+  } else {
+      bot.sendMessage(chatId, 'Comando no reconocido. Usa /captcha on o /captcha off.');
+  }
+});
+
+bot.on('new_chat_members', async (msg) => {
+  const chatId = msg.chat.id;
+
+  const captchaDoc = await db.collection('captchaStatus').doc(chatId.toString()).get();
+  const captchaStatus = captchaDoc.exists ? captchaDoc.data().enabled : false;
+
+  if (captchaStatus) {
+      msg.new_chat_members.forEach(async (newMember) => {
+          // Verificar si el nuevo miembro es un bot
+          if (newMember.is_bot) {
+              bot.sendMessage(chatId, `Bienvenido al bot ${newMember.first_name}.`);
+              return;
+          }
+
+          const userId = newMember.id;
+
+          const captcha = generateCaptcha();
+          const imageBuffer = await createCaptchaImage(captcha);
+
+          await db.collection('activeCaptchas').doc(`${chatId}_${userId}`).set({
+              captcha,
+              createdAt: Date.now()
+          });
+
+          bot.sendPhoto(chatId, imageBuffer, {
+              caption: `Bienvenido al grupo, ${newMember.first_name}. Por favor, escribe en un mensaje el captcha: ${captcha}. Tienes 60 segundos para enviarlo, de lo contrario serás expulsado del grupo.`,
+          });
+
+          setTimeout(async () => {
+              const captchaData = await db.collection('activeCaptchas').doc(`${chatId}_${userId}`).get();
+              if (captchaData.exists && Date.now() - captchaData.data().createdAt >= 60000) {
+                  bot.kickChatMember(chatId, userId)
+                      .then(async () => {
+                          bot.sendMessage(chatId, `${newMember.first_name} ha sido expulsado por no resolver el captcha.`);
+                          await db.collection('activeCaptchas').doc(`${chatId}_${userId}`).delete();
+                      })
+                      .catch(err => console.error(err));
+              }
+          }, 60000);
+      });
+  }
+});
+
+bot.on('message', async (msg) => {
+  const chatId = msg.chat.id;
+  const userId = msg.from.id;
+
+  const userCaptchaDoc = await db.collection('activeCaptchas').doc(`${chatId}_${userId}`).get();
+
+  if (userCaptchaDoc.exists) {
+      const userCaptcha = userCaptchaDoc.data().captcha;
+
+      if (msg.text === userCaptcha) {
+          await db.collection('activeCaptchas').doc(`${chatId}_${userId}`).delete();
+          bot.sendMessage(chatId, `${msg.from.first_name} ha resuelto el captcha.`);
+      } else {
+          bot.sendMessage(chatId, 'Captcha incorrecto. Intenta de nuevo.');
+      }
+  } else {
+      const captchasSnapshot = await db.collection('activeCaptchas').get();
+      let found = false;
+      captchasSnapshot.forEach(doc => {
+          if (doc.data().captcha === msg.text && doc.id.split('_')[0] === chatId.toString()) {
+              found = true;
+          }
+      });
+      if (found) {
+          bot.sendMessage(chatId, 'No eres el usuario que debe resolver el captcha.');
+      }
+  }
+});
+
+function generateCaptcha() {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < 6; i++) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+}
+
+async function createCaptchaImage(captcha) {
+  const canvas = createCanvas(200, 100);
+  const ctx = canvas.getContext('2d');
+
+  // Fondo blanco
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Texto del captcha
+  ctx.font = '30px Arial';
+  ctx.fillStyle = '#000000';
+  ctx.fillText(captcha, 50, 50);
+
+  // Devolvemos el buffer de la imagen
+  return canvas.toBuffer();
+}
+ */
+
+bot.onText(/\/captcha (.+)/, async (msg, match) => {
+  const chatId = msg.chat.id;
+  const userId = msg.from.id;
+  const action = match[1].toLowerCase();
+
+  // Verificar si el comando se usa en un chat privado
+  if (msg.chat.type === 'private') {
+      bot.sendMessage(chatId, '❌Este comando solo funciona en grupos.');
+      return;
+  }
+
+  // Verificar si el bot es administrador
+  const botId = (await bot.getMe()).id;
+  const botChatMember = await bot.getChatMember(chatId, botId);
+  if (botChatMember.status !== 'administrator' && botChatMember.status !== 'creator') {
+      bot.sendMessage(chatId, '*❌No puedo activar el captcha en este grupo porque no soy administrador del grupo titán.*', {parse_mode: "Markdown"});
+      return;
+  }
+
+  // Verificar si el usuario es administrador
+  const chatMember = await bot.getChatMember(chatId, userId);
+  if (chatMember.status !== 'administrator' && chatMember.status !== 'creator') {
+      bot.sendMessage(chatId, '*❌No tienes los permisos para realizar esta acción titán.*', {parse_mode: "Markdown"});
+      return;
+  }
+
+  // Verificar el estado actual del captcha
+  const captchaDoc = await db.collection('captchaStatus').doc(chatId.toString()).get();
+  const captchaStatus = captchaDoc.exists ? captchaDoc.data().enabled : false;
+
+  if (action === 'on') {
+      if (captchaStatus) {
+          bot.sendMessage(chatId, '*✅El captcha ya se encuentra activado en este grupo.*', {parse_mode: "Markdown"});
+      } else {
+          await db.collection('captchaStatus').doc(chatId.toString()).set({ enabled: true });
+          bot.sendMessage(chatId, '*✅Captcha activado, ahora los usuario deberán resolver al ingresar al grupo.*', {parse_mode: "Markdown"});
+      }
+  } else if (action === 'off') {
+      if (!captchaStatus) {
+          bot.sendMessage(chatId, '*❌El captcha ya está desactivado en este grupo titán.*', {parse_mode: "Markdown"});
+      } else {
+          await db.collection('captchaStatus').doc(chatId.toString()).set({ enabled: false });
+          bot.sendMessage(chatId, '*✅Captcha desactivado en este grupo.*', {parse_mode: "Markdown"});
+      }
+  } else {
+      bot.sendMessage(chatId, 'Comando no reconocido. Usa /captcha on o /captcha off.');
+  }
+});
+
+bot.on('new_chat_members', async (msg) => {
+  const chatId = msg.chat.id;
+
+  const captchaDoc = await db.collection('captchaStatus').doc(chatId.toString()).get();
+  const captchaStatus = captchaDoc.exists ? captchaDoc.data().enabled : false;
+
+  if (captchaStatus) {
+      msg.new_chat_members.forEach(async (newMember) => {
+          // Verificar si el nuevo miembro es un bot
+          if (newMember.is_bot) {
+              bot.sendMessage(chatId, `¡Bienvenido al bot ${newMember.first_name}.!`);
+              return;
+          }
+
+          const userId = newMember.id;
+
+          const captcha = generateCaptcha();
+          const imageBuffer = await createCaptchaImage(captcha);
+
+          await db.collection('activeCaptchas').doc(`${chatId}_${userId}`).set({
+              captcha,
+              createdAt: Date.now()
+          });
+
+          bot.sendPhoto(chatId, imageBuffer, {
+              caption: `Bienvenido al grupo, ${newMember.first_name}. \n\n<b>Por favor</b>, escribe en un mensaje el captcha: <code>${captcha}</code>. \n\n<b>✅Tienes 60 segundos para enviarlo, de lo contrario serás expulsado del grupo.</b>`, 
+              parse_mode: "HTML"
+          });
+
+          setTimeout(async () => {
+              const captchaData = await db.collection('activeCaptchas').doc(`${chatId}_${userId}`).get();
+              if (captchaData.exists && Date.now() - captchaData.data().createdAt >= 60000) {
+                  bot.kickChatMember(chatId, userId)
+                      .then(async () => {
+                          bot.sendMessage(chatId, `🌬El usuario <b>${newMember.first_name}</b> ha sido expulsado del grupo por no resolver el captcha.\n\n<b>ID:</b> <code>${newMember.id}</code>`, {parse_mode: "HTML"});
+                          await db.collection('activeCaptchas').doc(`${chatId}_${userId}`).delete();
+                          bot.unbanChatMember(chatId, userId);
+                      })
+                      .catch(err => console.error(err));
+              }
+          }, 60000);
+      });
+  }
+});
+
+bot.on('message', async (msg) => {
+  const chatId = msg.chat.id;
+  const userId = msg.from.id;
+
+  const userCaptchaDoc = await db.collection('activeCaptchas').doc(`${chatId}_${userId}`).get();
+
+  if (userCaptchaDoc.exists) {
+      const userCaptcha = userCaptchaDoc.data().captcha;
+
+      if (msg.text === userCaptcha) {
+          await db.collection('activeCaptchas').doc(`${chatId}_${userId}`).delete();
+          bot.sendMessage(chatId, `✅Correcto. \n${msg.from.first_name} ha resuelto el captcha. *¡Bienvenido al grupo!* \nLee las reglas del grupo con el comando /rules.`, {parse_mode: "Markdown"});
+      } else {
+          bot.sendMessage(chatId, '❌Captcha incorrecto. *Intenta de nuevo por favor.*', {parse_mode: "Markdown"});
+      }
+  } else {
+      const captchasSnapshot = await db.collection('activeCaptchas').get();
+      let found = false;
+      captchasSnapshot.forEach(doc => {
+          if (doc.data().captcha === msg.text && doc.id.split('_')[0] === chatId.toString()) {
+              found = true;
+          }
+      });
+      if (found) {
+          bot.sendMessage(chatId, '❌No eres el usuario que debe resolver el captcha. *¡Aguarda!*', {parse_mode: "Markdown"});
+      }
+  }
+});
+
+function generateCaptcha() {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < 6; i++) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+}
+
+async function createCaptchaImage(captcha) {
+  const canvas = createCanvas(400, 200); // Ajustar el tamaño del canvas según las dimensiones de la imagen
+  const ctx = canvas.getContext('2d');
+
+  // Cargar la imagen desde la URL
+  const response = await axios.get('https://i.redd.it/gf25s4tgg5n51.png', { responseType: 'arraybuffer' });
+  const img = await loadImage(response.data);
+
+  // Dibujar la imagen como fondo
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+  // Texto del captcha
+  ctx.font = '40px Arial';
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillText(captcha, 60, 90);
+
+  // Devolver el buffer de la imagen
+  return canvas.toBuffer();
+}
+
+bot.on('polling_error', (error) => {
+  console.error(error);
 });
