@@ -20,7 +20,7 @@ var express = require("express");
 const axios = require('axios');
 var convertapi = require("convertapi")("RGaQlTBWCjkfw889");
 var tcpp = require('tcp-ping');
-const { createCanvas, loadImage } = require('canvas');
+//const { createCanvas, loadImage } = require('canvas');
 
 const {
   GOOGLE_IMG_SCRAP,
@@ -43,8 +43,8 @@ app
 
 
 /*BETA = 1989987277:AAFBKzjLvPkyFBHzJQ-UaJlOfe12T3ln2dU*/////////////////////////
-/*ORIGINAL = 1785797976:AAGjLNTIAEuVTHvX9AvNO9qEDFKwNMmZgXM*/ 
-const bot = new TelegramBot("1785797976:AAGjLNTIAEuVTHvX9AvNO9qEDFKwNMmZgXM", {
+/*ORIGINAL = 1785797976:AAHHMJMr9qCBZCHib3a6VYg_wrF5XPe2cro*/ 
+const bot = new TelegramBot("1785797976:AAHHMJMr9qCBZCHib3a6VYg_wrF5XPe2cro", {
   polling: true,
 });
 
@@ -8031,10 +8031,20 @@ bot.onText(/\/rules/, async (msg) => {
             ]
           }
         };
-        bot.sendMessage(chatId, '✅Puedes ver las reglas del grupo aquí:', opts);
+        bot.sendMessage(chatId, '✅Puedes ver las reglas del grupo a continuación en el privado del bot.', opts);
       } else {
-        bot.sendMessage(chatId, '❌No hay reglas establecidas para este grupo.');
-      }
+        bot.sendMessage(chatId, '❌No hay reglas establecidas para este grupo. Establece las primeras con /setrules.', {
+          reply_markup: {
+              inline_keyboard: [
+                  [
+                      {
+                          text: 'Ver noticias', // El texto que aparecerá en el botón
+                          url: 'https://t.me/Gawrguranoticias' // La URL a la que redirigirá el botón
+                      }
+                  ]
+              ]
+          }
+      });      }
     } catch (error) {
       console.error(error);
       bot.sendMessage(chatId, '❌Hubo un error al obtener las reglas del grupo.');
@@ -8232,7 +8242,7 @@ async function createCaptchaImage(captcha) {
 }
  */
 
-bot.onText(/\/captcha (.+)/, async (msg, match) => {
+/* bot.onText(/\/captcha (.+)/, async (msg, match) => {
   const chatId = msg.chat.id;
   const userId = msg.from.id;
   const action = match[1].toLowerCase();
@@ -8257,9 +8267,9 @@ bot.onText(/\/captcha (.+)/, async (msg, match) => {
       bot.sendMessage(chatId, '*❌No tienes los permisos para realizar esta acción titán.*', {parse_mode: "Markdown"});
       return;
   }
-
+ */
   // Verificar el estado actual del captcha
-  const captchaDoc = await db.collection('captchaStatus').doc(chatId.toString()).get();
+/*   const captchaDoc = await db.collection('captchaStatus').doc(chatId.toString()).get();
   const captchaStatus = captchaDoc.exists ? captchaDoc.data().enabled : false;
 
   if (action === 'on') {
@@ -8381,9 +8391,138 @@ async function createCaptchaImage(captcha) {
   ctx.fillText(captcha, 60, 90);
 
   // Devolver el buffer de la imagen
-  return canvas.toBuffer();
+/*   return canvas.toBuffer();
 }
 
 bot.on('polling_error', (error) => {
   console.error(error);
+}); */ 
+
+function generateCaptcha() {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < 6; i++) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+}
+
+bot.onText(/\/captcha (.+)/, async (msg, match) => {
+  const chatId = msg.chat.id;
+  const action = match[1]?.toLowerCase(); // Obtener acción del comando
+
+  // Verificar si el comando se usa en un chat privado
+  if (msg.chat.type === 'private') {
+      bot.sendMessage(chatId, '❌Este comando solo funciona en grupos.');
+      return;
+  }
+
+  // Verificar si el bot es administrador
+  const botId = (await bot.getMe()).id;
+  const botChatMember = await bot.getChatMember(chatId, botId);
+  if (botChatMember.status !== 'administrator' && botChatMember.status !== 'creator') {
+      bot.sendMessage(chatId, '*❌No puedo activar el captcha en este grupo porque no soy administrador del grupo.*', { parse_mode: "Markdown" });
+      return;
+  }
+
+  // Verificar si el usuario es administrador
+  const chatMember = await bot.getChatMember(chatId, msg.from.id);
+  if (chatMember.status !== 'administrator' && chatMember.status !== 'creator') {
+      bot.sendMessage(chatId, '*❌No tienes los permisos para realizar esta acción.*', { parse_mode: "Markdown" });
+      return;
+  }
+
+  // Verificar el estado actual del captcha
+  const captchaDoc = await db.collection('captchaStatus').doc(chatId.toString()).get();
+  const captchaStatus = captchaDoc.exists ? captchaDoc.data().enabled : false;
+
+  if (action === 'on') {
+      if (captchaStatus) {
+          bot.sendMessage(chatId, '*✅El captcha ya se encuentra activado en este grupo.*', { parse_mode: "Markdown" });
+      } else {
+          await db.collection('captchaStatus').doc(chatId.toString()).set({ enabled: true });
+          bot.sendMessage(chatId, '*✅Captcha activado, ahora los usuarios deberán resolver al ingresar al grupo.*', { parse_mode: "Markdown" });
+      }
+  } else if (action === 'off') {
+      if (!captchaStatus) {
+          bot.sendMessage(chatId, '*❌El captcha ya está desactivado en este grupo.*', { parse_mode: "Markdown" });
+      } else {
+          await db.collection('captchaStatus').doc(chatId.toString()).set({ enabled: false });
+          bot.sendMessage(chatId, '*✅Captcha desactivado en este grupo.*', { parse_mode: "Markdown" });
+      }
+  } else {
+      bot.sendMessage(chatId, 'Comando no reconocido. Usa /captcha on o /captcha off.');
+  }
+});
+
+bot.on('new_chat_members', async (msg) => {
+  const chatId = msg.chat.id;
+
+  const captchaDoc = await db.collection('captchaStatus').doc(chatId.toString()).get();
+  const captchaStatus = captchaDoc.exists ? captchaDoc.data().enabled : false;
+
+  if (captchaStatus) {
+      msg.new_chat_members.forEach(async (newMember) => {
+          // Verificar si el nuevo miembro es un bot
+          if (newMember.is_bot) {
+              bot.sendMessage(chatId, `¡Bienvenido al bot ${newMember.first_name}.!`);
+              return;
+          }
+
+          const userId = newMember.id;
+
+          const captcha = generateCaptcha();
+          await db.collection('activeCaptchas').doc(`${chatId}_${userId}`).set({
+              captcha,
+              createdAt: Date.now()
+          });
+
+          bot.sendPhoto(chatId, 'https://static.vecteezy.com/system/resources/previews/030/921/945/non_2x/template-for-entering-captcha-i-m-not-a-robot-vector.jpg', {
+              caption: `✅Bienvenido al grupo, ${newMember.first_name}. \n\n<b>Por favor, escribe en un mensaje el captcha:</b> <code>${captcha}</code>. \n\n<b>⏰Tienes 60 segundos para enviarlo, de lo contrario serás expulsado del grupo.</b>`,
+              parse_mode: "HTML"
+          });
+
+          setTimeout(async () => {
+              const captchaData = await db.collection('activeCaptchas').doc(`${chatId}_${userId}`).get();
+              if (captchaData.exists && Date.now() - captchaData.data().createdAt >= 60000) {
+                  bot.kickChatMember(chatId, userId)
+                      .then(async () => {
+                          bot.sendMessage(chatId, `❌<b>El usuario ${newMember.first_name} ha sido expulsado del grupo por no resolver el captcha.</b> \n\nID: <code>${newMember.id}</code>`, {parse_mode: "HTML"});
+                          await db.collection('activeCaptchas').doc(`${chatId}_${userId}`).delete();
+                          bot.unbanChatMember(chatId, userId);
+                      })
+                      .catch(err => console.error(err));
+              }
+          }, 60000);
+      });
+  }
+});
+
+bot.on('message', async (msg) => {
+  const chatId = msg.chat.id;
+  const userId = msg.from.id;
+
+  const userCaptchaDoc = await db.collection('activeCaptchas').doc(`${chatId}_${userId}`).get();
+
+  if (userCaptchaDoc.exists) {
+      const userCaptcha = userCaptchaDoc.data().captcha;
+
+      if (msg.text === userCaptcha) {
+          await db.collection('activeCaptchas').doc(`${chatId}_${userId}`).delete();
+          bot.sendMessage(chatId, `✅Correcto. \n${msg.from.first_name} ha resuelto el captcha. *¡Bienvenido al grupo!*`, { parse_mode: "Markdown" });
+      } else {
+          bot.sendMessage(chatId, '❌Captcha incorrecto. *Intenta de nuevo por favor.*', { parse_mode: "Markdown" });
+      }
+  } else {
+      const captchasSnapshot = await db.collection('activeCaptchas').get();
+      let found = false;
+      captchasSnapshot.forEach(doc => {
+          if (doc.data().captcha === msg.text && doc.id.split('_')[0] === chatId.toString()) {
+              found = true;
+          }
+      });
+      if (found) {
+          bot.sendMessage(chatId, '❌No eres el usuario que debe resolver el captcha. *¡Aguarda!*', { parse_mode: "Markdown" });
+      }
+  }
 });
