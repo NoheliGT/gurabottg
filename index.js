@@ -6,7 +6,7 @@ const { getOnAir, searchAnime  } = require ('animeflv-api');
 //const reverseImageSearch = require("node-reverse-image-search");
 const raejs = require("@jodacame/raejs");
 const {search} = require("pinterest-dl");
-//const { youtube } = require('btch-downloader')
+const { youtube, ttdl, fbdown, igdl } = require('btch-downloader') //DESCARGAS YT
 var telefile = require("telefile");
 const AnimeScraper = require("exa-anime-scraper");
 const anime = new AnimeScraper.Animefenix();
@@ -21,7 +21,8 @@ const axios = require('axios');
 var convertapi = require("convertapi")("RGaQlTBWCjkfw889");
 var tcpp = require('tcp-ping');
 //const { createCanvas, loadImage } = require('canvas');
-
+const instagramGetUrl = require('priyansh-ig-downloader');
+const https = require('https');  
 const {
   GOOGLE_IMG_SCRAP,
   GOOGLE_IMG_INVERSE_ENGINE_URL,
@@ -42,7 +43,7 @@ app
 
 
 
-/*BETA = 1989987277:AAFBKzjLvPkyFBHzJQ-UaJlOfe12T3ln2dU*/////////////////////////
+/*BETA = 1989987277:AAEOjOcJyNIrLKMxRGDu5EqcTSA8WC0I5aA*/////////////////////////
 /*ORIGINAL = 1785797976:AAHHMJMr9qCBZCHib3a6VYg_wrF5XPe2cro*/ 
 const bot = new TelegramBot("1785797976:AAHHMJMr9qCBZCHib3a6VYg_wrF5XPe2cro", {
   polling: true,
@@ -872,7 +873,7 @@ bot.onText(/^\/emisionanime/, async (msg) => {
   }
 });
 
-/* const usuariosAutorizados = ['1701653200', '1812043697', '929203318', "6394321121", "1873607826", "1271825317"];
+ const usuariosAutorizados = ['1701653200', '1812043697', '929203318', "6394321121", "1873607826", "1271825317", "1812043697"];
 
 bot.onText(/\/musica (.+)/, async function (msg, match) {
   const chatId = msg.chat.id;
@@ -915,8 +916,266 @@ bot.onText(/\/musica (.+)/, async function (msg, match) {
     console.error('Error al descargar la música:', error);
     bot.sendMessage(chatId, "Error en la descarga:(")
   }
-}); */
+}); 
+// Comando para descargar videos de TikTok
 
+bot.onText(/\/tiktok (.+)/, async function (msg, match) {
+  const chatId = msg.chat.id;
+  const userId = msg.from.id;
+  const url = match[1];
+
+  // Verificar si el usuario está autorizado
+  if (!usuariosAutorizados.includes(userId.toString())) {
+    bot.sendMessage(chatId, "Lo siento, no estás autorizado para usar este comando titán❌.");
+    return;
+  }
+
+  // Preguntar al usuario si quiere descargar como MP4 o MP3
+  const opts = {
+    reply_markup: {
+      inline_keyboard: [
+        [
+          { text: 'Vídeo MP4', callback_data: `tiktok_mp4_${url}` },
+          { text: 'Audio MP3', callback_data: `tiktok_mp3_${url}` }
+        ]
+      ]
+    }
+  };
+
+  bot.sendMessage(chatId, "¿Quieres descargar el contenido como video (MP4) o audio (MP3)? Elige a continuación.", opts);
+});
+
+bot.on('callback_query', async function (callbackQuery) {
+  const msg = callbackQuery.message;
+  const data = callbackQuery.data;
+
+  // Parsear el callback_data
+  const [action, format, url] = data.split('_');
+
+  if (action === 'tiktok') {
+    const chatId = msg.chat.id;
+    const userId = callbackQuery.from.id;
+
+    // Verificar si el usuario está autorizado
+    if (!usuariosAutorizados.includes(userId.toString())) {
+      bot.sendMessage(chatId, "Lo siento, no estás autorizado para usar este comando titán❌.");
+      return;
+    }
+
+    // Editar el mensaje para mostrar que se está descargando
+    bot.editMessageText('Elección correcta, espera un momento porfavor...', {
+      chat_id: chatId,
+      message_id: msg.message_id
+    });
+
+    try {
+      bot.sendMessage(chatId, `*Descargando contenido de TikTok titán...* ¡Espera un momento por favor⚠️!`, { parse_mode: "Markdown" });
+      const data = await ttdl(url);
+
+      // Verificar la estructura de la respuesta
+      if (format === 'mp4') {
+        if (!data.video || data.video.length === 0) {
+          throw new Error('URL de video no encontrada en la respuesta');
+        }
+
+        const videoUrl = data.video[0]; // URL del video
+
+        // Descargar el archivo MP4
+        const videoFileName = `tiktok_${Date.now()}.mp4`;
+        const videoFileStream = fs.createWriteStream(videoFileName);
+        const response = await axios.get(videoUrl, { responseType: 'stream' });
+        response.data.pipe(videoFileStream);
+
+        // Cuando la descarga esté completa
+        videoFileStream.on('finish', () => {
+          // Enviar el archivo MP4 como respuesta
+          bot.sendVideo(chatId, videoFileName)
+            .then(() => {
+              // Borrar el archivo temporal
+              fs.unlinkSync(videoFileName);
+              console.log("Borrado.");
+              bot.sendMessage(chatId, "*¡🎬Tu video de TikTok está listo, titán!*", { parse_mode: "Markdown" });
+            })
+            .catch((error) => {
+              console.error('Error al enviar el archivo de video:', error);
+              bot.sendMessage(chatId, "Error en la descarga:(");
+            });
+        });
+      } else if (format === 'mp3') {
+        if (!data.audio || data.audio.length === 0) {
+          throw new Error('URL de audio no encontrada en la respuesta');
+        }
+
+        const audioUrl = data.audio[0]; // URL del audio
+
+        // Descargar el archivo MP3
+        const audioFileName = `tiktok_${Date.now()}.mp3`;
+        const audioFileStream = fs.createWriteStream(audioFileName);
+        const response = await axios.get(audioUrl, { responseType: 'stream' });
+        response.data.pipe(audioFileStream);
+
+        // Cuando la descarga esté completa
+        audioFileStream.on('finish', () => {
+          // Enviar el archivo MP3 como respuesta
+          bot.sendAudio(chatId, audioFileName)
+            .then(() => {
+              // Borrar el archivo temporal
+              fs.unlinkSync(audioFileName);
+              console.log("Borrado.");
+              bot.sendMessage(chatId, "*¡🎧Tu audio de TikTok está listo, titán!*", { parse_mode: "Markdown" });
+            })
+            .catch((error) => {
+              console.error('Error al enviar el archivo de audio:', error);
+              bot.sendMessage(chatId, "Error en la descarga:(");
+            });
+        });
+      } else {
+        bot.sendMessage(chatId, "Formato desconocido.");
+      }
+    } catch (error) {
+      console.error('Error al descargar el contenido de TikTok:', error);
+      bot.sendMessage(chatId, "Error en la descarga:(");
+    }
+  }
+});
+
+
+bot.onText(/\/facebook (.+)/, async function (msg, match) {
+  const chatId = msg.chat.id;
+  const userId = msg.from.id;
+  const url = match[1];
+
+  // Verificar si el usuario está autorizado
+  if (!usuariosAutorizados.includes(userId.toString())) {
+    bot.sendMessage(chatId, "Lo siento, no estás autorizado para usar este comando titán❌.");
+    return;
+  }
+
+  try {
+    bot.sendMessage(chatId, "*Descargando video HD de Facebook titán...* ¡Espera un momento por favor⚠️!", { parse_mode: "Markdown" });
+    const data = await fbdown(url);
+
+    // Verificar la estructura de la respuesta
+
+    // Obtener la URL de video HD
+    const videoUrl = data.HD;
+
+    if (!videoUrl) {
+      throw new Error('URL de video HD no encontrada en la respuesta');
+    }
+
+    // Descargar el archivo MP4
+    const videoFileName = `facebook_${Date.now()}.mp4`;
+    const videoFileStream = fs.createWriteStream(videoFileName);
+    const response = await axios.get(videoUrl, { responseType: 'stream' });
+    response.data.pipe(videoFileStream);
+
+    // Cuando la descarga esté completa
+    videoFileStream.on('finish', () => {
+      // Enviar el archivo MP4 como respuesta
+      bot.sendVideo(chatId, videoFileName)
+        .then(() => {
+          // Borrar el archivo temporal
+          fs.unlinkSync(videoFileName);
+          console.log("Borrado.");
+          bot.sendMessage(chatId, "*¡🎬Tu video HD de Facebook está listo, titán!*", { parse_mode: "Markdown" });
+        })
+        .catch((error) => {
+          console.error('Error al enviar el archivo de video:', error);
+          bot.sendMessage(chatId, "Error en la descarga:(");
+        });
+    });
+  } catch (error) {
+    console.error('Error al descargar el video HD de Facebook:', error);
+    bot.sendMessage(chatId, "Error en la descarga:(");
+  }
+});
+
+bot.onText(/\/instagram (.+)/, async (msg, match) => {
+  const chatId = msg.chat.id;
+  const userId = msg.from.id.toString();
+  const url = match[1]; // La URL de Instagram que se pasa como argumento
+
+  // Verificar si el usuario está autorizado
+  if (!usuariosAutorizados.includes(userId)) {
+      bot.sendMessage(chatId, 'No estás autorizado para usar este comando titán.');
+      return;
+  }
+
+  // Mensaje de inicio de descarga
+  bot.sendMessage(chatId, '*⚠️Descargando archivo(s) espera un momento porfavor...*', {parse_mode: "Markdown"});
+
+  try {
+      const download = await instagramGetUrl(url);
+      const isReel = url.includes('/reel/'); // Verifica si la URL original contiene la palabra "reel"
+
+      // Contador para archivos descargados
+      let downloadedCount = 0;
+
+      // Función para descargar un archivo y enviarlo como documento o video
+      function downloadAndSendFile(fileUrl, index) {
+          const fileName = `file_${index}.${isReel ? 'mp4' : 'jpg'}`; // Determina la extensión del archivo según si es un reel
+
+          const fileStream = fs.createWriteStream(fileName);
+
+          https.get(fileUrl, response => {
+              response.pipe(fileStream);
+              response.on('end', () => {
+                  // Envía el archivo como documento o video al usuario
+                  setTimeout(() => {
+                      if (isReel) {
+                          // Si es un reel, enviar como video mp4
+                          bot.sendVideo(chatId, fileName, {
+                              caption: `✅Descarga hecha en: @gawrgurahelperbot.`
+                          }).then(() => {
+                              // Eliminar el archivo después de enviarlo
+                              fs.unlinkSync(fileName);
+                              // Mensaje de archivo descargado
+                              bot.sendMessage(chatId, `✅Archivo ${index + 1} descargado.`);
+                          }).catch(error => {
+                              console.error('Error al enviar el video:', error);
+                              bot.sendMessage(chatId, "Error al enviar el documento.");
+                          });
+                      } else {
+                          // Si no es un reel, enviar como documento jpg
+                          bot.sendDocument(chatId, fileName, {
+                              caption: `✅Descarga hecha en: @gawrgurahelperbot: ${index + 1}`
+                          }).then(() => {
+                              // Eliminar el archivo después de enviarlo
+                              fs.unlinkSync(fileName);
+                              // Mensaje de archivo descargado
+                              bot.sendMessage(chatId, `✅Archivo ${index + 1} descargado.`);
+                          }).catch(error => {
+                              console.error('Error al enviar el documento:', error);
+                            bot.sendMessage(chatId, "⚠️Error al enviar el documento.");
+
+                          });
+                      }
+                  }, index * 5000); // 5000 milisegundos = 5 segundos
+              });
+          }).on('error', error => {
+              console.error('Error al descargar el archivo:', error);
+          });
+      }
+
+      // Descargar y enviar cada archivo encontrado con un retraso de 5 segundos entre cada uno
+      download.url_list.forEach((fileUrl, index) => {
+          downloadAndSendFile(fileUrl, index);
+          downloadedCount++;
+      });
+
+      // Verificar si se descargaron archivos
+      if (downloadedCount === 0) {
+          bot.sendMessage(chatId, 'No se encontraron archivos para descargar desde Instagram.');
+      }
+
+  } catch (error) {
+      console.error('Error al descargar desde Instagram:', error);
+      bot.sendMessage(chatId, `Error al descargar desde Instagram: ${error.message}`);
+  }
+});
+
+/////////////////////////////
 
 let animeList = []; // Variable global para almacenar la lista de animes
 
@@ -2445,7 +2704,7 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   }
   if (action === "25") {
     text =
-      "Los comandos siguientes son supercomandos para usuarios que participen en dinámicas o aporten donaciones al bot (módulo en desarrollo).\n\n/anonimo <ID> <mensaje>: Envia un mensaje a cualquier usuario de forma anónima (no sabría quien eres, pero tú sí porque regresa los datos del usuario en sus respuestas\n\n/musica <URLYT>: ¡Descarga música de YT!.";
+      "Los comandos siguientes son supercomandos para usuarios que participen en dinámicas o aporten donaciones al bot (módulo en desarrollo).\n\n/anonimo <ID> <mensaje>: Envia un mensaje a cualquier usuario de forma anónima (no sabría quien eres, pero tú sí porque regresa los datos del usuario en sus respuestas\n\n/musica <URLYT>: ¡Descarga música de YT!.\n\n/facebook <URL>: ¡Descarga vídeos de FB!.\n\n/tiktok <URL>: ¡Descarga vídeos de TK!.\n\n/instagram <URL>: ¡Descarga vídeos de IG!.";
   }
   if (action === "29") {
     text =
@@ -8465,7 +8724,7 @@ bot.on('new_chat_members', async (msg) => {
       msg.new_chat_members.forEach(async (newMember) => {
           // Verificar si el nuevo miembro es un bot
           if (newMember.is_bot) {
-              bot.sendMessage(chatId, `¡Bienvenido al bot ${newMember.first_name}.!`);
+              bot.sendMessage(chatId, `¡Bienvenido al bot ${newMember.first_name}.!`, );
               return;
           }
 
