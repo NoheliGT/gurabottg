@@ -44,7 +44,7 @@ app
   const cheerio = require('cheerio');
 
 /*BETA = 1989987277:AAF8-Kmb1pfNyXersBniOciDDxDjjJPPzXk*/////////////////////////
-/*ORIGINAL = 1785797976:AAGCPW4c1cAXWEEf6pWt14mLifi06WzUZsQ*/ 
+/*ORIGINAL = 1785797976:AAG0JqUc1IJhK6i7wCyYxx0swR7vWI2QX00*/ 
 const bot = new TelegramBot("1785797976:AAG0JqUc1IJhK6i7wCyYxx0swR7vWI2QX00", {
   polling: true,
 });
@@ -71,12 +71,18 @@ const firebase = require('firebase/app');
 require('firebase/firestore');
 
 firebase.initializeApp({
-  apiKey: "AIzaSyDmDpGZdg_ZzTOiia83C3W4cprdwgHlqIE",
+  apiKey: "AIzaSyAoH1GoezhbtKXG7sokdHi51TbrKUZqiLU",
+  authDomain: "gura2-35861.firebaseapp.com",
+  projectId: "gura2-35861",
+  storageBucket: "gura2-35861.appspot.com",
+  messagingSenderId: "241408300363",
+  appId: "1:241408300363:web:86ccb120d859cd36be44ce"
+ /*  apiKey: "AIzaSyDmDpGZdg_ZzTOiia83C3W4cprdwgHlqIE",
   authDomain: "gurabot-a5f12.firebaseapp.com",
   projectId: "gurabot-a5f12",
   storageBucket: "gurabot-a5f12.appspot.com",
   messagingSenderId: "691315150914",
-  appId: "1:691315150914:web:b8039954644c4995801ddb"
+  appId: "1:691315150914:web:b8039954644c4995801ddb" */
 });
 
 const db = firebase.firestore();
@@ -413,7 +419,7 @@ bot.onText(/\/fish/, (msg) => {
     const randomNumber = Math.floor(Math.random() * 100) + 1;
 
     // Si el número aleatorio es mayor que 80, mostrar mensaje de que el cebo falló
-    if (randomNumber > 80) {
+    if (randomNumber > 5) {
       bot.sendMessage(msg.chat.id, "Al igual que en la vida real, *tu anzuelo falló titán.* \n\nVer tu pez: /myfish", {parse_mode: "Markdown"});
       return;
     }
@@ -536,8 +542,8 @@ bot.onText(/\/loteria(?:\s+(\d+))?/, async (msg, match) => {
   const number = match[1] ? parseInt(match[1]) : null; // Comprobar si se proporcionó un número
 
   // Si no se proporcionó un número o si está fuera del rango 1 al 25, enviar un mensaje de instrucción
-  if (!number || number < 1 || number > 25) {
-    bot.sendMessage(chatId, '🐳Por favor, elige un número titán dentro del rango del 1 al 25 para jugar a la lotería.\n\nEjemplo: /loteria 23');
+  if (!number || number < 1 || number > 30) {
+    bot.sendMessage(chatId, '🐳Por favor, elige un número titán dentro del rango del 1 al 30 para jugar a la lotería.\n\nEjemplo: /loteria 23');
     return;
   }
 
@@ -593,18 +599,6 @@ bot.onText(/\/top/, async (msg) => {
   bot.sendMessage(chatId, topUsersMessage, {parse_mode: "HTML"});
 })
 
-bot.onText(/\/eliminar_usuario (.+)/, (msg, match) => {
-  const chatId = msg.chat.id;
-  const userIds = match[1];
-
-  bot.banChatMember(chatId, userIds).then(() => {
-    bot.sendMessage(chatId, 'El usuario ha sido eliminado del grupo.');
-    db.collection('users').doc(userIds).set({ banned: true });
-  }).catch((error) => {
-    bot.sendMessage(chatId, 'Ha ocurrido un error al eliminar al usuario.');
-    console.error(error);
-  });
-});
 
 
 bot.onText(/\/ban (.+)/, (msg, match) => {
