@@ -2471,73 +2471,73 @@ const menuOpts = {
     inline_keyboard: [
       [
         {
-          text: "🐳→ Información del bot↓",
+          text: "Información del bot↓",
           callback_data: "1",
         },
       ],
       [//botones
         {
-          text: "🐋Actualización",
+          text: "Admin",
           callback_data: "3",
         },
         {
-          text: "🐋Advertencia",
+          text: "Advertencia",
           callback_data: "4",
         }
       ],
       [
         {
-          text: "🐋Anime",
+          text: "Anime",
           callback_data: "5",
         },
         {
-          text: "🐋Ban",
+          text: "Ban",
           callback_data: "6",
         },
         {
-          text: "🐋Bienvenida",
+          text: "Bienvenida",
           callback_data: "7",
         }
       ],
       [
         {
-          text: "🐋Extras",
+          text: "Extras",
           callback_data: "8",
         },
         {
-          text: "🐋GuraAdmins",
+          text: "GuraAdmins",
           callback_data: "10",
         },
         {
-          text: "🐋Herramientas",
+          text: "Herramientas",
           callback_data: "11",
         },
       ],
       [
         {
-          text: "🐋Ocio",
+          text: "Ocio",
           callback_data: "14",
         },
         {
-          text: "🐋Reglas",
+          text: "Reglas",
           callback_data: "15",
         },
         {
-          text: "🐋Stickers",
+          text: "Stickers",
           callback_data: "12",
         },
       ],
       [
         {
-          text: "🐋Silencio",
+          text: "Silencio",
           callback_data: "20",
         },
         {
-          text: "🐋Spam",
+          text: "Spam",
           callback_data: "21",
         },
         {
-          text: "🐋Utilidades",
+          text: "Utilidades",
           callback_data: "23",
         },
       ],
@@ -2614,7 +2614,7 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   if (action === "1") {
     bot.answerCallbackQuery({
       callback_query_id: callbackQuery.id,
-      text: "Este es el menú de ayuda del bot, si tienes dudas recuerda nuestro grupo de soporte, tambien aceptamos sugerencias y reportes de este mismo, ¡Disfruta nuestro esfuerzo!",
+      text: "Este es el menú de ayuda del bot, si tienes dudas recuerda nuestro grupo de soporte. ¡Disfruta nuestro esfuerzo! \nVersión: 7.6",
       show_alert: true,
     });
   }
@@ -2648,7 +2648,7 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   }
   if (action === "8") {
     text =
-      "Otros comandos de ocio extras: \n\n/calendario: Consulta la fecha actual. \n\n/random: El bot elige aleatoriamente una respuesta para tí; ejemplo: /random Minecraft, Clash Royale, Call of duty. (Se debe separar por comas las opciones). \n\n/loteria <1 al 25>: Diviertete jugando a la lotería y sal en el top (/top) global de usuarios con más puntos.\n\n/fish: ¡Atrapa peces! consulta tu colección con /myfish.\n\n\n/qtcompatibles: Responde al mensaje de un usuario para conocer que probabilidades hay tener éxito como pareja. \n\n/basta: Responde acertijos y divertete pensando la respuesta.\n\n/kiss, /besar: Entregale un beso a un usuario haciendo reply a uno de sus mensajes. \n\n/hug, /abrazar: Responde un mensaje en el chat para darle un tierno abrazo. \n\n/golpear, /kill: Al hacer respuesta de un mensaje en el chat, el bot responde con esta emoción. \n\n/spank, /nalguear: Entrega una nalgadita al usuario en respuesta de uno de sus mensaje en el grupito. \n\n/pat, /cariciar: Responde a un mensaje para dar una tierna caricia.";
+      "Otros comandos de ocio extras: \n\n/calendario: Consulta la fecha actual. \n\n/random: El bot elige aleatoriamente una respuesta para tí; ejemplo: /random Minecraft, Clash Royale, Call of duty. (Se debe separar por comas las opciones). \n\n/loteria <1 al 25>: Diviertete jugando a la lotería y sal en el top (/top) global de usuarios con más puntos.\n\n/fish: ¡Atrapa peces! consulta tu colección con /myfish.\n\n/qtcompatibles: Responde al mensaje de un usuario para conocer que probabilidades hay tener éxito como pareja. \n\n/basta: Responde acertijos y divertete pensando la respuesta.\n\n/kiss, /besar: Entregale un beso a un usuario haciendo reply a uno de sus mensajes. \n\n/hug, /abrazar: Responde un mensaje en el chat para darle un tierno abrazo. \n\n/golpear, /kill: Al hacer respuesta de un mensaje en el chat, el bot responde con esta emoción. \n\n/spank, /nalguear: Entrega una nalgadita al usuario en respuesta de uno de sus mensaje en el grupito. \n\n/pat, /cariciar: Responde a un mensaje para dar una tierna caricia.";
   }
 
   if (action === "10") {
@@ -2658,12 +2658,12 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
 
   if (action === "11") {
     text =
-      "Los siguientes comandos te ayudaran a traducir texto fácilmente: \n\n/tr <codígo ISO>: Responde a un texto para traducirlo al lenguaje especificado en el comando, el bot detecta el idioma de origen.\nEjemplos: /tr es, /tr en, /tr pt \n\n/lenguajes: El bot muestra los lenguajes disponibles para ser utilizados en el traductor.\n\n/sauce, /s: Responde a una imagen para dar con los 5 resultados más similares a la búsqueda (en mantenimiento). \n\n/reverse, /r: Respondes a una imagen y gawr gura te dará un resultado de búsqueda de Google (en mantenimiento).\n\n/tf: Responde a una imagen para subirla y el bot devuelve el enlace.\n\n/tg: Responde a una animación/gif para subirla y el bot responde con el enlace hecho. \n\n/tv: Responde a un video/mp4 para subirlo y el bot responde con el enlace hecho.";
+      "Los siguientes comandos te ayudaran fácilmente: \n\n/tr <codígo ISO>: Responde a un texto para traducirlo al lenguaje especificado en el comando, el bot detecta el idioma de origen.\nEjemplos: /tr es, /tr en, /tr pt \n\n/lenguajes: El bot muestra los lenguajes disponibles para ser utilizados en el traductor.\n\n/sauce, /s: Responde a una imagen para dar con los 5 resultados más similares a la búsqueda (en mantenimiento). \n\n/reverse, /r: Respondes a una imagen y gawr gura te dará un resultado de búsqueda de Google (en mantenimiento).\n\n/tf: Responde a una imagen para subirla a telegra.ph y el bot devuelve el enlace.\n\n/tg: Responde a una animación/gif para subirla a telegra.ph y el bot responde con el enlace hecho. \n\n/tv: Responde a un video/mp4 para subirlo a telegra.ph y el bot responde con el enlace hecho.";
   }
 
   if (action === "12") {
     text =
-      "¡Stickers con Gawr Gura!, no te pierdas sus comandos a continuación: \n\n/stickers <búsqueda>: Encuentra packs de stickers a partir de la búsqueda (en mantenimiento). \n\n/idsticker: Respondes a un sticker para obtener su ID y sticker pack de origen. \n\n/getsticker: Respondes a un sticker para convertirlo en un archivo documento PNG.";
+      "¡Stickers con Gawr Gura!, no te pierdas sus comandos a continuación: \n\n/sticker: Responde a una imagen para convertirla en un sticker. \n\n/stickers <búsqueda>: Encuentra packs de stickers a partir de la búsqueda (en mantenimiento). \n\n/idsticker: Respondes a un sticker para obtener su ID y sticker pack de origen. \n\n/getsticker: Respondes a un sticker para convertirlo en un archivo documento PNG.";
   }
   if (action === "14") {
     text =
@@ -2704,7 +2704,7 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   }
   if (action === "25") {
     text =
-      "Los comandos siguientes son supercomandos para usuarios que participen en dinámicas o aporten donaciones al bot (módulo en desarrollo).\n\n/anonimo <ID> <mensaje>: Envia un mensaje a cualquier usuario de forma anónima (no sabría quien eres, pero tú sí porque regresa los datos del usuario en sus respuestas\n\n/musica <URLYT>: ¡Descarga música de YT!.\n\n/facebook <URL>: ¡Descarga vídeos de FB!.\n\n/tiktok <URL>: ¡Descarga vídeos de TK!.\n\n/instagram <URL>: ¡Descarga vídeos de IG!.";
+      "Los comandos siguientes son supercomandos para usuarios que participen en dinámicas o aporten donaciones al bot (módulo en desarrollo).\n\n/anonimo <ID> <mensaje>: Envia un mensaje a cualquier usuario de forma anónima (no sabría quien eres, pero tú sí porque regresa los datos del usuario en sus respuestas\n\n/musica <URLYT>: ¡Descarga música de YT!.\n\n/facebook <URL>: ¡Descarga vídeos de FB en HD!.\n\n/tiktok <URL>: ¡Descarga vídeos/audios de TK!.\n\n/instagram <URL>: ¡Descarga vídeos/img de IG!.";
   }
   if (action === "29") {
     text =
