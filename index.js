@@ -41,7 +41,7 @@ app
     response.send(result);
   })
 
-
+  const cheerio = require('cheerio');
 
 /*BETA = 1989987277:AAEOjOcJyNIrLKMxRGDu5EqcTSA8WC0I5aA*/////////////////////////
 /*ORIGINAL = 1785797976:AAHHMJMr9qCBZCHib3a6VYg_wrF5XPe2cro*/ 
@@ -7586,7 +7586,7 @@ bot.on('message', (msg) => {
   }
 });
 
-const combotStickersUrl = "https://combot.org/telegram/stickers?q=";
+//const combotStickersUrl = "https://combot.org/telegram/stickers?q=";
 
 
 /* bot.onText(/\/stickers (.+)/, async (msg, match) => {
@@ -8784,4 +8784,33 @@ bot.on('message', async (msg) => {
           bot.sendMessage(chatId, '❌No eres el usuario que debe resolver el captcha. *¡Aguarda!*', { parse_mode: "Markdown" });
       }
   }
+});
+
+// Manejadores globales para excepciones y rechazos de promesas no manejados
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  // Puedes reiniciar el bot o hacer algo más aquí
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception thrown:', error);
+  // Puedes reiniciar el bot o hacer algo más aquí
+});
+
+// Función para reiniciar el bot en caso de error crítico
+const restartBot = () => {
+  console.log('Reiniciando el bot...');
+  bot.stopPolling();
+  bot.startPolling();
+};
+
+// Llama a restartBot en caso de excepciones no manejadas
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception thrown:', error);
+  restartBot();
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  restartBot();
 });
