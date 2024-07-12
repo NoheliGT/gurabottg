@@ -43,9 +43,9 @@ app
 
   const cheerio = require('cheerio');
 
-/*BETA = 1989987277:AAEOjOcJyNIrLKMxRGDu5EqcTSA8WC0I5aA*/////////////////////////
-/*ORIGINAL = 1785797976:AAHHMJMr9qCBZCHib3a6VYg_wrF5XPe2cro*/ 
-const bot = new TelegramBot("1989987277:AAEOjOcJyNIrLKMxRGDu5EqcTSA8WC0I5aA", {
+/*BETA = 1989987277:AAF8-Kmb1pfNyXersBniOciDDxDjjJPPzXk*/////////////////////////
+/*ORIGINAL = 1785797976:AAGCPW4c1cAXWEEf6pWt14mLifi06WzUZsQ*/ 
+const bot = new TelegramBot("1785797976:AAGCPW4c1cAXWEEf6pWt14mLifi06WzUZsQ", {
   polling: true,
 });
 
@@ -8786,3 +8786,48 @@ bot.on('message', async (msg) => {
   }
 });
 
+bot.onText(/\/sticker/, (msg) => {
+  const chatId = msg.chat.id;
+  const reply = msg.reply_to_message;
+
+  if (reply && reply.photo) {
+      // Obtener el ID de la foto con mayor resolución
+      const fileId = reply.photo[reply.photo.length - 1].file_id;
+
+      bot.getFileLink(fileId).then(fileUrl => {
+          // Descargar la imagen
+          axios({
+              url: fileUrl,
+              responseType: 'stream'
+          }).then(response => {
+              // Guardar la imagen temporalmente
+              const path = `./temp_image_${chatId}.jpg`;
+              response.data.pipe(fs.createWriteStream(path))
+                  .on('finish', () => {
+                      // Enviar la imagen como sticker
+                      bot.sendSticker(chatId, path)
+                          .then(() => {
+                              // Eliminar la imagen temporal
+                              fs.unlinkSync(path);
+                          })
+                          .catch(err => {
+                              bot.sendMessage(chatId, 'Error al enviar el sticker.');
+                              console.error(err);
+                          });
+                  })
+                  .on('error', err => {
+                      bot.sendMessage(chatId, 'Error al descargar la imagen.');
+                      console.error(err);
+                  });
+          }).catch(err => {
+              bot.sendMessage(chatId, 'Error al obtener el enlace de la imagen.');
+              console.error(err);
+          });
+      }).catch(err => {
+          bot.sendMessage(chatId, 'Error al obtener el archivo de la imagen.');
+          console.error(err);
+      });
+  } else {
+      bot.sendMessage(chatId, 'Por favor, responde a una imagen con el comando /sticker.');
+  }
+});
