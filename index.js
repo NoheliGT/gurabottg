@@ -45,7 +45,7 @@ app
 
 /*BETA = 1989987277:AAEOjOcJyNIrLKMxRGDu5EqcTSA8WC0I5aA*/////////////////////////
 /*ORIGINAL = 1785797976:AAHHMJMr9qCBZCHib3a6VYg_wrF5XPe2cro*/ 
-const bot = new TelegramBot("1785797976:AAHHMJMr9qCBZCHib3a6VYg_wrF5XPe2cro", {
+const bot = new TelegramBot("1989987277:AAEOjOcJyNIrLKMxRGDu5EqcTSA8WC0I5aA", {
   polling: true,
 });
 
@@ -8786,31 +8786,3 @@ bot.on('message', async (msg) => {
   }
 });
 
-// Manejadores globales para excepciones y rechazos de promesas no manejados
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-  // Puedes reiniciar el bot o hacer algo más aquí
-});
-
-process.on('uncaughtException', (error) => {
-  console.error('Uncaught Exception thrown:', error);
-  // Puedes reiniciar el bot o hacer algo más aquí
-});
-
-// Función para reiniciar el bot en caso de error crítico
-const restartBot = () => {
-  console.log('Reiniciando el bot...');
-  bot.stopPolling();
-  bot.startPolling();
-};
-
-// Llama a restartBot en caso de excepciones no manejadas
-process.on('uncaughtException', (error) => {
-  console.error('Uncaught Exception thrown:', error);
-  restartBot();
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-  restartBot();
-});
