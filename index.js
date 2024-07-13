@@ -71,12 +71,18 @@ const firebase = require('firebase/app');
 require('firebase/firestore');
 
 firebase.initializeApp({
-  apiKey: "AIzaSyAoH1GoezhbtKXG7sokdHi51TbrKUZqiLU",
+  apiKey: "AIzaSyA0EYNk-9rY1aUV304T9fS-3HxBCuTib_U",
+  authDomain: "gura3-6e953.firebaseapp.com",
+  projectId: "gura3-6e953",
+  storageBucket: "gura3-6e953.appspot.com",
+  messagingSenderId: "441085390180",
+  appId: "1:441085390180:web:337ecb719a0e152cdc9e71"
+/*   apiKey: "AIzaSyAoH1GoezhbtKXG7sokdHi51TbrKUZqiLU",
   authDomain: "gura2-35861.firebaseapp.com",
   projectId: "gura2-35861",
   storageBucket: "gura2-35861.appspot.com",
   messagingSenderId: "241408300363",
-  appId: "1:241408300363:web:86ccb120d859cd36be44ce"
+  appId: "1:241408300363:web:86ccb120d859cd36be44ce" */
  /*  apiKey: "AIzaSyDmDpGZdg_ZzTOiia83C3W4cprdwgHlqIE",
   authDomain: "gurabot-a5f12.firebaseapp.com",
   projectId: "gurabot-a5f12",
@@ -400,15 +406,15 @@ bot.on('message', async (msg) => {
  */
 let lastFishCommandTime = {};
 
-bot.onText(/\/fish/, (msg) => {
+bot.onText(/\/fish/, async (msg) => {
   try {
     const now = new Date().getTime();
     const userId = msg.from.id;
 
-    // Comprobar si el usuario ha ejecutado el comando /fish antes y ha pasado menos de 15 minutos
-    if (lastFishCommandTime[userId] && now - lastFishCommandTime[userId] < 15 * 60 * 1000) {
-      const remainingTime = Math.ceil((15 * 60 * 1000 - (now - lastFishCommandTime[userId])) / 1000);
-      bot.sendMessage(msg.chat.id, `<b>Por favor</b> ${msg.from.first_name}, espera <code>${remainingTime}</code> segundos antes de usar el comando /fish nuevamente.`, {parse_mode: "HTML"});
+    // Comprobar si el usuario ha ejecutado el comando /fish antes y ha pasado menos de 10 minutos
+    if (lastFishCommandTime[userId] && now - lastFishCommandTime[userId] < 10 * 60 * 1000) {
+      const remainingTime = Math.ceil((10 * 60 * 1000 - (now - lastFishCommandTime[userId])) / 1000);
+      bot.sendMessage(msg.chat.id, `<b>Por favor</b> ${msg.from.first_name}, espera <code>${remainingTime}</code> segundos antes de usar el comando /fish nuevamente.`, { parse_mode: "HTML" });
       return;
     }
 
@@ -418,9 +424,9 @@ bot.onText(/\/fish/, (msg) => {
     // Generar un número aleatorio entre 1 y 100
     const randomNumber = Math.floor(Math.random() * 100) + 1;
 
-    // Si el número aleatorio es mayor que 80, mostrar mensaje de que el cebo falló
+    // Si el número aleatorio es mayor que 5, mostrar mensaje de que el cebo falló
     if (randomNumber > 5) {
-      bot.sendMessage(msg.chat.id, "Al igual que en la vida real, *tu anzuelo falló titán.* \n\nVer tu pez: /myfish", {parse_mode: "Markdown"});
+      bot.sendMessage(msg.chat.id, "Al igual que en la vida real, *tu anzuelo falló titán.* \n\nVer tu pez: /myfish", { parse_mode: "Markdown" });
       return;
     }
 
@@ -431,10 +437,10 @@ bot.onText(/\/fish/, (msg) => {
 
     // Mensaje de respuesta
     const message = `*¡🎣Buen anzuelo titán!* Atrapaste un(a) ${selectedFish}: ${selectedEmoji} \n\n*Ver tu pez:* /myfish`;
-    bot.sendMessage(msg.chat.id, message, {parse_mode: "Markdown"});
+    bot.sendMessage(msg.chat.id, message, { parse_mode: "Markdown" });
 
     // Guardar el pez atrapado en Firestore
-    db.collection('peces').add({
+    await db.collection('peces').add({
       userId: msg.from.id,
       fish: selectedFish,
       emoji: selectedEmoji
@@ -447,31 +453,6 @@ bot.onText(/\/fish/, (msg) => {
     bot.sendMessage(msg.chat.id, 'Ocurrió un error al procesar el comando. Por favor, inténtalo de nuevo más tarde.');
   }
 });
-/////////////
-function getFishEmoji(fishName) {
-  switch (fishName) {
-    case 'Blowfish':
-      return '🐡';
-    case 'Pescado normal':
-      return '🐟';
-    case 'Pez tropical':
-      return '🐠';
-    case 'Cangrejo(s)':
-      return '🦀';
-    case 'Calamar':
-      return '🦑';
-    case 'Delfín(es)':
-      return '🐬';
-    case 'Tiburón(es)':
-      return '🦈';
-    case 'Cocodrilo(s)':
-      return '🐊';
-    case 'Ballena(s)':
-      return '🐳';
-    default:
-      return ''; // Devolver cadena vacía si el nombre del pez no coincide con ninguno de los casos anteriores
-  }
-}
 
 // Comando /myfish
 bot.onText(/\/myfish/, async (msg) => {
