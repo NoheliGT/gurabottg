@@ -454,7 +454,7 @@ bot.onText(/\/fish/, async (msg) => {
   }
 });
 
-// Comando /myfish
+// Comando /////myfish
 bot.onText(/\/myfish/, async (msg) => {
   try {
     // Consultar los peces atrapados por el usuario desde Firestore
