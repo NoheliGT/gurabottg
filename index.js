@@ -77,18 +77,6 @@ firebase.initializeApp({
   storageBucket: "gura3-6e953.appspot.com",
   messagingSenderId: "441085390180",
   appId: "1:441085390180:web:337ecb719a0e152cdc9e71"
-/*   apiKey: "AIzaSyAoH1GoezhbtKXG7sokdHi51TbrKUZqiLU",
-  authDomain: "gura2-35861.firebaseapp.com",
-  projectId: "gura2-35861",
-  storageBucket: "gura2-35861.appspot.com",
-  messagingSenderId: "241408300363",
-  appId: "1:241408300363:web:86ccb120d859cd36be44ce" */
- /*  apiKey: "AIzaSyDmDpGZdg_ZzTOiia83C3W4cprdwgHlqIE",
-  authDomain: "gurabot-a5f12.firebaseapp.com",
-  projectId: "gurabot-a5f12",
-  storageBucket: "gurabot-a5f12.appspot.com",
-  messagingSenderId: "691315150914",
-  appId: "1:691315150914:web:b8039954644c4995801ddb" */
 });
 
 const db = firebase.firestore();
