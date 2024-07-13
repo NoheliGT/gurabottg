@@ -71,12 +71,12 @@ const firebase = require('firebase/app');
 require('firebase/firestore');
 
 firebase.initializeApp({
-  apiKey: "AIzaSyA0EYNk-9rY1aUV304T9fS-3HxBCuTib_U",
-  authDomain: "gura3-6e953.firebaseapp.com",
-  projectId: "gura3-6e953",
-  storageBucket: "gura3-6e953.appspot.com",
-  messagingSenderId: "441085390180",
-  appId: "1:441085390180:web:337ecb719a0e152cdc9e71"
+apiKey: "AIzaSyC0NL7UxtJSL2Bw__YV8DiGzetLi1i1_TU",
+  authDomain: "gura4-b7f7f.firebaseapp.com",
+  projectId: "gura4-b7f7f",
+  storageBucket: "gura4-b7f7f.appspot.com",
+  messagingSenderId: "252061482263",
+  appId: "1:252061482263:web:477dda6ff649aa97f40b52"
 });
 
 const db = firebase.firestore();
@@ -392,7 +392,7 @@ bot.on('message', async (msg) => {
   }, { merge: true });
 });
  */
-let lastFishCommandTime = {};
+/* let lastFishCommandTime = {};
 
 bot.onText(/\/fish/, async (msg) => {
   try {
@@ -501,10 +501,10 @@ bot.onText(/\/myfish/, async (msg) => {
     console.error('Error al procesar el comando /myfish:', error);
     bot.sendMessage(msg.chat.id, 'Ocurrió un error al procesar el comando. Por favor, inténtalo de nuevo más tarde.');
   }
-});
+}); */
 /////////////////
 // Comando /loteriaa
-bot.onText(/\/loteria(?:\s+(\d+))?/, async (msg, match) => {
+/* bot.onText(/\/loteria(?:\s+(\d+))?/, async (msg, match) => {
   const chatId = msg.chat.id;
   const userId = msg.from.id.toString();
   const username = msg.from.first_name;
@@ -567,8 +567,31 @@ bot.onText(/\/top/, async (msg) => {
 
   bot.sendMessage(chatId, topUsersMessage, {parse_mode: "HTML"});
 })
-
-
+ */
+bot.onText(/^\/fish/, (msg) => {
+  const chatId = msg.chat.id;
+  bot.sendMessage(chatId, `<🔏 <code>¡En mantenimiento! Actualización: @Gawrguranoticias</code>`, {
+    parse_mode: "HTML",
+  });
+});
+bot.onText(/^\/myfish/, (msg) => {
+  const chatId = msg.chat.id;
+  bot.sendMessage(chatId, `<🔏 <code>¡En mantenimiento! Actualización: @Gawrguranoticias</code>`, {
+    parse_mode: "HTML",
+  });
+});
+bot.onText(/^\/top/, (msg) => {
+  const chatId = msg.chat.id;
+  bot.sendMessage(chatId, `<🔏 <code>¡En mantenimiento! Actualización: @Gawrguranoticias</code>`, {
+    parse_mode: "HTML",
+  });
+});
+bot.onText(/^\/loteria/, (msg) => {
+  const chatId = msg.chat.id;
+  bot.sendMessage(chatId, `<🔏 <code>¡En mantenimiento! Actualización: @Gawrguranoticias</code>`, {
+    parse_mode: "HTML",
+  });
+});
 
 bot.onText(/\/ban (.+)/, (msg, match) => {
   const chatId = msg.chat.id;
