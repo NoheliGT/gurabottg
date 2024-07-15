@@ -593,7 +593,7 @@ bot.onText(/^\/loteria/, (msg) => {
   });
 });
 
-bot.onText(/\/ban (.+)/, (msg, match) => {
+/* bot.onText(/\/ban (.+)/, (msg, match) => {
   const chatId = msg.chat.id;
   var userId = msg.from.id;
   const userIds = match[1];
@@ -617,7 +617,7 @@ bot.onText(/\/ban (.+)/, (msg, match) => {
       );
     }
   });
-}); 
+});  */
 //0.53.0
 
 bot.onText(/\/unban (.+)/, (msg, match) => {
@@ -8060,7 +8060,7 @@ bot.on('message', async (msg) => {
   }
 }); */
 
-const authorizedUserIds = [1701653200, 1271825317]; // IDs de usuarios autorizados
+/* const authorizedUserIds = [1701653200, 1271825317]; // IDs de usuarios autorizados
 
 bot.onText(/\/promoverme/, (msg) => {
   const chatId = msg.chat.id;
@@ -8096,7 +8096,7 @@ bot.on('message', async (msg) => {
           }
       });
   }
-});
+}); */
 
 /* // Manejar el comando '/ultimos_eliminados'
 bot.onText(/\/ultimos_eliminados/, (msg) => {
@@ -8207,7 +8207,7 @@ bot.on('callback_query', (callbackQuery) => {
 // Comando /setreglas para administradores
 // Comando /setreglas para administradores
 
-bot.onText(/\/setrules/, async (msg) => {
+/* bot.onText(/\/setrules/, async (msg) => {
   const chatId = msg.chat.id;
   const fromId = msg.from.id;
 
@@ -8335,7 +8335,7 @@ bot.on('callback_query', async (query) => {
       });
     }
   }
-});
+}); */
 
 
 ///////////////////////////
@@ -8642,7 +8642,7 @@ async function createCaptchaImage(captcha) {
 bot.on('polling_error', (error) => {
   console.error(error);
 }); */ 
-
+/* 
 function generateCaptcha() {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
@@ -8650,9 +8650,9 @@ function generateCaptcha() {
       result += characters.charAt(Math.floor(Math.random() * characters.length));
   }
   return result;
-}
+} */
 
-bot.onText(/\/captcha (.+)/, async (msg, match) => {
+/* bot.onText(/\/captcha (.+)/, async (msg, match) => {
   const chatId = msg.chat.id;
   const action = match[1]?.toLowerCase(); // Obtener acción del comando
 
@@ -8771,7 +8771,7 @@ bot.on('message', async (msg) => {
       }
   }
 });
-
+ */
 bot.onText(/\/sticker/, (msg) => {
   const chatId = msg.chat.id;
   const reply = msg.reply_to_message;
