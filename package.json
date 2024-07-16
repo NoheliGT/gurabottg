@@ -27,6 +27,7 @@
     "google-tts-api": "^0.0.6",
     "image-search": "^0.0.1",
     "mailist": "^1.0.3",
+    "mysql": "^2.18.1",
     "node-telegram-bot-api": "^0.54.0",
     "pinterest-dl": "^1.0.1",
     "priyansh-ig-downloader": "^2.0.0",

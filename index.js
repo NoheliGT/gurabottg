@@ -29,7 +29,28 @@ const {
   GOOGLE_IMG_INVERSE_ENGINE_UPLOAD,
   GOOGLE_QUERY,
 } = require("google-img-scrap");
+/* const mysql = require('mysql');
 
+const dbConnection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'guraprueba'
+});
+
+// Conectar a la base de datos
+dbConnection.connect(err => {
+  if (err) {
+      console.error('Error al conectar a MySQL:', err);
+      return;
+  }
+  console.log('Conexión establecida con MySQL');
+});
+// Escuchar errores de conexión a MySQL
+dbConnection.on('error', (err) => {
+  console.error('Error en la conexión a MySQL:', err);
+  dbConnection.connect();
+}); */
 
 var app = express();
 
@@ -41,7 +62,7 @@ app
     response.send(result);
   })
 
-  const cheerio = require('cheerio');
+/*   const cheerio = require('cheerio'); */
 
 /*BETA = 1989987277:AAF8-Kmb1pfNyXersBniOciDDxDjjJPPzXk*/////////////////////////
 /*ORIGINAL = 1785797976:AAG0JqUc1IJhK6i7wCyYxx0swR7vWI2QX00*/ 
@@ -859,7 +880,7 @@ bot.onText(/^\/emisionanime/, async (msg) => {
   }
 });
 
- const usuariosAutorizados = ['1701653200', '1812043697', '929203318', "6394321121", "1873607826", "1271825317", "1812043697"];
+ const usuariosAutorizados = ['1701653200', '1812043697', '929203318', "6394321121", "1873607826", "1271825317", "1812043697", "1708427708", "6459813492", "5400291670", "1667685372", "6586449607", "2098540678", "1812043697"];
 
 bot.onText(/\/musica (.+)/, async function (msg, match) {
   const chatId = msg.chat.id;
@@ -8817,3 +8838,74 @@ bot.onText(/\/sticker/, (msg) => {
       bot.sendMessage(chatId, 'Por favor, responde a una imagen con el comando /sticker.');
   }
 });
+
+
+///////MYSQL
+/* const { promisify } = require('util');
+
+const query = promisify(dbConnection.query).bind(dbConnection);
+
+bot.onText(/\/loteria(?:\s+(\d+))?/, async (msg, match) => {
+  const chatId = msg.chat.id;
+  const userId = msg.from.id.toString();
+  const username = msg.from.username ? msg.from.username : userId; // Usar alias si existe, de lo contrario, usar el ID del usuario
+  const number = match[1] ? parseInt(match[1]) : null; // Comprobar si se proporcionó un número
+
+  // Si no se proporcionó un número o si está fuera del rango 1 al 30, enviar un mensaje de instrucción
+  if (!number || number < 1 || number > 3) {
+    bot.sendMessage(chatId, 'Por favor, elige un número titán dentro del rango del 1 al 30 para jugar a la lotería.\n\nEjemplo: /loteria 23');
+    return;
+  }
+
+  try {
+    // Verificar si han pasado al menos 10 minutos desde el último juego
+    const lastPlayResults = await query('SELECT timestamp FROM lottery WHERE user_id = ?', [userId]);
+    if (lastPlayResults.length > 0) {
+      const lastPlayTime = lastPlayResults[0].timestamp;
+      const currentTime = Date.now();
+      const elapsedTime = currentTime - lastPlayTime;
+      if (elapsedTime < 600000) {
+        bot.sendMessage(chatId, 'Debes esperar al menos 10 minutos para el siguiente intento titán.');
+        return;
+      }
+    }
+
+    // Generar número aleatorio
+    const randomNum = Math.floor(Math.random() * 2) + 1;
+
+    // Verificar si acertó
+    if (number === randomNum) {
+      // Incrementar puntos
+      await query('INSERT INTO users (user_id, username, points) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE points = points + 1, username = ?', [userId, username, username]);
+      bot.sendMessage(chatId, `¡Felicidades ${username}! Acertaste el número. Has ganado 1 punto titán.`);
+    } else {
+      bot.sendMessage(chatId, `Lo siento ${username}, el número ganador era ${randomNum}. Inténtalo de nuevo titán.`);
+    }
+
+    // Registrar el tiempo del último juego
+    await query('INSERT INTO lottery (user_id, timestamp) VALUES (?, ?) ON DUPLICATE KEY UPDATE timestamp = ?', [userId, Date.now(), Date.now()]);
+  } catch (error) {
+    console.error(error);
+    bot.sendMessage(chatId, 'Hubo un error al procesar tu solicitud. Inténtalo de nuevo más tarde.');
+  }
+});
+
+bot.onText(/\/top/, async (msg) => {
+  const chatId = msg.chat.id;
+
+  try {
+    // Obtener los 10 usuarios con más puntos
+    const topUsersResults = await query('SELECT user_id, username, points FROM users ORDER BY points DESC LIMIT 10');
+
+    let topUsersMessage = 'Top 10 usuarios en loteria global (Gawr Gura):\n\n';
+    topUsersResults.forEach((user, index) => {
+      const name = user.username || user.user_id;
+      topUsersMessage += `${index + 1}. ${name} ➡ ${user.points} puntos\n`;
+    });
+
+    bot.sendMessage(chatId, topUsersMessage);
+  } catch (error) {
+    console.error(error);
+    bot.sendMessage(chatId, 'Hubo un error al obtener la lista de los mejores jugadores. Inténtalo de nuevo más tarde.');
+  }
+}); */
