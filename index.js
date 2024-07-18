@@ -29,13 +29,20 @@ const {
   GOOGLE_IMG_INVERSE_ENGINE_UPLOAD,
   GOOGLE_QUERY,
 } = require("google-img-scrap");
-/* const mysql = require('mysql');
+const path = require('path');
+
+
+
+
+/*  const mysql = require('mysql');
+ const { promisify } = require('util');
 
 const dbConnection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: '',
-  database: 'guraprueba'
+  database: 'guraprueba',
+  charset: 'utf8mb4'
 });
 
 // Conectar a la base de datos
@@ -50,7 +57,7 @@ dbConnection.connect(err => {
 dbConnection.on('error', (err) => {
   console.error('Error en la conexión a MySQL:', err);
   dbConnection.connect();
-}); */
+});  */
 
 var app = express();
 
@@ -880,7 +887,48 @@ bot.onText(/^\/emisionanime/, async (msg) => {
   }
 });
 
- const usuariosAutorizados = ['1701653200', '1812043697', '929203318', "6394321121", "1873607826", "1271825317", "1812043697", "1708427708", "6459813492", "5400291670", "1667685372", "6586449607", "2098540678", "1812043697"];
+ const usuariosAutorizados = ['1701653200', '1812043697', '929203318', "6394321121", "1873607826", "1271825317", "1812043697", "1708427708", "6459813492", "5400291670", "1667685372", "6586449607", "2098540678", "1812043697",  "5885875459",  "1065469951",  "5400291670",  "6614100434"];
+
+ bot.onText(/\/superusuarios/, async (msg) => {
+  const chatId = msg.chat.id;
+
+  // Crear el contenido del archivo de texto
+  const contenido = usuariosAutorizados.join('\n');
+  
+  // Definir la ruta del archivo
+  const filePath = path.join(__dirname, 'superusuarios.txt');
+  
+  // Escribir el archivo
+  fs.writeFile(filePath, contenido, (err) => {
+    if (err) {
+      console.error('Error al escribir el archivo:', err);
+      bot.sendMessage(chatId, 'Hubo un error al crear el archivo de superusuarios.');
+      return;
+    }
+
+    // Enviar el archivo
+    bot.sendDocument(chatId, filePath)
+      .then(() => {
+        console.log('Archivo enviado correctamente.');
+        
+        // Opcional: Eliminar el archivo después de enviarlo
+        fs.unlink(filePath, (err) => {
+          if (err) {
+            console.error('Error al eliminar el archivo:', err);
+          } else {
+            console.log('Archivo eliminado correctamente.');
+          }
+        });
+      })
+      .catch((error) => {
+        console.error('Error al enviar el archivo:', error);
+        bot.sendMessage(chatId, 'Hubo un error al enviar el archivo de superusuarios.');
+      });
+  });
+});
+
+
+
 
 bot.onText(/\/musica (.+)/, async function (msg, match) {
   const chatId = msg.chat.id;
@@ -8841,31 +8889,43 @@ bot.onText(/\/sticker/, (msg) => {
 
 
 ///////MYSQL
-/* const { promisify } = require('util');
 
-const query = promisify(dbConnection.query).bind(dbConnection);
+/* const query = promisify(dbConnection.query).bind(dbConnection);
+
+const sanitizeUsername = (username) => {
+  return username.replace(/[<>&'"]/g, function (match) {
+    switch (match) {
+      case '<': return '&lt;';
+      case '>': return '&gt;';
+      case '&': return '&amp;';
+      case '\'': return '&apos;';
+      case '"': return '&quot;';
+      default: return match;
+    }
+  });
+};
 
 bot.onText(/\/loteria(?:\s+(\d+))?/, async (msg, match) => {
   const chatId = msg.chat.id;
   const userId = msg.from.id.toString();
-  const username = msg.from.username ? msg.from.username : userId; // Usar alias si existe, de lo contrario, usar el ID del usuario
+  const username = sanitizeUsername(msg.from.first_name);
   const number = match[1] ? parseInt(match[1]) : null; // Comprobar si se proporcionó un número
 
   // Si no se proporcionó un número o si está fuera del rango 1 al 30, enviar un mensaje de instrucción
-  if (!number || number < 1 || number > 3) {
-    bot.sendMessage(chatId, 'Por favor, elige un número titán dentro del rango del 1 al 30 para jugar a la lotería.\n\nEjemplo: /loteria 23');
+  if (!number || number < 1 || number > 2) {
+    bot.sendMessage(chatId, 'Por favor, elige un número dentro del rango del 1 al 30 para jugar a la lotería.\n\nEjemplo: /loteria 23');
     return;
   }
 
   try {
-    // Verificar si han pasado al menos 10 minutos desde el último juego
+    // Verificar si han pasado al menos 1 minuto desde el último juego
     const lastPlayResults = await query('SELECT timestamp FROM lottery WHERE user_id = ?', [userId]);
     if (lastPlayResults.length > 0) {
       const lastPlayTime = lastPlayResults[0].timestamp;
       const currentTime = Date.now();
       const elapsedTime = currentTime - lastPlayTime;
-      if (elapsedTime < 600000) {
-        bot.sendMessage(chatId, 'Debes esperar al menos 10 minutos para el siguiente intento titán.');
+      if (elapsedTime < 60000) { // 1 minuto en milisegundos
+        bot.sendMessage(chatId, 'Debes esperar al menos 1 minuto para el siguiente intento.');
         return;
       }
     }
@@ -8877,9 +8937,9 @@ bot.onText(/\/loteria(?:\s+(\d+))?/, async (msg, match) => {
     if (number === randomNum) {
       // Incrementar puntos
       await query('INSERT INTO users (user_id, username, points) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE points = points + 1, username = ?', [userId, username, username]);
-      bot.sendMessage(chatId, `¡Felicidades ${username}! Acertaste el número. Has ganado 1 punto titán.`);
+      bot.sendMessage(chatId, `¡Felicidades ${username}! Acertaste el número. Has ganado 1 punto.`);
     } else {
-      bot.sendMessage(chatId, `Lo siento ${username}, el número ganador era ${randomNum}. Inténtalo de nuevo titán.`);
+      bot.sendMessage(chatId, `Lo siento ${username}, el número ganador era ${randomNum}. Inténtalo de nuevo.`);
     }
 
     // Registrar el tiempo del último juego
@@ -8897,15 +8957,152 @@ bot.onText(/\/top/, async (msg) => {
     // Obtener los 10 usuarios con más puntos
     const topUsersResults = await query('SELECT user_id, username, points FROM users ORDER BY points DESC LIMIT 10');
 
-    let topUsersMessage = 'Top 10 usuarios en loteria global (Gawr Gura):\n\n';
+    let topUsersMessage = 'Top 10 usuarios en loteria global:\n\n';
     topUsersResults.forEach((user, index) => {
-      const name = user.username || user.user_id;
-      topUsersMessage += `${index + 1}. ${name} ➡ ${user.points} puntos\n`;
+      const name = sanitizeUsername(user.username) || 'Usuario sin nombre';
+      topUsersMessage += `${index + 1}. ${name} | ${user.user_id} ➡ ${user.points} puntos\n`;
     });
 
-    bot.sendMessage(chatId, topUsersMessage);
+    // Intenta enviar el mensaje y captura cualquier error
+    try {
+      await bot.sendMessage(chatId, topUsersMessage);
+    } catch (error) {
+      // Aquí puedes manejar el error si es necesario
+      console.error('Error sending top users message:', error.message);
+    }
   } catch (error) {
     console.error(error);
     bot.sendMessage(chatId, 'Hubo un error al obtener la lista de los mejores jugadores. Inténtalo de nuevo más tarde.');
+  }
+}); 
+//////////////////////////////////////
+dbConnection.query = promisify(dbConnection.query);
+
+bot.onText(/\/setrules/, async (msg) => {
+  const chatId = msg.chat.id;
+  const fromId = msg.from.id;
+
+  if (msg.chat.type !== 'private') {
+    try {
+      const chatMember = await bot.getChatMember(chatId, fromId);
+
+      if (chatMember.status === 'administrator' || chatMember.status === 'creator') {
+        if (msg.reply_to_message && msg.reply_to_message.text) {
+          const reglas = msg.reply_to_message.text;
+          await dbConnection.query('INSERT INTO group_rules (chat_id, rules) VALUES (?, ?) ON DUPLICATE KEY UPDATE rules = ?', [chatId, reglas, reglas]);
+          bot.sendMessage(chatId, '¡Reglas establecidas correctamente✅!');
+        } else {
+          bot.sendMessage(chatId, '❌Por favor, responde a un mensaje de texto con las reglas del grupo.');
+        }
+      } else {
+        bot.sendMessage(chatId, '❌Solo los administradores pueden establecer las reglas.');
+      }
+    } catch (error) {
+      console.error(error);
+      bot.sendMessage(chatId, 'Hubo un error al establecer las reglas.');
+    }
+  } else {
+    bot.sendMessage(chatId, '❌Este comando solo funciona en grupos.');
+  }
+});
+
+// Comando /clearrules para limpiar las reglas del grupo
+bot.onText(/\/clearrules/, async (msg) => {
+  const chatId = msg.chat.id;
+  const fromId = msg.from.id;
+
+  if (msg.chat.type !== 'private') {
+    try {
+      const chatMember = await bot.getChatMember(chatId, fromId);
+
+      if (chatMember.status === 'administrator' || chatMember.status === 'creator') {
+        await dbConnection.query('DELETE FROM group_rules WHERE chat_id = ?', [chatId]);
+        bot.sendMessage(chatId, 'Reglas del grupo eliminadas correctamente titán✅.');
+      } else {
+        bot.sendMessage(chatId, '❌Solo los administradores pueden limpiar las reglas del grupo titán.');
+      }
+    } catch (error) {
+      console.error(error);
+      bot.sendMessage(chatId, 'Hubo un error al limpiar las reglas del grupo.');
+    }
+  } else {
+    bot.sendMessage(chatId, '❌Este comando solo funciona en grupos.');
+  }
+});
+
+// Comando /rules para todos los usuarios
+bot.onText(/\/rules/, async (msg) => {
+  const chatId = msg.chat.id;
+
+  if (msg.chat.type !== 'private') {
+    try {
+      const results = await dbConnection.query('SELECT rules FROM group_rules WHERE chat_id = ?', [chatId]);
+      if (results.length > 0) {
+        const opts = {
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: 'Ver reglas', callback_data: `ver_reglas_${chatId}` }]
+            ]
+          }
+        };
+        bot.sendMessage(chatId, '✅Puedes ver las reglas del grupo a continuación en el privado del bot.', opts);
+      } else {
+        bot.sendMessage(chatId, '❌No hay reglas establecidas para este grupo. Establece las primeras con /setrules.', {
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: 'Ver noticias',
+                  url: 'https://t.me/Gawrguranoticias'
+                }
+              ]
+            ]
+          }
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      bot.sendMessage(chatId, '❌Hubo un error al obtener las reglas del grupo.');
+    }
+  } else {
+    bot.sendMessage(chatId, '❌Este comando solo funciona en grupos.');
+  }
+});
+
+// Manejo del botón "Ver reglas" para usuarios no administradores
+bot.on('callback_query', async (query) => {
+  const data = query.data;
+  const chatId = query.message.chat.id;
+  const messageId = query.message.message_id;
+  const fromId = query.from.id;
+
+  if (data.startsWith('ver_reglas_')) {
+    const groupChatId = data.split('_')[2];
+
+    try {
+      const results = await dbConnection.query('SELECT rules FROM group_rules WHERE chat_id = ?', [groupChatId]);
+      if (results.length > 0) {
+        // Enviar las reglas por mensaje privado
+        await bot.sendMessage(fromId, `Reglas del grupo:\n\n${results[0].rules}`);
+        // Editar el mensaje en el grupo
+        await bot.editMessageText('¡✅Enviado! Consulta las reglas de este grupo en el privado del bot.', {
+          chat_id: chatId,
+          message_id: messageId
+        });
+      } else {
+        await bot.sendMessage(fromId, '❌No hay reglas establecidas para este grupo.');
+        await bot.editMessageText('❌No hay reglas establecidas para este grupo.', {
+          chat_id: chatId,
+          message_id: messageId
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      await bot.sendMessage(fromId, '❌Hubo un error al obtener las reglas.');
+      await bot.editMessageText('❌Hubo un error al obtener las reglas.', {
+        chat_id: chatId,
+        message_id: messageId
+      });
+    }
   }
 }); */
