@@ -2722,7 +2722,7 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   }
   if (action === "14") {
     text =
-      "Gawr creó test´s para pasar el ratos en sus grupos, divierteté usando los siguientes comandos y descubre tus caracteristicas especiales: \n\n¿Conoces el clásico juego de la botella para cumplir retos entre amigos?, En efecto, ambos sabemos de que hablamos, Gawr Gura trae para ti su propia version: \n\n/botella <categoría>: Elige de entre 5 categoría diferentes para responder preguntas que te sacaran hasta la última verdad. \nLas categorías disponibles con las siguientes: \n\n🍾Anime\n🍾Amor\n🍾+18\n🍾Chicos\n🍾Confesión\n\nPara elegir tú categoría, sigue este ejemplo: \n/botella amor, /botella anime, etc. \n\n/qtaesthetic: Descubre cúal es el tipo de estílo aesthetic que te define. \n\n/qttierno: Aw, apuesto a que quieres saber que tan tierno eres. \n\n/qtnerd: ¿Quieres saber qué tan nerd eres?, fácil dale a este comando. \n\n/qtotaku: Gawr Gura calífica que tan otaku eres, pinchale al comando Kamisama. \n\n/qtfrio: ¿Sabes que tan frio eres?. \n\n/qtcringe: ¿Que tanto cringes das?. \n\n/qtgay: Mide tú nivel de porcentaje Gay.";
+      "Gawr creó test´s para pasar el ratos en sus grupos, divierteté usando los siguientes comandos y descubre tus caracteristicas especiales: \n\n¿Conoces el clásico juego de la botella para cumplir retos entre amigos?, En efecto, ambos sabemos de que hablamos, Gawr Gura trae para ti su propia version: \n\n/botella: Elige de entre 5 categoría diferentes para responder preguntas que te sacaran hasta la última verdad. \nLas categorías disponibles con las siguientes: \n\n🍾Anime\n🍾Amor\n🍾+18\n🍾Chicos\n🍾Confesión\n\nPara elegir tú categoría, elige alguna en las opciones. \n\n/qtaesthetic: Descubre cúal es el tipo de estílo aesthetic que te define. \n\n/qttierno: Aw, apuesto a que quieres saber que tan tierno eres. \n\n/qtnerd: ¿Quieres saber qué tan nerd eres?, fácil dale a este comando. \n\n/qtotaku: Gawr Gura calífica que tan otaku eres, pinchale al comando Kamisama. \n\n/qtfrio: ¿Sabes que tan frio eres?. \n\n/qtcringe: ¿Que tanto cringes das?. \n\n/qtgay: Mide tú nivel de porcentaje Gay.";
   }
   if (action === "15") {
     text =
@@ -3197,8 +3197,577 @@ bot.onText(/\/basta/, function (msg) {
     parse_mode: "Markdown",
   });
 });
-/************************************BOTELLA ENTRETENIMIENTO**************************************/
-bot.onText(/\/botella (.+)/, (msg, match) => {
+/////////////////////////////
+// Función para enviar el mensaje con botones de categorías
+function sendCategoryMenu(chatId) {
+  const options = {
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: 'Confesión', callback_data: 'confesion' }],
+        [{ text: '+18', callback_data: '+18' }],
+        [{ text: 'Anime', callback_data: 'anime' }],
+        [{ text: 'Amor', callback_data: 'amor' }],
+        [{ text: 'Chicos', callback_data: 'chicos' }],
+      ]
+    }
+  };
+  
+  bot.sendMessage(chatId, 'Selecciona una categoría:', options)
+    .then(sentMessage => {
+      // Guardar el ID del mensaje para editarlo más tarde
+      bot.messageId = sentMessage.message_id;
+    });
+}
+
+// Responder al comando /queso con el menú de categorías
+bot.onText(/\/botella/, (msg) => {
+  const chatId = msg.chat.id;
+  sendCategoryMenu(chatId);
+});
+
+// Manejar la selección de categoría
+bot.on('callback_query', (msg) => {
+  const chatId = msg.message.chat.id;
+  const messageId = msg.message.message_id;
+  const categoria = msg.data;
+  const usuario = msg.from.first_name;
+  
+  let pregunta = [];
+
+  // Definir preguntas para cada categoría
+  switch(categoria) {
+    case 'confesion':
+      pregunta = [
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión_😈, _Tú pregunta es la siguiente:_
+        \n*¿Cuánto ganas al mes?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Qué es lo más embarazoso que tus padres te han pillado haciendo?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Alguna vez te han pillado mintiendo?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Crees que a veces es mejor no decir la verdad?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*Si pudieras ir a cenar con un famoso o una famosa, ¿con quién irías?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Alguna vez te han arrestado?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Hablas contigo en voz alta?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Qué es lo más loco que haces cuando estás solo/a?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Hay algo de ti que no sepan tus amigos?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*Si pudieras no volver a ver a alguien nunca más... ¿a quién elegirías?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Qué harías si te encontraras un maletín lleno de dinero por la calle?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Cuál ha sido la peor etapa de tu vida?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Qué es lo que más te gusta de ti mismo/a?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Qué es lo peor que has hecho estando bebido/a?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Qué es lo más asqueroso que has comido en la vida?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Cuál es el hábito más desagradable que tienes?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Qué es lo peor que pueden decir de ti los demás?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Qué es lo más ridículo que te ha pasado por la calle?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Alguna vez te has hecho pis de tanto reír?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Cuál era tu amor de la infancia?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Cómo sería una cita perfecta?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Cuando fue la última vez que vomitaste?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Cuando fue la última vez que vomitaste?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Cuando fue la última vez que vomitaste?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Cuál es tu mayor secreto?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Cuál ha sido el momento más vergonzoso de tu vida?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Cuál ha sido la peor cita que has tenido en tu vida?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Cuál es la parte que más te gusta de tu cuerpo?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Cuál crees que es la canción perfecta para escuchar a solas?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Cuántas veces te has enamorado?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Físicamente hablando cuál es tu prototipo de chica/chico?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Te consideras una persona de mente abierta?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Cuál es la cosa más loca que has hecho por una persona?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Cuál es la peor cosa que has hecho por dinero?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Cuéntanos algún vicio o manía de la que te avergüenzas?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Cuál es tu hábito más infantil?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Quién es la persona de este grupo que más secretos tuyos sabe?*`,
+        `_Muy bien_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _has elegido responder una confesión😈_, _Tú pregunta es la siguiente:_
+        \n*¿Consumes algún tipo de droga?*`,
+      ];
+      break;
+      
+    case '+18':
+      pregunta = [
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Qué tiene que hacer un hombre/mujer para seducirte?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Alguna vez has tenido un trío? ¿Y cómo te ha gustado?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Alguna vez has tenido relaciones sexuales con un buen amigo?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Cuál es el momento más vergonzoso en el sexo que has tenido?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Qué buscas primero en una mujer - senxs, culx o cara?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️Estás totalmente enamorado, pero luego se va. ¿Qué tendría que pasar para que huyeras gritando?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Qué buscas primero en un hombre y qué debes tener para que pienses: awwwww, genial!*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Alguna vez has tenido cibersexo o sexo telefónico, y con quién?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Cuál es tu deseo secreto más desagradable?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿A quién le darías dinero para dormir contigo?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Cuál fue tu experiencia sexual más loca?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Alguna vez has tenido relaciones sexuales peligrosas, y cómo fue exactamente eso?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Alguna vez has tenido sexo con un extraño? p.ej. de Tinder?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️Si te pusieras en línea, ¿cuál sería tu especialidad?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿En qué te gusta más pensar cuando te satisfaces?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Alguna vez has tenido relaciones sexuales con el mismo sexo?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Cuál es la mejor manera de acostarte con alguien?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Con quién dormirías en cualquier caso, si estás casado o enamorado de un inmortal?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Con quién tuviste el mejor sexo de tu vida?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Alguna vez has pagado por sexo?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Con quién tuviste tu último sueño?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Te has sorprendido alguna vez durante el sexo y por quién?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Cuál es tu posición favorita?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Dónde está tu zona erógena?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Te quejas en el clímax?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Con quién del grupito te gustaría tener sexo?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Cuándo fue la última vez que tuviste sexo?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Tienes piercings íntimos?¿Dónde?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Cuántos hombres/mujeres ya has besado?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Con quién tuviste la cita más caliente?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Cuál es tu posición favorita?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Cuándo fue tu primera vez?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Todavía eres virgen?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Dónde te afeitas por todas partes?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Alguna vez has tenido relaciones íntimas con 2 personas al mismo tiempo?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Alguna vez escuchaste a tu hermana / hermano gemir?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Alguna vez te han pillado en la masturbación?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿En qué lugares tuviste sexo?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Alguna vez has engañado a alguien?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Siempre eres fiel?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Tienes curiosidad por intimar con una persona de tu mismo género?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Te gusta un juego previo largo? Si es así, ¿cómo debería ser?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Te quejas al orgasmo?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Qué peinado púbico tienes?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Te dejarías ser salpicado por un hombre en la cara?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Jugabas juegos de doctor cuando eras más joven?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Ya has tenido experiencias homosexuales?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿Alguna vez has tenido sexo por teléfono?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️Si tuvieras que renunciar a un anuncio de contacto erótico, ¿cuál sería?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿A quién en tu clase te gustaría besar?*`,
+        `💧_Hora de ponernos comodos con_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _(No vale rajar)🥴, 🌡️Tú pregunta es la siguiente:_
+        \n*🎙️¿A quién en tu clase te gustaría besar?*`,
+      ];
+      break;
+      
+    case 'anime':
+      pregunta = [
+   `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Cuánto tiempo llevas viendo anime?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Cuántos animes has visto?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Cuál es tu anime favorito?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Anime que conozcas que esté infravalorado.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Anime que conozcas que esté sobrevalorado.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Anime que a todos les gusta menos a ti.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿A qué personaje le has llorado más?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Cuál es el anime más triste que has visto?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Quiénes son tus waifus favoritas?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Quiénes son tus husbandos favoritos?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Has hablado en japonés?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Te bañas?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Te ha dado pena decir que eres otaku?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Qué anime dejaste y volviste a ver?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Qué anime te aburrió?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Cuál es el anime más largo que has visto?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Cuál es el anime más corto que has visto?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Has leído manga?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Has visto yaoi?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Has visto yuri?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Has visto hentai?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Cuál es tu género de anime favorito?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Menciona tu top 3 de animes de romance.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Tienes amigos otakus?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Tienes cosas de otakus?(figuras de los personajes, mangas, collares, ropa, etc.)¿Cuáles?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Se han burlado de ti por ser otaku?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Has visto anime todo un día?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Prefieres manga o anime?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Quisieras vivir en Japón?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Te gusta el Gore?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Cuales son tus 3 animes favoritos?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Cual es tu personaje favorito?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Cual fue el primer anime que viste?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Como empezaste a amar el anime?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Qué animes estas viendo actualmente?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Coleccionas cosas relacionadas con el anime?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Qué personaje del anime te define mejor?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Has ido a alguna convencion de anime?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Cual es tu manga favorito?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Cuales openings te gustan?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Cúal es tú opening favorito?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Entiendes el japones?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Hablas japones?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Te gusta ser otaku?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Puedes dibujar personajes de anime?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Si pudieras ser un personaje cual serias?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Has echo cosplay alguna vez?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Bailas en cosplay?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Te gustan los pokys?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Es tu novio/a es otaku?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Tú ex es otaku?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Crees que eres un personaje de anime?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Has echo fan fic's?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Perteneses a comunidades de anime?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Te gustan los video juegos?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Eres creador de un grupo de anime? ¿Qué te impulso a crear uno?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Eres administrador de un grupo de anime? ¿Porque te eligierón?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿En cuantos grupos de anime estas actualmente?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿En que horarios sueles ver anime normalmente?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Quién es tu vtuber hololive favorita?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Para tí que significado tiene ser "Otaku"?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Cúal fue el primer anime gore que viste"?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Cúal fue el último anime gore que viste"?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Menciona 3 recomendaciones de anime y porque deberían verlo.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Anime del que te avergüenzas de haber disfrutado.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Anime que quieres ver, pero aún no lo has hecho.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Menciona tú pareja favorita del anime.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Menciona tu villano favorito del anime.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Anime que has visto más de una vez.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Anime con la mejor animación.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Anime que te ha hecho reír.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Anime con personajes más adorables que hayas visto.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Arma/equipo/armadura favorita en un anime.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Anime deportivo favorito.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Menciona el anime que menos te ha gustado y porque.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Anime que no esperabas que te gustara, pero te enganchó.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Anime que no esperabas que te gustara, pero te enganchó.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Anime que desearías que hubiera tenido más temporadas.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Anime que desearías que se hiciera.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Opening favorito.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Ending favorito.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Alguna vez te has puesto alguna canción anime como tono de llamada?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Final de anime que no te convenció.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Anime que le gusta a todo el mundo, pero tú todavía no has visto.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Anime musical/idol favorito.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸¿Ves yaoi o/y yuri?*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Banda sonora favorita.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Personajes que te hubiera gustado ver triunfar en el amor.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Anime shoujo favorito.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Anime shonen favorito*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Anime más WTF que hayas visto.*`,
+        `_Aw_ [${msg.from.first_name}](tg://user?id=${msg.from.id}) _la categoría que elegiste fue anime, ¡Diviertete!🎈, ¿Sí?_, _Tú pregunta es la siguiente:_
+        \n*🧸Anime más WTF que hayas visto.*`,
+      ];
+      break;
+      
+    case 'amor':
+      pregunta = [
+        `Muy bien [${msg.from.first_name}](tg://user?id=${msg.from.id}) _así me gusta, gente valiente🧐, 💘Elegiste la categorìa amor,_ _Tú pregunta es:_
+        \n*💞¿Quién fue tu primer amor y cuántos años tenías?*`,
+        `Muy bien [${msg.from.first_name}](tg://user?id=${msg.from.id}) _así me gusta, gente valiente🧐, 💘Elegiste la categorìa amor,_ _Tú pregunta es:_
+        \n*💞¿Quién crees que es el chico o chica más atractivo de este grupo?*`,
+        `Muy bien [${msg.from.first_name}](tg://user?id=${msg.from.id}) _así me gusta, gente valiente🧐, 💘Elegiste la categorìa amor,_ _Tú pregunta es:_
+        \n*💞¿Has tenido algún novio?*`,
+        `Muy bien [${msg.from.first_name}](tg://user?id=${msg.from.id}) _así me gusta, gente valiente🧐, 💘Elegiste la categorìa amor,_ _Tú pregunta es:_
+        \n*💞¿A quién diste tu primer beso?*`,
+        `Muy bien [${msg.from.first_name}](tg://user?id=${msg.from.id}) _así me gusta, gente valiente🧐, 💘Elegiste la categorìa amor,_ _Tú pregunta es:_
+        \n*💞¿Has roto el corazón a alguien?*`,
+        `Muy bien [${msg.from.first_name}](tg://user?id=${msg.from.id}) _así me gusta, gente valiente🧐, 💘Elegiste la categorìa amor,_ _Tú pregunta es:_
+        \n*💞¿Has hecho alguna vez el ridículo delante de la persona que te gustaba?*`,
+        `Muy bien [${msg.from.first_name}](tg://user?id=${msg.from.id}) _así me gusta, gente valiente🧐, 💘Elegiste la categorìa amor,_ _Tú pregunta es:_
+        \n*💞Qué es lo más romántico que has hecho por alguien.*`,
+        `Muy bien [${msg.from.first_name}](tg://user?id=${msg.from.id}) _así me gusta, gente valiente🧐, 💘Elegiste la categorìa amor,_ _Tú pregunta es:_
+        \n*💞Qué es lo más romántico que han hecho por ti.*`,
+        `Muy bien [${msg.from.first_name}](tg://user?id=${msg.from.id}) _así me gusta, gente valiente🧐, 💘Elegiste la categorìa amor,_ _Tú pregunta es:_
+        \n*💞¿Te ha gustado el novio o novia de algún amigo?*`,
+        `Muy bien [${msg.from.first_name}](tg://user?id=${msg.from.id}) _así me gusta, gente valiente🧐, 💘Elegiste la categorìa amor,_ _Tú pregunta es:_
+        \n*💞¿Te gusta o te ha gustado el hermano o hermana de algún amigo?*`,
+        `Muy bien [${msg.from.first_name}](tg://user?id=${msg.from.id}) _así me gusta, gente valiente🧐, 💘Elegiste la categorìa amor,_ _Tú pregunta es:_
+        \n*💞¿Has puesto alguna excusa para romper con alguien y evitar decir la verdad?*`,
+        `Muy bien [${msg.from.first_name}](tg://user?id=${msg.from.id}) _así me gusta, gente valiente🧐, 💘Elegiste la categorìa amor,_ _Tú pregunta es:_
+        \n*💞¿Tienes algún amor platónico en el grupo?*`,
+        `Muy bien [${msg.from.first_name}](tg://user?id=${msg.from.id}) _así me gusta, gente valiente🧐, 💘Elegiste la categorìa amor,_ _Tú pregunta es:_
+        \n*💞¿Has engañado a tu pareja alguna vez?*`,
+      ];
+      break;
+      
+    case 'chicos':
+      pregunta = [
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Alguna vez has robado algo?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cómo se llama tu padre?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Quién es el más guapo/guapa de este grupo?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cuál es tu página web preferida?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cuál es tu parte corporal que detestas?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cuál es el último mensaje de texto que has recibido?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Estás enamorado de alguien?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cuál es tu deporte preferido?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Qué haces antes de dormirte?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cuál es tu dibujo animado preferido?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Prefieres MacDonald’s o Burger King?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cuál es tu postre preferido?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cuál es tu programa de televisión preferido?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cuál es tu peor recuerdo?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Te gusta el colegio?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Alguna vez has bebido alcohol?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Con quién has tenido el mayor ataque de risa?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cúal es tu serie de netflix favorita?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cuál es tu fruta preferida?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cuál es tu mayor vergüenza?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cuál es tu actor preferido?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Quién es tu mejor amigo/amiga?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Qué canción te pone la piel de gallina?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cuál ha sido tu ultimo sueño?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cómo se llama tu madre?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Alguna vez has fumado?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Qué te gustaría hacer como trabajo?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Qué es lo que te aburre más del mundo?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Alguna vez has sido rechazado?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cuál es tu emoji preferido?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cuál es tu película preferida?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cuál es tu caramelo preferido?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cuál es la película más aterradora que has visto?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cuál fué tu última mentira?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Quién es tu mejor amigo, si tienes varios, nombra solo a uno?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cuál es el peor defecto de tu mejor amigx?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Tienes algún amor platónico?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Qué haces al despertarte?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Tienes algún secreto que no le has contado ni a tu mejor amigo?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠En tu grupo de amigos, ¿hay alguno al que no soportes?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Quién ha sido un mal amigo contigo y por qué?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Has defraudado a un buen amigo alguna vez?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Has copiado alguna vez en un examen?, ¿te pillaron?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Has dicho a tus padres que te sentías fatal para no ir a a escuela y no era cierto?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Le has gastado alguna vez una broma a un profesor?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cuántas asignaturas has llegado a suspender en un mismo semestre?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cuál ha sido tu profesor favorito de entre todos?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cuál ha sido la mayor travesura que has hecho como estudiante?*`,
+        `[${msg.from.first_name}](tg://user?id=${msg.from.id}) _elegiste la categoría para adolescentes, todo se queda entre nos😏, ¿Listo?_ _Tú pregunta es la siguiente:_
+        \n*🤠¿Cuál ha sido la mayor travesura que has hecho como estudiante?*`,
+      ];
+      break;
+      
+    default:
+      pregunta = [`Lo siento [${query.from.first_name}](tg://user?id=${query.from.id}), _la categoría seleccionada no está disponible._`];
+      break;
+  }
+  
+  // Seleccionar pregunta aleatoria
+  const randomPregunta = pregunta[Math.floor(Math.random() * pregunta.length)];
+  
+  // Editar el mensaje original
+  bot.editMessageText(
+    `*👻Has seleccionado la categoría:* ${categoria}\n\n${randomPregunta}`,
+    {
+      chat_id: chatId,
+      message_id: messageId,
+      parse_mode: 'Markdown'
+    }
+  );
+});
+
+////////////////////////////////
+/* bot.onText(/\/botella (.+)/, (msg, match) => {
   const chatid = msg.chat.id;
   const usuario = msg.from.first_name;
   const genero = match[1];
@@ -3808,7 +4377,7 @@ bot.onText(/\/botella (.+)/, (msg, match) => {
   } else {
     bot.sendMessage(chatid, "...");
   }
-});
+}); */
 
 /*bot.onText(/\/settrigger (.+)/, (msg, match) => {
   var chat_id = msg.chat.id;
