@@ -30,6 +30,7 @@ const {
   GOOGLE_QUERY,
 } = require("google-img-scrap");
 const path = require('path');
+const gis = require('async-g-i-s');
 
 
 
@@ -58,6 +59,10 @@ dbConnection.on('error', (err) => {
   console.error('Error en la conexión a MySQL:', err);
   dbConnection.connect();
 });  */
+
+//const {GDLink} = require("nayan-media-downloader");
+
+
 
 var app = express();
 
@@ -9675,3 +9680,103 @@ bot.on('callback_query', async (query) => {
     }
   }
 }); */
+
+/* bot.onText(/\/gd (.+)/, async (msg, match) => {
+  const chatId = msg.chat.id;
+  const url = match[1];
+
+  // Enviar mensaje de espera
+  bot.sendMessage(chatId, 'Espera un momento mientras descargamos el archivo...');
+
+  try {
+    // Llama a la función GDLink para obtener el enlace de descarga directa
+    const response = await GDLink(url);
+
+    if (response.status && response.data) {
+      const downloadUrl = response.data;
+
+      // Obtener el nombre temporal del archivo
+      const tempFileName = 'downloaded_file';
+
+      // Descargar el archivo usando axios
+      const writer = fs.createWriteStream(tempFileName);
+
+      const fileResponse = await axios({
+        url: downloadUrl,
+        method: 'GET',
+        responseType: 'stream'
+      });
+
+      fileResponse.data.pipe(writer);
+
+      writer.on('finish', async () => {
+        // Importar dinámicamente el módulo file-type
+        const { fileTypeFromBuffer } = await import('file-type');
+
+        // Determinar el tipo de archivo y extensión
+        const buffer = fs.readFileSync(tempFileName);
+        const type = await fileTypeFromBuffer(buffer);
+
+        if (type) {
+          const finalFileName = `downloaded_file.${type.ext}`;
+
+          // Renombrar el archivo con la extensión correcta
+          fs.renameSync(tempFileName, finalFileName);
+
+          // Enviar el archivo como documento a través del bot
+          bot.sendDocument(chatId, finalFileName).then(() => {
+            // Borrar el archivo después de enviarlo
+            fs.unlinkSync(finalFileName);
+          });
+        } else {
+          bot.sendMessage(chatId, 'No se pudo determinar el tipo de archivo.');
+          fs.unlinkSync(tempFileName);
+        }
+      });
+
+      writer.on('error', (err) => {
+        console.error('Error al escribir el archivo:', err);
+        bot.sendMessage(chatId, 'Ocurrió un error al descargar el archivo.');
+      });
+    } else {
+      bot.sendMessage(chatId, 'No se pudo obtener el enlace de descarga.');
+    }
+  } catch (error) {
+    console.error('Error al procesar la solicitud:', error);
+    bot.sendMessage(chatId, 'Ocurrió un error al procesar la solicitud.');
+  }
+});
+ */
+
+bot.on('inline_query', async (query) => {
+  const searchQuery = query.query.trim().toLowerCase();
+
+  if (!searchQuery) {
+    return;
+  }
+
+  try {
+    // Realiza la búsqueda de imágenes
+    const results = await gis(searchQuery);
+    
+    if (results.length > 0) {
+      // Prepara los resultados para la respuesta inline
+      const inlineResults = results.slice(0, 10).map((result, index) => ({
+        type: 'photo',
+        id: String(index),
+        photo_url: result.url,
+        thumb_url: result.url
+        //caption: `Búsqueda hecha con @gawrgurahelperbot`
+      }));
+
+      // Responde con los resultados de la búsqueda
+      bot.answerInlineQuery(query.id, inlineResults);
+    } else {
+      bot.answerInlineQuery(query.id, []);
+    }
+  } catch (e) {
+    console.error(e);
+    bot.answerInlineQuery(query.id, []);
+  }
+});
+
