@@ -104,12 +104,12 @@ const firebase = require('firebase/app');
 require('firebase/firestore');
 
 firebase.initializeApp({
-apiKey: "AIzaSyC0NL7UxtJSL2Bw__YV8DiGzetLi1i1_TU",
-  authDomain: "gura4-b7f7f.firebaseapp.com",
-  projectId: "gura4-b7f7f",
-  storageBucket: "gura4-b7f7f.appspot.com",
-  messagingSenderId: "252061482263",
-  appId: "1:252061482263:web:477dda6ff649aa97f40b52"
+  apiKey: "AIzaSyDmDpGZdg_ZzTOiia83C3W4cprdwgHlqIE",
+  authDomain: "gurabot-a5f12.firebaseapp.com",
+  projectId: "gurabot-a5f12",
+  storageBucket: "gurabot-a5f12.appspot.com",
+  messagingSenderId: "691315150914",
+  appId: "1:691315150914:web:b8039954644c4995801ddb"
 });
 
 const db = firebase.firestore();
@@ -433,8 +433,8 @@ bot.onText(/\/fish/, async (msg) => {
     const userId = msg.from.id;
 
     // Comprobar si el usuario ha ejecutado el comando /fish antes y ha pasado menos de 10 minutos
-    if (lastFishCommandTime[userId] && now - lastFishCommandTime[userId] < 10 * 60 * 1000) {
-      const remainingTime = Math.ceil((10 * 60 * 1000 - (now - lastFishCommandTime[userId])) / 1000);
+    if (lastFishCommandTime[userId] && now - lastFishCommandTime[userId] < 20 * 60 * 1000) {
+      const remainingTime = Math.ceil((20 * 60 * 1000 - (now - lastFishCommandTime[userId])) / 1000);
       bot.sendMessage(msg.chat.id, `<b>Por favor</b> ${msg.from.first_name}, espera <code>${remainingTime}</code> segundos antes de usar el comando /fish nuevamente.`, { parse_mode: "HTML" });
       return;
     }
@@ -534,18 +534,30 @@ bot.onText(/\/myfish/, async (msg) => {
     console.error('Error al procesar el comando /myfish:', error);
     bot.sendMessage(msg.chat.id, 'Ocurrió un error al procesar el comando. Por favor, inténtalo de nuevo más tarde.');
   }
-}); */
+});  */
 /////////////////
 // Comando /loteriaa
-/* bot.onText(/\/loteria(?:\s+(\d+))?/, async (msg, match) => {
+bot.onText(/\/loteria(?:\s+(\d+))?/, async (msg, match) => {
   const chatId = msg.chat.id;
   const userId = msg.from.id.toString();
   const username = msg.from.first_name;
   const number = match[1] ? parseInt(match[1]) : null; // Comprobar si se proporcionó un número
+  const keyboard = {
+    inline_keyboard: [
+      [
+        { text: 'Ver noticias', url: 'https://t.me/Gawrguranoticias' }
+      ]
+    ]
+  };
+
+  // Opciones del mensaje
+  const options = {
+    reply_markup: JSON.stringify(keyboard)
+  };
 
   // Si no se proporcionó un número o si está fuera del rango 1 al 25, enviar un mensaje de instrucción
   if (!number || number < 1 || number > 30) {
-    bot.sendMessage(chatId, '🐳Por favor, elige un número titán dentro del rango del 1 al 30 para jugar a la lotería.\n\nEjemplo: /loteria 23');
+    bot.sendMessage(chatId, '🐳Por favor, elige un número titán dentro del rango del 1 al 30 para jugar a la lotería.\n\nEjemplo: /loteria 23', options);
     return;
   }
 
@@ -556,13 +568,14 @@ bot.onText(/\/myfish/, async (msg) => {
     const currentTime = Date.now();
     const elapsedTime = currentTime - lastPlayTime;
     if (elapsedTime < 600000) {
-      bot.sendMessage(chatId, '🖐️Debes esperar al menos 10 minutos para el siguiente intento titán.');
+      bot.sendMessage(chatId, '🖐️Debes esperar al menos 10 minutos para el siguiente intento titán.', options);
       return;
     }
   }
 
   // Generar número aleatorio
   const randomNum = Math.floor(Math.random() * 25) + 1;
+
 
   // Verificar si acertó
   if (number === randomNum) {
@@ -571,9 +584,9 @@ bot.onText(/\/myfish/, async (msg) => {
       { username, points: firebase.firestore.FieldValue.increment(1) },
       { merge: true }
     );
-    bot.sendMessage(chatId, `¡🐳Felicidades ${username}! Acertaste el número🥳. Has ganado ➕1 punto titán.`);
+    bot.sendMessage(chatId, `¡🐳Felicidades ${username}! Acertaste el número🥳. Has ganado ➕1 punto titán.`, options);
   } else {
-    bot.sendMessage(chatId, `❌Lo siento ${username}, el número ganador era ${randomNum}. Inténtalo de nuevo titán.`);
+    bot.sendMessage(chatId, `❌Lo siento ${username}, el número ganador era ${randomNum}. Inténtalo de nuevo titán.`, options);
   }
 
   // Registrar el tiempo del último juego
@@ -583,6 +596,18 @@ bot.onText(/\/myfish/, async (msg) => {
 
 bot.onText(/\/top/, async (msg) => {
   const chatId = msg.chat.id;
+  const keyboard = {
+    inline_keyboard: [
+      [
+        { text: 'Ver noticias', url: 'https://t.me/Gawrguranoticias' }
+      ]
+    ]
+  };
+
+  // Opciones del mensaje
+  const options = {
+    reply_markup: JSON.stringify(keyboard)
+  };
 
   // Obtener los 10 usuarios con más puntos
   const topUsersSnapshot = await db.collection('users')
@@ -600,31 +625,9 @@ bot.onText(/\/top/, async (msg) => {
 
   bot.sendMessage(chatId, topUsersMessage, {parse_mode: "HTML"});
 })
- */
-bot.onText(/^\/fish/, (msg) => {
-  const chatId = msg.chat.id;
-  bot.sendMessage(chatId, `<🔏 <code>¡En mantenimiento! Actualización: @Gawrguranoticias</code>`, {
-    parse_mode: "HTML",
-  });
-});
-bot.onText(/^\/myfish/, (msg) => {
-  const chatId = msg.chat.id;
-  bot.sendMessage(chatId, `<🔏 <code>¡En mantenimiento! Actualización: @Gawrguranoticias</code>`, {
-    parse_mode: "HTML",
-  });
-});
-bot.onText(/^\/top/, (msg) => {
-  const chatId = msg.chat.id;
-  bot.sendMessage(chatId, `<🔏 <code>¡En mantenimiento! Actualización: @Gawrguranoticias</code>`, {
-    parse_mode: "HTML",
-  });
-});
-bot.onText(/^\/loteria/, (msg) => {
-  const chatId = msg.chat.id;
-  bot.sendMessage(chatId, `<🔏 <code>¡En mantenimiento! Actualización: @Gawrguranoticias</code>`, {
-    parse_mode: "HTML",
-  });
-});
+ 
+
+
 
 /* bot.onText(/\/ban (.+)/, (msg, match) => {
   const chatId = msg.chat.id;
