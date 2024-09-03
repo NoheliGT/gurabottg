@@ -2768,7 +2768,7 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   }
   if (action === "25") {
     text =
-      "Los comandos siguientes son supercomandos para usuarios que participen en dinámicas o aporten donaciones al bot (módulo en desarrollo).\n\n/anonimo <ID> <mensaje>: Envia un mensaje a cualquier usuario de forma anónima (no sabría quien eres, pero tú sí porque regresa los datos del usuario en sus respuestas\n\n/musica <URLYT>: ¡Descarga música de YT!.\n\n/facebook <URL>: ¡Descarga vídeos de FB en HD!.\n\n/tiktok <URL>: ¡Descarga vídeos/audios de TK!.\n\n/instagram <URL>: ¡Descarga vídeos/img de IG!.\n\n/image <mensaje>: ¡Convierte el texto en una imagen hecho con IA!\n\n/ask <pregunta>: ¡Obten respuestas basadas en la IA!.";
+      "Los comandos siguientes son supercomandos para usuarios que participen en dinámicas o aporten donaciones al bot (módulo en desarrollo).\n\n/anonimo <ID> <mensaje>: Envia un mensaje a cualquier usuario de forma anónima (no sabría quien eres, pero tú sí porque regresa los datos del usuario en sus respuestas\n\n/musica <URLYT>: ¡Descarga música de YT!.\n\n/facebook <URL>: ¡Descarga vídeos de FB en HD!.\n\n/tiktok <URL>: ¡Descarga vídeos/audios de TK!.\n\n/instagram <URL>: ¡Descarga vídeos/img de IG!.\n\n/image <mensaje>: ¡Convierte el texto en una imagen hecho con IA!\n\n/gura <pregunta>: ¡Obten respuestas basadas en la IA!.";
   }
   if (action === "29") {
     text =
@@ -9791,7 +9791,7 @@ function esUsuarioAutorizado(userId) {
 }
 
 // Comando para responder con IA
-bot.onText(/\/ask (.+)/, (msg, match) => {
+bot.onText(/\/gura (.+)/, (msg, match) => {
   const chatId = msg.chat.id;
   const userId = msg.from.id;
   const question = match[1]; // La pregunta del usuario
