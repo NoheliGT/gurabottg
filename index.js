@@ -31,7 +31,8 @@ const {
 } = require("google-img-scrap");
 const path = require('path');
 const gis = require('async-g-i-s');
-
+const { Hercai } = require('hercai');
+const herc = new Hercai(); //new Hercai("your api key"); => Optional
 
 
 
@@ -2767,7 +2768,7 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   }
   if (action === "25") {
     text =
-      "Los comandos siguientes son supercomandos para usuarios que participen en dinámicas o aporten donaciones al bot (módulo en desarrollo).\n\n/anonimo <ID> <mensaje>: Envia un mensaje a cualquier usuario de forma anónima (no sabría quien eres, pero tú sí porque regresa los datos del usuario en sus respuestas\n\n/musica <URLYT>: ¡Descarga música de YT!.\n\n/facebook <URL>: ¡Descarga vídeos de FB en HD!.\n\n/tiktok <URL>: ¡Descarga vídeos/audios de TK!.\n\n/instagram <URL>: ¡Descarga vídeos/img de IG!.";
+      "Los comandos siguientes son supercomandos para usuarios que participen en dinámicas o aporten donaciones al bot (módulo en desarrollo).\n\n/anonimo <ID> <mensaje>: Envia un mensaje a cualquier usuario de forma anónima (no sabría quien eres, pero tú sí porque regresa los datos del usuario en sus respuestas\n\n/musica <URLYT>: ¡Descarga música de YT!.\n\n/facebook <URL>: ¡Descarga vídeos de FB en HD!.\n\n/tiktok <URL>: ¡Descarga vídeos/audios de TK!.\n\n/instagram <URL>: ¡Descarga vídeos/img de IG!.\n\n/image <mensaje>: ¡Convierte el texto en una imagen hecho con IA!\n\n/ask <pregunta>: ¡Obten respuestas basadas en la IA!.";
   }
   if (action === "29") {
     text =
@@ -9783,3 +9784,52 @@ bot.on('inline_query', async (query) => {
   }
 });
 
+
+// Verifica si el usuario es autorizado
+function esUsuarioAutorizado(userId) {
+  return usuariosAutorizados.includes(userId.toString());
+}
+
+// Comando para responder con IA
+bot.onText(/\/ask (.+)/, (msg, match) => {
+  const chatId = msg.chat.id;
+  const userId = msg.from.id;
+  const question = match[1]; // La pregunta del usuario
+
+  if (!esUsuarioAutorizado(userId)) {
+      bot.sendMessage(chatId, 'No tienes permiso para usar este comando.');
+      return;
+  }
+
+  // Usa el modelo de Hercai para obtener una respuesta
+  herc.question({ model: "turbo", content: question }).then(response => {
+      // Envía la respuesta al chat
+      bot.sendMessage(chatId, response.reply);
+  }).catch(error => {
+      // Manejo de errores
+      bot.sendMessage(chatId, 'Hubo un error al procesar tu pregunta. Inténtalo de nuevo más tarde.');
+      console.error(error);
+  });
+});
+
+// Comando para generar una imagen
+bot.onText(/\/image (.+)/, (msg, match) => {
+  const chatId = msg.chat.id;
+  const userId = msg.from.id;
+  const prompt = match[1]; // El texto para generar la imagen
+
+  if (!esUsuarioAutorizado(userId)) {
+      bot.sendMessage(chatId, 'No tienes permiso para usar este comando.');
+      return;
+  }
+
+  // Usa el modelo de Hercai para generar una imagen
+  herc.drawImage({ model: "v3", prompt: prompt }).then(response => {
+      // Envía la imagen al chat
+      bot.sendPhoto(chatId, response.url);
+  }).catch(error => {
+      // Manejo de errores
+      bot.sendMessage(chatId, 'Hubo un error al procesar tu solicitud. Inténtalo de nuevo más tarde.');
+      console.error(error);
+  });
+});
