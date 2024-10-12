@@ -1938,7 +1938,7 @@ module.exports = function (bot){
                                                             ],
                                                             
                                                             [
-                                                            "En el anime 'Attack on Titan', ¿cuál es el nombre del mejor amigo del protagonista que es conocido por su destreza en el combate contra los titanes?",
+                                                            "En el anime 'Attack on Titan', ¿cuál es el nombre del mejor amigo del protagonista que es conocido por su conocimiento en el combate contra los titanes?",
                                                             [
                                                             "Mikasa Ackerman",
                                                             "Levi Ackerman",
@@ -1947,14 +1947,1296 @@ module.exports = function (bot){
                                                             ],
                                                             {
                                                             type: "quiz",
-                                                            correct_option_id: 1,
+                                                            correct_option_id: 3,
                                                             open_period: 2,
                                                             explanation:
-                                                            "Levi Ackerman es el mejor amigo del protagonista en 'Attack on Titan' y es conocido por su destreza en el combate contra los titanes.",
+                                                            "Armin Arlert es el mejor amigo del protagonista en 'Attack on Titan' y es conocido por su destreza en el combate contra los titanes.",
                                                             is_anonymous: "false",
                                                             }
                                                           ],
-        // Otras preguntas aquí...
+                                                            
+                                                            [
+                                                            "En el anime 'K-ON', ¿cuál es el nombre de la baterista?",
+                                                            [
+                                                            "Yui Hirasawa",
+                                                            "Ikuyo Kita",
+                                                            "Subaru Awa",
+                                                            "Ritsu Tainaka",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 3,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Ritsu Tainaka es la baterista del anime 'K-ON'.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+                                                            
+                                                            [
+                                                            "En el anime 'HunterXHunter' , ¿Que tipo de Usuario NEN es Gon?",
+                                                            [
+                                                            "Emisor",
+                                                            "Especialista",
+                                                            "Intensificador",
+                                                            "Materializador",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 2,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Gon es un Usuario NEN tipo Intensificador.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+                                                            
+                                                            [
+                                                            "En el anime 'Bleach' , ¿Byakuya es el Cápitan de la?",
+                                                            [
+                                                            "Sexta Division",
+                                                            "Septima Division",
+                                                            "Quinta Division",
+                                                            "Octava Division",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 0,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Byakuya es el Cápitan de la Sexta Division.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "En el anime 'Jujutsu Kaisen' , ¿Qué tecnica utiliza Toge Inumaki?",
+                                                            [
+                                                            "Corrosion Extrema",
+                                                            "Maldicion Ilimitada",
+                                                            "Discurso Maldito",
+                                                            "Necromancia",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 2,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "La tecnica de Toge Inumaki es el Discurso Maldito.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "Los Kinjutsu del anime 'Naruto' son técnicas...",
+                                                            [
+                                                            "Prohibidas",
+                                                            "Ilusorias",
+                                                            "Medicas",
+                                                            "Sellado",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 0,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Los Kinjutsu son técnicas prohibidas.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "En el anime 'Blue Lock' ¿Cuál de estos personajes NO formo parte del equipo Z?",
+                                                            [
+                                                            "Chigiri",
+                                                            "Kuon",
+                                                            "Bachira",
+                                                            "Nagi",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 3,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Nagi formaba parte del equipo V.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "En el anime 'Slam Dunk' ¿En qué posición juega Sakuragi? ",
+                                                            [
+                                                            "Ala-pivot",
+                                                            "Pivot",
+                                                            "Escolta",
+                                                            "Base",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 0,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Sakuragi juega de Ala-pivot.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "En el anime 'Jujutsu Kaisen' ¿Cuántos Dedos de Sukuna existen?",
+                                                            [
+                                                            "20 Dedos",
+                                                            "10 Dedos",
+                                                            "30 Dedos",
+                                                            "18 Dedos",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 0,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Existen 20 Dedos de Sukuna.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "En el anime 'Naruto' ¿Cuál fue el Primer Jutsu que desarrollo Naruto? ",
+                                                            [
+                                                            "Jutsu Sexy",
+                                                            "Jutsu Replica",
+                                                            "Jutsu Clones de Sombra",
+                                                            "Jutsu de Invacion",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 3,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "El primer jutsu que desarrollo Naruto fue el Jutsu sexy.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "En el anime 'Spy x Family' ¿Cómo se llama la agencia para la que trabaja Twilight?",
+                                                            [
+                                                            "Sern",
+                                                            "Wise",
+                                                            "Rox",
+                                                            "Knows",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 1,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Twilight trabaja para la agencia Wise.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Cómo se llama el mundo de 'No Game No Life'?",
+                                                            [
+                                                            "Exceed",
+                                                            "Imanity",
+                                                            "Aschente",
+                                                            "Disboard",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 3,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "El mundo del anime No Game No Life se llama Disboard.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "En el anime 'Kimetsu no Yaiba' ¿Cuál de estas respiraciones NO pertenece a un pilar?",
+                                                            [
+                                                            "Respiracion Amor",
+                                                            "Respiracion Roca",
+                                                            "Respiracion Veneno",
+                                                            "Respiracion Viento",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 2,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "La Respiracion de Veneno no pertece a ningun Pilar.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "En el anime 'Fairy Tail' ¿A qué gremio pertenecia Wendy antes de Fairy Tail",
+                                                            [
+                                                            "Cait Shelter",
+                                                            "Sylph Labyrinth",
+                                                            "Fuurinkazan",
+                                                            "Sleeping Knights",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 0,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Antes de unirse a Fairy Tail pertenecia al gremio Cait Shelter.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "En el anime 'Dragon Ball' ¿Qué esfera le dejo el abuelo Gohan a Goku?",
+                                                            [
+                                                            "1 Estrella",
+                                                            "3 Estrellas",
+                                                            "4 Estrellas",
+                                                            "Ninguna",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 2,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "El aubelo Gohan le dejo a Goku la esfera de 4 estrellas.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "En Konosuba ¿Cuál es el nombre de la espada de Kazuma?",
+                                                            [
+                                                            "Ryunoske",
+                                                            "Nekobasu",
+                                                            "Chunchunmaru",
+                                                            "Chomusuke",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 2,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Kazuma poseia la espada Chunchunmaru.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Cuántos eran los niños elegidos en 'Digimon Tamers'",
+                                                            [
+                                                            "4 niños",
+                                                            "3 niños",
+                                                            "6 niños",
+                                                            "Ninguno",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 3,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "No hay niños elegidos, son TAMERS.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "En el anime 'Boku no hero academia' ¿Quién obtuvo el puntaje maximo en el examen de ingreso de la U.A?",
+                                                            [
+                                                            "Momo",
+                                                            "Todoroki",
+                                                            "Lida",
+                                                            "Bakugo",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 3,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Bakugo obtuvo el puntaje maximo durante el examen de ingreso.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Qué carrera estudia el Protagonista de'Golden Time'?",
+                                                            [
+                                                            "Ingieneria",
+                                                            "Economia",
+                                                            "Derecho",
+                                                            "Medicina",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 2,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Banri Tada protagonista de Golden Time estudia Derecho.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Con qué pecado se asocia a Merlin del anime'Nanatsu no Taizai'?",
+                                                            [
+                                                            "Envidia",
+                                                            "Ira",
+                                                            "Lujuria",
+                                                            "Gula",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 3,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Merlin del anime nanatsu no taizai representa la Gula.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Cuál es la Hermana menor en el anime de las 'Quintillizas'?",
+                                                            [
+                                                            "Miku",
+                                                            "Itsuki",
+                                                            "Ichika",
+                                                            "Yotsuba",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 1,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Itsuki es la hermana menor.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "En el anime 'One Piece'¿Cómo se llamaba la antigua tripulación de Brook?",
+                                                            [
+                                                            "Piratas Hex",
+                                                            "Piratas Rocks",
+                                                            "Piratas Rumbar",
+                                                            "Piratas Musicales",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 2,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Brook pertenecia a los Piratas Rumbar.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Cuál de estos ingredientes NO es necesario para una transmutación humana en 'Fullmetal alchemist'?",
+                                                            [
+                                                            "35 Litros Agua",
+                                                            "20KG Carbono",
+                                                            "8 Gramos Azufre",
+                                                            "10 Gramos Potasio",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 3,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "El potasio no es necesario para realizar una trasmutación humana.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Qué alimento usan en 'Steins Gate' para experimentar en el microondas?",
+                                                            [
+                                                            "Sandias",
+                                                            "Bananas",
+                                                            "Peras",
+                                                            "Manzanas",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 1,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Para experimentar usan Bananas.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Qué día quemaron su casa los hermanos Elric en 'Fullmetal alchemist'?",
+                                                            [
+                                                            "23 de octubre",
+                                                            "11 de octubre",
+                                                            "20 de octubre",
+                                                            "3 de octubre",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 3,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "El dia que quemaron su casa fue el 3 de octubre.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Quién Empuja a Takemichi para matarlo en 'Tokyo Revengers'?",
+                                                            [
+                                                            "Akkun",
+                                                            "Kisaki",
+                                                            "Mikey",
+                                                            "Naoto",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 0,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Akkun fue el que intentó matar a Takemichi.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿En qué año comienzan los acontecimientos de 'Sword Art Online'?",
+                                                            [
+                                                            "2023",
+                                                            "2022",
+                                                            "2020",
+                                                            "2028",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 1,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Comienzan en el año 2022.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "Trunks de 'Dragon Ball' es hijo de..",
+                                                            [
+                                                            "Vegeta",
+                                                            "Goku",
+                                                            "Broly",
+                                                            "Gohan",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 0,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Trunks es hijo de Vegeta.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "La preparatoria Jujutsu de Itadori está en?",
+                                                            [
+                                                            "Tokio",
+                                                            "Kioto",
+                                                            "Hokkaido",
+                                                            "Osaka",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 0,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Se encuentra en Tokio.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "Las maldiciones en 'Jujutsu Kaisen' nacen a partir de..? ",
+                                                            [
+                                                            "Odio",
+                                                            "Emociones negativas",
+                                                            "Desastres naturales",
+                                                            "Deseos negativos",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 1,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Nacen a partir de Emociones negativas.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Cuál es la comida favorita de 'Doraemon'?",
+                                                            [
+                                                            "Dorayaki",
+                                                            "Dangos",
+                                                            "Pizza",
+                                                            "Hamburguesas",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 0,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "La comida favorita de Doraemon es el Dorayaki.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Qué le regala Ishigami a Shirogane para su cumpleaños en el anime 'Kaguya Sama'?",
+                                                            [
+                                                            "Un manga",
+                                                            "Una camiseta",
+                                                            "Un boligrafo",
+                                                            "Un abanico",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 2,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Ishigami le regala un boligrafo.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Cual era el nombre de la madre de Kosei en 'Your lie in april'?",
+                                                            [
+                                                            "Saki",
+                                                            "Hiroko",
+                                                            "Tsubaki",
+                                                            "Lara",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 0,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "El nombre de la madre de Kosei era Saki.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "En 'Yugi-oh' ¿Cual era el nombre del Faraon?",
+                                                            [
+                                                            "Atem",
+                                                            "Mahad",
+                                                            "Yami",
+                                                            "Johan",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 0,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "El Faraon se llamaba Atem.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Cual es el Pokemon mas pesado de la primera generacion?",
+                                                            [
+                                                            "Gengar",
+                                                            "Snorlax",
+                                                            "Onix",
+                                                            "Golem",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 1,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Snorlax pesa 460KG y es el pokemon mas pesado de la primera generacion.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Que significa 'Nisekoi'?",
+                                                            [
+                                                            "Amor falso",
+                                                            "Amor prohibido",
+                                                            "Amor no correspondido",
+                                                            "Amor en cadena",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 0,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Nisekoi significa Amor falso.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Cuantas razas existen en 'No Game no Life'?",
+                                                            [
+                                                            "8",
+                                                            "12",
+                                                            "14",
+                                                            "16",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 3,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Existen 16 razas en No Game no Life.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Cual de estos personajes NO pertenecia a la Generacion de Milagros en 'Kuroko no basket'?",
+                                                            [
+                                                            "Kuroko",
+                                                            "Akashi",
+                                                            "Kise",
+                                                            "Kagami",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 3,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Kagami no pertenecia a la Generacion de Milagros.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Como se llama el primer Opening de 'Shingeki no Kyojin'?",
+                                                            [
+                                                            "Guren no Yumiya",
+                                                            "Guren no Taimiya",
+                                                            "Guren no Tsubasa",
+                                                            "Guren no Tori",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 0,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Guren no Yumiya es el primer opening de Shingeki no Kyojin.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "En 'One Piece'¿Cual era la recompensa de Crocodile?",
+                                                            [
+                                                            "116.000.000",
+                                                            "152.000.000",
+                                                            "94.000.000",
+                                                            "81.000.000",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 3,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "La recompensa de Crocodile era 81.000.000.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Contra quien usa Asta de 'Black clover' por primera vez su Black Form?",
+                                                            [
+                                                            "Licht",
+                                                            "Vetto",
+                                                            "Langris",
+                                                            "Ladros",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 3,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "La usa contra Ladros.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Como se llama la espada de 'Ichigo'?",
+                                                            [
+                                                            "Zangetsu",
+                                                            "Excalibur",
+                                                            "Tessaiga",
+                                                            "Samehada",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 0,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "La espada de Ichigo se llama Zangetsu.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Cual es el apellido de Maka personaje de 'Soul eater'?",
+                                                            [
+                                                            "Alberona",
+                                                            "Thompson",
+                                                            "Rebian",
+                                                            "Albarn",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 3,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "El apellido de Maka es Albarn.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Cual es el Eva que pilotea Shinji?",
+                                                            [
+                                                            "Unidad 00",
+                                                            "Unidad XX",
+                                                            "Unidad 02",
+                                                            "Unidad 01",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 3,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Shinji pilotea el Eva 01.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿En que club estaban las chicas de K-on?",
+                                                            [
+                                                            "Musica Clasica",
+                                                            "Ceremonia del te",
+                                                            "Musica Ligera",
+                                                            "No estaban en un Club",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 2,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Las chicas de K-on pertenecian al club de Musica Ligera.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Cómo se llama  el angel del universo 7 en Dragon Ball?",
+                                                            [
+                                                            "Whis",
+                                                            "Bills",
+                                                            "Champa",
+                                                            "Vados",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 0,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Whis es el angel del universo 7.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Quién es el master de Berserk en 'Fate Stay Night'?",
+                                                            [
+                                                            "Sakura",
+                                                            "Illyasviel",
+                                                            "Shinji",
+                                                            "Kotomine",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 1,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Illyasviel es el master de Berserk.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Cuánto tiempo tienen para matar a Koro-sensei en 'Assasination Classromom'?",
+                                                            [
+                                                            "3 años",
+                                                            "1 año",
+                                                            "2 años",
+                                                            "6 meses",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 1,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Para matar a Koro-sensei tenian 1 año.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿En qué animal se convierte Momiji Soma de 'Fruits Basket'?",
+                                                            [
+                                                            "Conejo",
+                                                            "Cabra",
+                                                            "Tigre",
+                                                            "Serpiente",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 0,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Momiji Soma se puede convertir en un conejo.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Qué habilidad tiene C.C de 'Code Geass'?",
+                                                            [
+                                                            "Modificar memorias",
+                                                            "Obedencia absoluta",
+                                                            "Detener el tiempo",
+                                                            "Inmortalidad",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 3,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "C.C de code geass posee la inmortalidad.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Cuántos miembros tiene el laboratorio en 'Steins;Gate'?",
+                                                            [
+                                                            "10",
+                                                            "8",
+                                                            "5",
+                                                            "3",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 1,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "8 miembros tiene el labortario.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Cuántos segundos puede usar su poder Yuu de 'Charlotte'?",
+                                                            [
+                                                            "10",
+                                                            "1",
+                                                            "3",
+                                                            "5",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 3,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Yuu puede usar su poder por 5 segundos.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿En qué equipo estaban Hinata-Kiba-Shino de 'Naruto'?",
+                                                            [
+                                                            "7",
+                                                            "10",
+                                                            "8",
+                                                            "1",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 2,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Hinata Kiba y Shino pertenecian al equipo 8.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Cuál fue la primera arma de Yato de 'Noragami'?",
+                                                            [
+                                                            "Tomone",
+                                                            "Daikoku",
+                                                            "Yukine",
+                                                            "Hiro",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 3,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Su primera arma fue Hiro.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Cuantas Valkyrias hay en 'Record of Ragnarok'?",
+                                                            [
+                                                            "13",
+                                                            "9",
+                                                            "15",
+                                                            "7",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 0,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Hay 13 Valkyrias.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Cuanto tiempo viven los Giftias de 'Plastic Memories'?",
+                                                            [
+                                                            "37 años",
+                                                            "100 años",
+                                                            "24 años",
+                                                            "9 años",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 3,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Los Giftias viven 9 años.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Cuál fué el primer Pokémon ATRAPADO por Ash en 'Pokémon'?",
+                                                            [
+                                                            "Pikachu",
+                                                            "Caterpie",
+                                                            "Charmander",
+                                                            "Squirtle",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 1,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "El primer Pokémon que atrapo Ash fue Caterpie.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Cuál es el valor mínimo de un criminal latente en 'Psycho-Pass'?",
+                                                            [
+                                                            "100",
+                                                            "300",
+                                                            "150",
+                                                            "200",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 0,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "El valor mínimo de un criminal latente es 100.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Cuántos alumnos asistian a la escuela en 'Non Non Biyori'?",
+                                                            [
+                                                            "7",
+                                                            "3",
+                                                            "10",
+                                                            "5",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 3,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "5 alumnos eran los que asistian.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Qué rol cumple Kaho Hinata de 'Blend S'?",
+                                                            [
+                                                            "Sadistic",
+                                                            "Oneesan",
+                                                            "Tsundere",
+                                                            "Imouto",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 2,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Cumple el rol de Tsundere.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Cuántos años estuvo petrificado Senku de 'Dr.Stone'?",
+                                                            [
+                                                            "3.715",
+                                                            "2.825",
+                                                            "5.330",
+                                                            "7.515",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 0,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Estuvo petrificado 3.715 años.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Como se llama la mascota de Ryuji en 'Toradora'?",
+                                                            [
+                                                            "Midori",
+                                                            "Tori",
+                                                            "Chiyo",
+                                                            "Inko",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 3,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Inko es el nombre de la mascota.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Qué regalaba Fuko a la gente en 'Clannad'?",
+                                                            [
+                                                            "Dango",
+                                                            "Estrella de mar",
+                                                            "Cartas",
+                                                            "Flores",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 1,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Regalaba estrellas de mar.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Como se llama el dios de 'Higurashi'?",
+                                                            [
+                                                            "Hinamizawa",
+                                                            "Kami",
+                                                            "Hanyuu",
+                                                            "Watanagashi",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 2,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "El dios de Higurashi se llama Hanyuu.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Qué animal es el guardia de seguridad en 'Beastars'?",
+                                                            [
+                                                            "Perro",
+                                                            "Gorila",
+                                                            "Serpiente",
+                                                            "Oso",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 2,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Es una Serpiente.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿La final regional es Karasuno vs...  'Haikyuu!!'?",
+                                                            [
+                                                            "Nekoma",
+                                                            "Shiratorizawa",
+                                                            "Aoba Josai",
+                                                            "Fukurodani",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 1,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Es Karasuno vs Shiratorizawa.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Quién muere primero de los Night Raid en 'Akame ga kill'?",
+                                                            [
+                                                            "Sheele",
+                                                            "Mine",
+                                                            "Bulat",
+                                                            "Lubbock",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 	0,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Sheele es la primera en morir.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Cuantos años tiene Gojo de 'Jujutsu Kaisen'?",
+                                                            [
+                                                            "24",
+                                                            "20",
+                                                            "35",
+                                                            "28",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 3,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Gojo tiene 28 años.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Qué nacionalidad es Laurent Thierry de 'Great Pretender'?",
+                                                            [
+                                                            "Japones",
+                                                            "Frances",
+                                                            "Belga",
+                                                            "Ingles",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 2,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Laurent Thierry es de Belgica.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿De qué planeta es Lala de 'To love Ru'?",
+                                                            [
+                                                            "Deviluke",
+                                                            "Memorze",
+                                                            "Tierra",
+                                                            "Mistletoe",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 0,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Proviene del planeta Deviluke.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Que idioma habla Alya aparte del japones en 'Roshidere'?",
+                                                            [
+                                                            "Ingles",
+                                                            "Ruso",
+                                                            "Chino",
+                                                            "Español",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 1,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Habla Ruso.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+                                                            [
+                                                            "¿Por qué se casan Yukari y Ririna en 'Koi to Uso'?",
+                                                            [
+                                                            "Amor",
+                                                            "Dinero",
+                                                            "Obligacion",
+                                                            "Religion",
+                                                            ],
+                                                            {
+                                                            type: "quiz",
+                                                            correct_option_id: 2,
+                                                            open_period: 2,
+                                                            explanation:
+                                                            "Se casan por Obligacion.",
+                                                            is_anonymous: "false",
+                                                            }
+                                                          ],
+
+
+
+
+// Otras preguntas aquí...
     ];
   
     var ma = Math.random();
