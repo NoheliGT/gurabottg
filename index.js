@@ -12,7 +12,7 @@ const AnimeScraper = require("exa-anime-scraper");
 const anime = new AnimeScraper.Animefenix();
 const randomanime = require("random-anime");
 const { Manga, Character } = require("mailist");
-const translate = require("@vitalets/google-translate-api");
+//const translate = require("@vitalets/google-translate-api");
 const googleTTS = require("google-tts-api");
 const { AnimeWallpaper, AnimeSource  } = require("anime-wallpaper");
 const wall = new AnimeWallpaper();
@@ -34,6 +34,7 @@ const gis = require('async-g-i-s');
 const { Hercai } = require('hercai');
 const herc = new Hercai(); //new Hercai("your api key"); => Optional
 
+const translate = require('google-translate-api-x');
 
 
 /*  const mysql = require('mysql');
@@ -896,7 +897,7 @@ bot.onText(/^\/emisionanime/, async (msg) => {
   }
 });
 
- const usuariosAutorizados = ['1293385615','1040078824', '1667685372', '1701653200', '1812043697', '929203318', "6394321121", "1873607826", "1271825317", "1812043697", "1708427708", "6459813492", "5400291670", "6586449607", "2098540678", "1812043697",  "5885875459",  "1065469951",  "5400291670",  "6614100434", "6376167775"];
+ const usuariosAutorizados = ['1509028898','6796621406','1293385615','1040078824', '1667685372', '1701653200', '1812043697', '929203318', "6394321121", "1873607826", "1271825317", "1812043697", "1708427708", "6459813492", "5400291670", "6586449607", "2098540678", "1812043697",  "5885875459",  "1065469951",  "5400291670",  "6614100434", "6376167775"];
 
  bot.onText(/\/superusuarios/, async (msg) => {
   const chatId = msg.chat.id;
@@ -9833,3 +9834,4 @@ bot.onText(/\/image (.+)/, (msg, match) => {
       console.error(error);
   });
 });
+
