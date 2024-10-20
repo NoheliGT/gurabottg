@@ -35,6 +35,9 @@ const { Hercai } = require('hercai');
 const herc = new Hercai(); //new Hercai("your api key"); => Optional
 
 const translate = require('google-translate-api-x');
+const { upscale, ip, gwsearch   } = require('nayan-server');
+const { uploadImage } = require('imgbb-uploader-api');
+
 
 
 /*  const mysql = require('mysql');
@@ -897,7 +900,7 @@ bot.onText(/^\/emisionanime/, async (msg) => {
   }
 });
 
- const usuariosAutorizados = ['1509028898','6796621406','1293385615','1040078824', '1667685372', '1701653200', '1812043697', '929203318', "6394321121", "1873607826", "1271825317", "1812043697", "1708427708", "6459813492", "5400291670", "6586449607", "2098540678", "1812043697",  "5885875459",  "1065469951",  "5400291670",  "6614100434", "6376167775"];
+ const usuariosAutorizados = ['5512177961','1509028898','6796621406','1293385615','1040078824', '1667685372', '1701653200', '929203318', "1271825317", "1812043697", "1708427708", "2098540678", "1812043697", "1065469951",  "6614100434", "6376167775"];
 
  bot.onText(/\/superusuarios/, async (msg) => {
   const chatId = msg.chat.id;
@@ -2769,7 +2772,7 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   }
   if (action === "25") {
     text =
-      "Los comandos siguientes son supercomandos para usuarios que participen en dinámicas o aporten donaciones al bot (módulo en desarrollo).\n\n/anonimo <ID> <mensaje>: Envia un mensaje a cualquier usuario de forma anónima (no sabría quien eres, pero tú sí porque regresa los datos del usuario en sus respuestas\n\n/musica <URLYT>: ¡Descarga música de YT!.\n\n/facebook <URL>: ¡Descarga vídeos de FB en HD!.\n\n/tiktok <URL>: ¡Descarga vídeos/audios de TK!.\n\n/instagram <URL>: ¡Descarga vídeos/img de IG!.\n\n/image <mensaje>: ¡Convierte el texto en una imagen hecho con IA!\n\n/gura <pregunta>: ¡Obten respuestas basadas en la IA!.";
+      "Los comandos siguientes son supercomandos para usuarios que participen en dinámicas o aporten donaciones al bot (módulo en desarrollo).\n\n/anonimo <ID> <mensaje>: Envia un mensaje a cualquier usuario de forma anónima (no sabría quien eres, pero tú sí porque regresa los datos del usuario en sus respuestas\n\n/musica <URLYT>: ¡Descarga música de YT!.\n\n/facebook <URL>: ¡Descarga vídeos de FB en HD!.\n\n/tiktok <URL>: ¡Descarga vídeos/audios de TK!.\n\n/instagram <URL>: ¡Descarga vídeos/img de IG!.\n\n/image <mensaje>: ¡Convierte el texto en una imagen hecho con IA!\n\n/gura <pregunta>: ¡Obtén respuestas basadas en la IA!.\n\n/ip <dirección IP>: ¡Obtén información ultrasecreta!.\n\n/upsacale: ¡Mejora la calidad de una imagen!!.";
   }
   if (action === "29") {
     text =
@@ -9835,3 +9838,757 @@ bot.onText(/\/image (.+)/, (msg, match) => {
   });
 });
 
+////////////////////////////////////////
+
+
+
+/* 
+bot.onText(/\/upscale (.+)/, (msg, match) => {
+  const chatId = msg.chat.id;
+  const link = match[1]; // La URL de la imagen
+  const model = '1'; // Elige el modelo (1 o 2 según lo que prefieras)
+
+  // Informa al usuario que se está procesando la imagen
+  bot.sendMessage(chatId, `⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+UPSCALING YOUR PIC, PLZ W8...
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯`);
+
+  // Inicia el proceso de mejora de la imagen
+  upscale(link, model).then(response => {
+    // Revisa si el "response" contiene los datos de la imagen
+    if (response && response.image) {
+      const imageData = Buffer.from(response.image, 'base64'); // Suponiendo que la imagen esté en base64
+
+      // Guarda el archivo mejorado temporalmente
+      const filePath = path.join(__dirname, 'upscaled_image.png');
+      fs.writeFileSync(filePath, imageData);
+
+      // Envía el archivo resultante al usuario
+      bot.sendDocument(chatId, filePath).then(() => {
+        // Borra el archivo temporal después de enviarlo
+        fs.unlinkSync(filePath);
+      }).catch(err => {
+        console.error('Error al enviar la imagen:', err);
+        bot.sendMessage(chatId, 'Hubo un error al enviar la imagen.');
+      });
+    } else {
+      console.error('No se encontró la imagen en la respuesta:', response);
+      bot.sendMessage(chatId, 'Hubo un error al mejorar la imagen.');
+    }
+  }).catch(err => {
+    console.error('Error al mejorar la imagen:', err);
+    bot.sendMessage(chatId, 'Hubo un error al mejorar la imagen.');
+  });
+});
+
+console.log('Bot escuchando...'); */
+/* 
+bot.onText(/\/upscale (.+)/, async (msg, match) => {
+  const chatId = msg.chat.id;
+  const link = match[1]; // La URL de la imagen
+  const model = '1'; // Elige el modelo (1 o 2 según lo que prefieras)
+
+  // Informa al usuario que se está procesando la imagen
+  bot.sendMessage(chatId, `⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+UPSCALING YOUR PIC, PLZ W8...
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯`);
+
+  try {
+    // Inicia el proceso de mejora de la imagen
+    const response = await upscale(link, model);
+    
+    if (response && response.image_url) {
+      // Descargar la imagen mejorada desde la URL
+      const imageUrl = response.image_url;
+      const filePath = path.join(__dirname, 'upscaled_image.png');
+
+      const imageResponse = await axios({
+        url: imageUrl,
+        responseType: 'arraybuffer',
+      });
+
+      // Guarda la imagen mejorada temporalmente
+      fs.writeFileSync(filePath, imageResponse.data);
+
+      // Envía el archivo resultante al usuario
+      bot.sendDocument(chatId, filePath).then(() => {
+        // Borra el archivo temporal después de enviarlo
+        fs.unlinkSync(filePath);
+      }).catch(err => {
+        console.error('Error al enviar la imagen:', err);
+        bot.sendMessage(chatId, 'Hubo un error al enviar la imagen.');
+      });
+    } else {
+      console.error('No se encontró la imagen en la respuesta:', response);
+      bot.sendMessage(chatId, 'Hubo un error al mejorar la imagen.');
+    }
+  } catch (err) {
+    console.error('Error al mejorar la imagen:', err);
+    bot.sendMessage(chatId, 'Hubo un error al mejorar la imagen.');
+  }
+});
+
+
+
+
+
+
+
+const apiKey = 'cbc7ad91e0bb0decfa66f2dd2208e199'; // Tu API key de imgbb
+const downloadFolder = './download';
+
+// Manejador del comando /queso
+bot.onText(/\/queso/, (msg) => {
+  const chatId = msg.chat.id;
+
+  // Verifica si el mensaje es una respuesta a otro mensaje
+  if (msg.reply_to_message) {
+    try {
+      // Verifica si el mensaje al que se responde contiene una foto
+      if (msg.reply_to_message.photo) {
+        const photoId = msg.reply_to_message.photo[msg.reply_to_message.photo.length - 1].file_id;
+
+        // Descargar la imagen
+        bot.downloadFile(photoId, downloadFolder).then(function (filePath) {
+          console.log('Imagen descargada en:', filePath);
+
+          // Iniciar el proceso de subir a imgbb
+          async function start() {
+            try {
+              const imageBuffer = fs.readFileSync(filePath); // Leer el archivo descargado
+
+              // Subir la imagen a imgbb
+              const response = await uploadImage(filePath, apiKey);
+              console.log('Imagen subida correctamente:', response);
+
+              // Enviar el enlace de la imagen subida al usuario
+              bot.sendMessage(chatId, `Imagen subida: ${response.data.url}`);
+
+              // Eliminar el archivo local después de subirlo
+              fs.unlinkSync(filePath);
+              console.log('Archivo local eliminado.');
+            } catch (error) {
+              console.log('Error al subir la imagen:', error);
+              bot.sendMessage(chatId, 'Hubo un error al procesar la imagen.');
+            }
+          }
+
+          // Llamar a la función start para subir la imagen
+          start();
+        });
+      } else {
+        bot.sendMessage(chatId, '¡Por favor, responde a una imagen para usar este comando!');
+      }
+    } catch (error) {
+      console.log('Error:', error);
+      bot.sendMessage(chatId, 'Hubo un error al procesar la imagen.');
+    }
+  } else {
+    bot.sendMessage(chatId, '¡Por favor, responde a una imagen para usar este comando!');
+  }
+});
+ */
+
+const apiKey = 'cbc7ad91e0bb0decfa66f2dd2208e199'; // Tu API key de imgbb
+const downloadFolder = './download';
+// Manejador del comando /queso
+// Manejador del comando /queso
+bot.onText(/\/upscale/, (msg) => {
+  const chatId = msg.chat.id;
+  const userId = msg.from.id.toString(); // Convertir el userId a string
+
+  // Verifica si el usuario está autorizado
+  if (!usuariosAutorizados.includes(userId)) {
+    bot.sendMessage(chatId, 'Lo siento, no tienes permiso para usar este comando❌.');
+    return;
+  }
+
+  // Verifica si el mensaje es una respuesta a otro mensaje
+  if (msg.reply_to_message) {
+    try {
+      // Verifica si el mensaje al que se responde contiene una foto
+      if (msg.reply_to_message.photo) {
+        const photoId = msg.reply_to_message.photo[msg.reply_to_message.photo.length - 1].file_id;
+
+        // Descargar la imagen
+        bot.downloadFile(photoId, downloadFolder).then(function (filePath) {
+          console.log('Imagen descargada en:', filePath);
+
+          // Iniciar el proceso de subir a imgbb
+          async function start() {
+            try {
+              const imageBuffer = fs.readFileSync(filePath); // Leer el archivo descargado
+
+              // Subir la imagen a imgbb
+              const response = await uploadImage(filePath, apiKey);
+              console.log('Imagen subida correctamente:', response);
+
+              // Obtener la URL de la imagen subida
+              const imageUrl = response.data.url;
+
+              // Informa al usuario que se está procesando la imagen
+              bot.sendMessage(chatId, `📷 *Mejorando tú imagen, espera un momento titán...*`, {parse_mode: "Markdown"});
+
+              // Realiza el upscale de la imagen
+              const upscaleResponse = await upscale(imageUrl, '1'); // Utiliza el modelo 1
+              if (upscaleResponse && upscaleResponse.image_url) {
+                // Descargar la imagen mejorada desde la URL
+                const upscaledImageUrl = upscaleResponse.image_url;
+                const upscaledFilePath = path.join(__dirname, 'upscaled_image.png');
+
+                const upscaledImageResponse = await axios({
+                  url: upscaledImageUrl,
+                  responseType: 'arraybuffer',
+                });
+
+                // Guarda la imagen mejorada temporalmente
+                fs.writeFileSync(upscaledFilePath, upscaledImageResponse.data);
+
+                // Envía el archivo resultante al usuario
+                bot.sendDocument(chatId, upscaledFilePath).then(() => {
+                  // Borra el archivo temporal después de enviarlo
+                  bot.sendMessage(chatId, `*¡Imagen mejorada con éxito✅!*`, {parse_mode: "Markdown"});
+
+                  fs.unlinkSync(upscaledFilePath);
+                }).catch(err => {
+                  console.error('Error al enviar la imagen:', err);
+                  bot.sendMessage(chatId, 'Hubo un error al enviar la imagen .');
+                });
+              } else {
+                console.error('No se encontró la imagen en la respuesta de upscale:', upscaleResponse);
+                bot.sendMessage(chatId, 'Hubo un error al mejorar la imagen.');
+              }
+
+              // Eliminar el archivo local después de subirlo
+              fs.unlinkSync(filePath);
+              console.log('Archivo local eliminado.');
+            } catch (error) {
+              console.log('Error al procesar la imagen:', error);
+              bot.sendMessage(chatId, 'Hubo un error al procesar la imagen.');
+            }
+          }
+
+          // Llamar a la función start para subir la imagen
+          start();
+        });
+      } else {
+        bot.sendMessage(chatId, '¡Por favor, responde a una imagen para usar este comando!');
+      }
+    } catch (error) {
+      console.log('Error:', error);
+      bot.sendMessage(chatId, 'Hubo un error al procesar la imagen.');
+    }
+  } else {
+    bot.sendMessage(chatId, '¡Por favor, responde a una imagen para usar este comando!');
+  }
+});
+
+
+
+
+
+bot.onText(/\/ip (.+)/, (msg, match) => {
+  const chatId = msg.chat.id;
+  const userId = msg.from.id.toString(); // Convertir el userId a string
+  const address = match[1]; // Obtener la IP introducida por el usuario
+
+  // Verificar si el usuario está autorizado
+  if (!usuariosAutorizados.includes(userId)) {
+    return bot.sendMessage(chatId, '❌ No tienes permiso para usar este comando.');
+  }
+
+  bot.sendMessage(chatId, `🔍 *Obteniendo información para la IP: ${address}...*`, { parse_mode: "Markdown" });
+
+  ip(address).then((data) => {
+    if (data.status) {
+      // Convertir los datos a formato legible para un archivo .txt
+      const dataString = JSON.stringify(data.data, null, 2);
+      const filePath = path.join(__dirname, 'ip_info.txt');
+
+      // Guardar los datos en un archivo de texto
+      fs.writeFileSync(filePath, dataString, 'utf8');
+      console.log('Datos guardados en ip_info.txt');
+
+      // Enviar el archivo .txt al usuario
+      bot.sendDocument(chatId, filePath).then(() => {
+        // Borrar el archivo local después de enviarlo
+        fs.unlinkSync(filePath);
+        console.log('Archivo ip_info.txt eliminado después de ser enviado.');
+      }).catch(err => {
+        console.error('Error al enviar el archivo:', err);
+        bot.sendMessage(chatId, 'Hubo un error al enviar el archivo.');
+      });
+    } else {
+      bot.sendMessage(chatId, 'No se pudo obtener información para esta IP.');
+    }
+  }).catch((err) => {
+    console.log('Error al obtener la información de la IP:', err);
+    bot.sendMessage(chatId, 'Hubo un error al obtener la información de la IP.');
+  });
+});
+
+bot.onText(/^\/bailar|^\/dance/, (msg) => {
+  const chatid = msg.chat.id;
+  const usuario = msg.from.first_name;
+  const usersId = msg.reply_to_message ? msg.reply_to_message.from.first_name : null;
+
+  const danceWithOthersGifs = [
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmhnbTY0Y2EwZDB3a3FxempzbjhmM2dzamp1d2VmaG02NThleGNkcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/vTqhQldEfAY6c/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExeTMxczN3bjB3N2x3YWlzYm10aGVrNnd1YjA0bjU2MnYxM2c2b2Q0ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/mJIa7rg9VPEhzU1dyQ/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExaWF2MnJzNTA5aHBjcXl4M3RoMXlkb3dmaGVqNnBwYXB3MGE4NzFvYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/eZq1NxT0vHRXa/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOXZydmFzZG5iZGcyaXQ0Zm94YjhhMTl1N2x2bmxueGl6eWQ0cTczaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1aAO2OlmDOZUs/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExcG9qbXAweW1rdXZsYzR0ZHI3eG91ZXE2cGl4OG45cXhsNGVvMnR4YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/pFqFS99pYIVrY7qTff/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZXdiNWdxbzFpaDVzNGJucnJhYWlmMWpzY3A3cW41ZjgyczdvZmJpOSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/mkDoRgd7uAJbaAZ5Ic/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExczh6am1xa21ma2lxMjRmNGZzZjRnMjZ5MXh1Ymg2ZHVrcTRlc291aiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/6k6iDdi5NN8ZO/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3JpbmUxa2c1aHdyZ3VvYXdkeTVxZWJzOTBtMm11enhxZnA1ZXBmbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lrDAgsYq0eomhwoESZ/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3J2M3E5dHM5N3JlNWcwbzZhMWk2ZG02ZTM4MnMyaWl1MDc3N2I3eiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lxks8HH4m9f7SeQzOr/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNzZ2dTdoaWhlYncwejA3OGN6emQ3bWZvZ2IzOTQ0Ymd2d2Q5d240MiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/F3RBxmnonkN1aSuIAY/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExa253a3JybHF2Y3ZidDZ3OHQ3enhwa3kzd2pvNDFkdjFwODNtMXNwMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/FUiZjgshtlMly/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExMThxYnhzeWplbWtucW5qeHRrazBvZXZ3ZmFvb2Zsd3kzMWhmZ3ZsYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/sFKyfExMBYWpSEbcml/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExYmphNHp0bXViejY5b2ttaWxkbWM1Mm9ic3d2YzBkenJxeDlzMXZ4dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/EW3CTnkH6uy3K/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExem5xZnIzM3JwdTZraGV6ZWl2NWh6OGdleTQ0YmZydWthd2N2dzByYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VGiUYnkVsowAgZRlMD/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmUwb2pqcGJnM2R0YXkzNGszcm1vbzBwYnJ4bzB4NjhxcW13eWxiMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3S5ZSsJcP20cU/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExam9nMnE0ZDBwM3E5Mzh5emtiNGE4ZGg4NWFqZnR3aDdwcjNmYzdoMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/4oJPtYqOQ2xoY/giphy.gif",
+
+  ];
+
+      const danceSoloGifs = [
+      "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZG1ybjhjem16dTdneW9nYTE5YngyNWJjOGlqNGpqZXJvNXc5NXBvOSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/LML5ldpTKLPelFtBfY/giphy.gif",
+      "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExcTVsampkYjQ0NzNsMXd1NzR4aDBuc2xpZ2lkcDFlZTUxdGRnNnd0ZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/b7l5cvG94cqo8/giphy.gif",
+      "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExYmFuM21vZHd0b2pxbXU0Nm16dGY5anp3MmNnZGs1OWY1ejdydHI1ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/a6pzK009rlCak/giphy.gif",
+     "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExMDNyYWh5ZXl4OTd6dmY4cTRudTRzamZ4c2FyaGFtd3J4MW8yY2lwMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/CbKx4uoTrKotW/giphy.gif",
+     "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExcW9jMTJ3eXVrZTVkNXFuODRqbWRkZWdtbnVjOThqZTA1YnQzZ29zOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/11lxCeKo6cHkJy/giphy.gif",
+     "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXRqc3p2cWdxanJmdXNxeXY4Y2h4MHdrcGw2NHA0a3g3bmxpb2hxcyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7bul4bNw60uhhQyI/giphy.gif",
+     "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExd3pzYXRqMjEzbnFiNjkyNTRram56MDhna2EyY3RoNjFzYTJwdXViYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/cxPtMDHG8Ljry/giphy.gif",
+     "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2lnOTQ4ZDZwN3Z3b3VvZ2hvZmc2YzBxMDRmOGV1eGFzeHp1ZXhrZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/iwsFHeFMtn3nNxSdP8/giphy-downsized-large.gif",
+     "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjF5cnF0ZGV3NnFrNDg2bDlkNzltdzJudHRxMWhkZ29yY2t6ZHAxdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/HZboJ5Pkti9k4/giphy.gif",
+     "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2xpZWJpd2o5NTd1YWo2bWU4NXRlajVhdHc3bHlkN2cxcjl3cThkMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/oTiMS5tKgDSKY/giphy.gif",
+     "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnI1ZnpzcWYzdjhrZHVmM3FxaWFpZTcycTFhcWdiOXFnaG9lZWQwcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ss9NqmOeQxRKg/giphy.gif",
+     "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3N6aGxhdmJkNnptenNxdW43Z3dsZGZlNDdsZHczdDRwZTczaW5nbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YEZgyIFliIcB5f7yZ4/giphy.gif",
+     "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGMweWNyOHVkaWRkczVza24zdnFnM3ZpeG5oYm0xbnF6MmRpbmU3MiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/SzpIRvjzkuQDVD6O4F/giphy.gif",
+     "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHdkNDRocWwxam14eWRncm43OXV0bnBqMHpna2M5NzlhYTZnazJnNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/BAk1AWseOEKNCvuY2e/giphy.gif",
+     "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExMTk0N3M3NXl6ZGd5OXJsMTByOXdnb25oZzZhN2RrNnB6OHhxZzB0cCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RLJxQtX8Hs7XytaoyX/giphy.gif",
+     "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2h2eTM3ZHhtbXBmbXhlbHptaXFpZWUwazNveHZ1Z29kcWFsOW1nZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lyN5qwcbXWXr2fUjBa/giphy.gif",
+    ];
+
+  let randomGifIndex;
+  let frase;
+
+  // Si se está respondiendo a alguien
+  if (usersId) {
+    randomGifIndex = Math.floor(Math.random() * danceWithOthersGifs.length);
+    frase = `[${usuario}](tg://user?id=${msg.from.id}) está bailando con [${usersId}](tg://user?id=${msg.reply_to_message.from.id})! 🎉`;
+  } else {
+    randomGifIndex = Math.floor(Math.random() * danceSoloGifs.length);
+    frase = `[${usuario}](tg://user?id=${msg.from.id}) _está bailando felizmente._ 💃🕺`;
+  }
+
+  // Elegir el GIF correcto según el contexto
+  const gifUrl = usersId ? danceWithOthersGifs[randomGifIndex] : danceSoloGifs[randomGifIndex];
+
+  // Manejo de errores
+  bot.sendAnimation(chatid, gifUrl, {
+    caption: frase,
+    parse_mode: "Markdown",
+  }).catch(err => {
+    console.error('Error al enviar GIF:', err.message);
+    bot.sendMessage(chatid, 'Hubo un problema al enviar el GIF. Intenta de nuevo más tarde.');
+  });
+});
+
+bot.onText(/^\/aplaudir|^\/clap/, (msg) => {
+  const chatid = msg.chat.id;
+  const usuario = msg.from.first_name;
+  const usersId = msg.reply_to_message ? msg.reply_to_message.from.first_name : null;
+
+  // Array de GIFs de aplaudir
+  const clapGifs = [
+      "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNXpkenpzY212eWc2ZHhscG5uYzU4OHFpeGVzdWl0b3czd2JyOXQ2OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Diym3aZO1dHzO/giphy.gif",
+      "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExb3M5Nzg5d2FkbzhxdDU5Ym9reTM0MmxxeXY0eno3MXV1MGo5aHE5ciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Gn5E6WOBnEAGQ/giphy.gif",
+      "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3gwNzEzdHowbjZ4cWk5cnBzZ2lsYmRqcjA5ZmUyeHVxaXF3MXBsdiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KsPC9t0ToZhqU/giphy.gif",
+      "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnNwY3F4bmdnbHVpMHJ4cnEzN2tlMHhjZHU5ZHI0bHVkcnN4MTc2diZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/pWsdECIr4w9Jm/giphy.gif",
+      "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExbGdhcjl6MTA0eTY3MnB3bm1haGptZDAzbW9lbTIzbTEzaXloc2FoNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/dZo51w9gv37QQ/giphy.gif",
+      "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExeHZkdGVsMzloY25hbmI0dGw2ODhmNmZpY245d3k5eGtxaWo1b2lyNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/klQrJUcrfMsTK/giphy.gif",
+      "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHg3aDUxb3RqMTF3bGVseXB0eHpqZTRqYXZheXZ6OGkxaTJoZ3ltaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26gN1ncIQ8aTtJuXS/giphy.gif",
+      "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExcjNjN2wwcWxvMXZ1a2U5ejdodjJzZm0wcG1uczVoa3o3d2gyZHBlbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/TnPAmP7OLTaeY/giphy.gif",
+      "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZGc2NW92dGV6d2o0bTQ5YmNhbnB4YXp6bG1raXpvamRvYWFuZ2tpZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1W40UWS9peSru/giphy.gif",
+      "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZTB0aWl5OTh0cnY4cmlzMzFsamJtaXpyOHpnOGRiOGtwZWdncHF1aiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/cGkZJIUPJqHJsUkENE/giphy.gif",
+      "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExcndndHVvaWF4anhzemd0N3U1dHoxMXNqcHR2dGRuMzhzZGJhM2w5bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/WYrRBHBlN5P9FDtOGP/giphy.gif",
+      "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNTQ0NDVwcTI3NDIxZ3NqYTE1b3c4YmNoYTQ2N2p5cnlxeXdrbnd4NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Jir3toQTWW9Ne/giphy.gif",
+      "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExYTB1MGV6MXJpN3Jpd210a21nMzNhMjdxdW0xN3AwbTluOG42ZDNnOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/SZr6aRkQC8x8aJoQAQ/giphy.gif",
+      
+  ];    
+
+  let randomGifIndex;
+  let frase;
+
+  // Si se está respondiendo a alguien
+  if (usersId) {
+      randomGifIndex = Math.floor(Math.random() * clapGifs.length);
+      frase = `[${usuario}](tg://user?id=${msg.from.id}) le está aplaudiendo a [${usersId}](tg://user?id=${msg.reply_to_message.from.id})! 👏`;
+  } else {
+      randomGifIndex = Math.floor(Math.random() * clapGifs.length);
+      frase = `[${usuario}](tg://user?id=${msg.from.id}) está aplaudiendo! 👏`;
+  }
+
+  const gifUrl = clapGifs[randomGifIndex];
+
+  // Manejo de errores
+  bot.sendAnimation(chatid, gifUrl, {
+      caption: frase,
+      parse_mode: "Markdown",
+  }).catch(err => {
+      console.error('Error al enviar GIF:', err.message);
+      bot.sendMessage(chatid, 'Hubo un problema al enviar el GIF. Intenta de nuevo más tarde.');
+  });
+});
+
+// Respuestas posibles de la bola 8
+const respuestas = [
+  "✅ Sí.",
+  "❌ No.",
+  "🤔 Tal vez.",
+  "🤷‍♂️ Es difícil decirlo.",
+  "👍 Sin duda.",
+  "👎 No cuentes con ello.",
+  "🌟 Definitivamente.",
+  "😕 Probablemente no.",
+  "⏳ Sí, pero no ahora.",
+  "🔮 Quizás más tarde.",
+  "🚫 Mejor no lo pienses.",
+];
+
+// Comando /bola8
+bot.onText(/\/bola8 (.+)/, (msg, match) => {
+  const chatId = msg.chat.id;
+  const pregunta = match[1]; // La pregunta que se hizo
+  const respuestaAleatoria = respuestas[Math.floor(Math.random() * respuestas.length)];
+
+  bot.sendMessage(chatId, `🎱 Tú pregunta es: "${pregunta}"\\n🪄 Respuesta: ${respuestaAleatoria}`);
+});
+
+bot.onText(/^\/laugh|^\/reir/, async (msg) => {
+  try {
+    const chatId = msg.chat.id;
+    const user = msg.from.first_name;
+    const repliedUser = msg.reply_to_message ? msg.reply_to_message.from.first_name : null;
+
+    // Lista de GIFs de risa
+    const laughGifs = [
+  "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2JvMXg0NnVoOGJxZml6MTVjNXBvdWNodHh2OHE5YnFldml1YXpyMyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/pa1WaYStUKyLC/giphy.gif",
+  "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExaDk2OGJpOTZrcHZvM3MxbXdmZWs4cWV4aXpnNWprcHhncnRtN2w4dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/v60KQg3MXLwTS/giphy.gif",
+  "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOXE5OWxvYmdteGU0MmZ3c2Nwdm5ucHA5aW05OTJjNDBocnU1M25ldyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Fe3gjbyAlUs99ZUBIy/giphy.gif",
+  "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWkzaHd3dWViYTAzeWRpZGloM3Zxa3hnZWpjY2wxdGpsbWpoczk4ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/B1JKtacZXunqU/giphy.gif",
+  "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExeXV4a3oxbHV4czczc3JzMzBjcjk0bWN3MDdudGF2OXU5M3drOHlqcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/N7yaOKW2WKyxa/giphy.gif",
+  "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ2p0cTJsNXVxMThzbWJsdXQ4cnQyNG1wZm5vbHd0OWh1MWtqeHIxeCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/T7Qx28nEdo9NK/giphy.gif",
+  "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExbHZlYzZlN3B1Mnd5ZzM5eDhxaHljZzJzcmhueTliNmV0OTJ4Z2lyNCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VvvVOKJIogh44/giphy.gif",
+  "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOXlkdm40MHRqZXUxbGs2NjI4cW1rOWh5b3h6bDE4a29heWdscGxyNyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/mnBsYB19OQCdy/giphy.gif",
+  "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExODNtNzgwMmNrcHNxZmc2bTUyMGNuaWo4M3gzZDJnbXloN3J1OW1haiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/e20AWoQEoOB2/giphy.gif",
+  "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExamk5dDY1NDZoeHlncXpnNjFxeWN5Y3VuY29heWh5MXVsMW84bzdraiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/zw1LjU07TwWqY/giphy.gif",
+  "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjcwOTJrcWxxeXN4ODVxcTNhaTRxN2V5ZmRxaGp6YXJxd2preTlvaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/9tfNjaoyJv7Gw/giphy.gif",
+  "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZHc2bjk3MmFzYWNuMDZvb3V2YjloeW4zaHNud3pxeXM3dnI5b3NkdiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/zsxncmlq4LW1i/giphy.gif",
+  "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExcTZzbzh4bjAyamVsNm5odHRuMDE4a25wZXUxMWRraHNlMXVyZGhzcCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/zviFafViu0VEc/giphy.gif",
+  "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExMW1odmI0OHo5emMwYjJ4dnppbmQ0cHRoYW82ZWExMWwxZ2JwNDlzciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Fd5AeOK3bt1FC/giphy.gif",
+  "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExMW9hZHhxczhzNTZ2YjFmMzRkZWxkazh2cWptcDhrNG9jODk5dXd5aCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/OIcmMONbMGnWPKygYR/giphy.gif",
+  "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnJ4NjB1NWVldGIxdGMxeGJ1dW1zMXMzM2NsdjM4ZnNjN29haXk2dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/kXY0CA4v8mKXe/giphy.gif",
+  "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXEwMXhmeDl1Ynk5YTR2eHdzMDM3a3FsbjVjNWo1bzZsNWF6NzVhOSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Yb0sZcOCQdG36/giphy.gif",
+  "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExdzc0ZXM3bGQ0aW92ejhydGx6cjU2cDU3ZjZ4MmlpaHNyZDF0eHRxdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5OKF1IN3E5R84/giphy.gif",
+  "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExemJmZnh5bjllcjh0aG00MGl5aWY4d3B3ODFrZzc5Nzhib3dkc2VrZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/dpXcqV8htWx4A/giphy.gif",
+  
+    ];
+
+    // Seleccionar GIF aleatorio
+    const randomGifIndex = Math.floor(Math.random() * laughGifs.length);
+    const gifUrl = laughGifs[randomGifIndex];
+
+    let caption;
+
+    // Si se está respondiendo a alguien
+    if (repliedUser) {
+      caption = `🤣 [${user}](tg://user?id=${msg.from.id}) _se está riendo de_ [${repliedUser}](tg://user?id=${msg.reply_to_message.from.id})`;
+    } else {
+      caption = `😂 [${user}](tg://user?id=${msg.from.id}) _se está riendo._`;
+    }
+
+    // Enviar el GIF
+    await bot.sendAnimation(chatId, gifUrl, {
+      caption: caption,
+      parse_mode: "Markdown"
+    });
+
+  } catch (error) {
+    console.error('Error en el comando /laugh o /reir:', error.message);
+
+    // Enviar mensaje de error al usuario
+    bot.sendMessage(msg.chat.id, 'Hubo un problema al procesar tu solicitud. Intenta de nuevo más tarde.');
+  }
+});
+
+bot.onText(/^\/cry|^\/llorar/, async (msg) => {
+  try {
+    const chatId = msg.chat.id;
+    const user = msg.from.first_name;
+    const repliedUser = msg.reply_to_message ? msg.reply_to_message.from.first_name : null;
+
+    // Lista de GIFs de llanto/tristeza
+    const cryGifs = [
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExemU4ZG5sNXZyYW13cWhjcHdjYjFvbjdhaHNlNGRjdW5zcDgzaXhvZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KOYptxBqx90uW8Z88r/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExb2E3eG52cjkzZHRvaDUwazA2czkwd2p2eTVvbGV4Y3ZyNmMyNXU3dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/q1R1ZiUskINVOn6bz3/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZG5wdmhqZW5vaXo5d3dreDE4ZGg0anl0Z2ppbzBoanZzam51ZDV0NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ROF8OQvDmxytW/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExcWs3ejRrMmVuOHJ4bGE3anFsNXp4YWJocHI3YXRyZmJ3aGhqbjljdCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/8YutMatqkTfSE/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNWU0dzYyYmJuNHkzNXF0dG5hbzF6aGhqc2F2NmRvd3R4dDZrNnhqZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/yarJ7WfdKiAkE/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmZ4MWl2eXU2MGxkcXBkNHF3bmhoZDZlMTlwbTNoeW82NzBqOWpvbSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jj8DoqSYVJhPW/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExaTY3aWd3amY2dTFpZDF6cmVzdmN6aTUzZXR2Y2ozeGgwaTZxdXBudCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/XKpHeWeupl1q8/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExbHU3cXp6Zzl2bmtxOXJoYWE4OHVyNG56c3FvdXJoajFocDBscjEzNCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YhqyiijLeMCpq/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExcDl5NGZvNXd4NWc4NDZxNnBhdm83MXo4dDExeDQ0dW9nZzdvbzllMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/BdgVpHDiY9Ago/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExcXh3bDNjOTlwa2ptb3d3OXh6MnJ0NGg1NGtxMDF5eGhzc3l3bWpvcyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/N0zizM2fKgGm4/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExemd4dG4yZ3l5MWQyZHQxbmJ6OXZzMHdoamVwODV5dnp1b3pyZ2podSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/shVJpcnY5MZVK/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExMnNkZG1sancxNmRnNHVvb2kyMGY2MGkyN3Q3a3AyMXVqNml2bmI2NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/oS4LjGIpwuE1O/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZmhxaG5qYnl1cmZma2plNjlycDRzdnZnNXVkem5iajZobTNsMjJwdCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/b9wQvtFlehup2/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZTEzY2FvajA0MjZ5azF2Y3B4MmxmcG1uN2U1MXp3OXVsMmU4cW1kciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/on9LDLF5JskaQ/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExdGJwdmg0cHZncTJ0ZWNscnhwZDkzdmQzdXppNXhxN24yZDRrYWo4aiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/UYSAu81IYBw4M/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZHE4bWE1b3BuNTQzMHRwaGxlbnZqMXFobGFzZG40dmRudWhiNzNlOSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/zQnzQCW8IhjkA/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExbGlqdjZoOGdvOGxpaTE0ZmJmOWw0dHl6OWpzbnFjang5NWZ3ZDQxYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/CpoZsKS27cK40/giphy.gif",
+
+    ];
+
+    // Seleccionar GIF aleatorio
+    const randomGifIndex = Math.floor(Math.random() * cryGifs.length);
+    const gifUrl = cryGifs[randomGifIndex];
+
+    let caption;
+
+    // Si se está respondiendo a alguien
+    if (repliedUser) {
+      caption = `😢 [${user}](tg://user?id=${msg.from.id}) _está llorando por culpa de_ [${repliedUser}](tg://user?id=${msg.reply_to_message.from.id})`;
+    } else {
+      caption = `😭 [${user}](tg://user?id=${msg.from.id}) _está llorando._`;
+    }
+
+    // Enviar el GIF
+    await bot.sendAnimation(chatId, gifUrl, {
+      caption: caption,
+      parse_mode: "Markdown"
+    });
+
+  } catch (error) {
+    console.error('Error en el comando /cry o /llorar:', error.message);
+
+    // Enviar mensaje de error al usuario
+    bot.sendMessage(msg.chat.id, 'Hubo un problema al procesar tu solicitud. Intenta de nuevo más tarde.');
+  }
+});
+
+bot.onText(/^\/eat|^\/comer/, async (msg) => {
+  try {
+    const chatId = msg.chat.id;
+    const user = msg.from.first_name;
+
+     // Lista de GIFs de comida
+   const eatGifs = [
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHRwaWxvbXZ4M3k2NXJ2cXI5YmFxaTZ2N2t0djRnMnA4ZHhmcXY5MyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/eSwGh3YK54JKU/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExc3ZnNGppa2t2YTZqMm92bDg1NGIxa2JpcTg1azAybnIyZGRuMnoxMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5ev3alRsskWA0/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHdzdDdiaGxrNDJ4eGF4cHZpYTVlOHMwdXNzODBxc3RtOXY0ODI4ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/rDZuJKhOcLTEI/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExdTJycDZud2xta2N3MWk0cDZuNWhzdjlxc3BhZzc5aTd4NG5hOWNpdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/k3G26A0yaRA76/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExaWx5bjJ3YWYzNGJtaHdkMzBndHoxZWZzdWw4bHZuZ2t2dDJnaGQ2NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/iixdMr6cSURW/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ3ZhaWc3OHc1ODNjNm0zbWlsaTVmdDBjaGllb2o1bzg2YWVia2VuMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/zd76Z18lDrjy0/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExejFhOGVpNjB6aHpmajNiajltN2t6aWtiamZpOG9wcWpxbGVoYWc3ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/uu3vrODux7HTG/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExcDdybnp2eHNnOWtjaWNiY2Z0YTM4d2l3aXBxdm9zZmMyZzhvb3VvYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/LU3uRsnett7gs/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExMXBma2x0N2czMmY3MG8yYmpyZWtiZTg2d3NweXV3MWFvMmg2amR2NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7btRkeE7RtAq8DnO/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExdmZzamV0cDBpYW0xbGhtejB0eWRybzU4cXQ5c2FyOWp3dnJicWdiaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/dlGGZOXy8aWyI/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExYWxxd3VqMXh5b2E3aGlkZnljMG10cTQxN2p5dXZ6Y2UwZjR6Mm9wZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/BuOSTtLMIK7Cw/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNDEwOTludHVrZzA2dzZmc3MzajF1NzQ3dGt3dGJmaDhleGh3Nm1sMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/HxE2bm0SZWqhW/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExcWJvNDU1dDVydWUwc2N3MWF4Ym5ucW9ieHV1N3ljdjUwdjNrbW8xMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/9n4muqn344LMA/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNGFhcmlna24xMzFmdjRsdmFtdXVmcjVybXdkZXl0M3h3ZTFlZzdsNyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/p5yZ61SsIbJe/giphy-downsized-large.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExdzM1NmhoYjlzOWM5azRodmFteGhxajBldGxmZmNsZjN3bWllaTRleiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/hhsVCAsdv9eUM/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExdHBiaW4xbW5vMGU2NGgzeGNsYXNtOTBxdGQwOGFuMHp3ZjU1NG44NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/qpZ4jZN2cMkgg/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExdDJoMmd1MWY2NmVtcm9iMXFoenZjZHZrc2VvdTVwaTExOHB1cGZqaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/uWATFfjOS3MB2/giphy.gif",
+    "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExdWNpYWd4dzlmdTRwemFnNGNjcTF6eHVpdXltMDJoenJsbzFheHFpNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/bIlou8YrJEuGI/giphy.gif",
+    
+  ];
+    // Lista de emojis de felicidad y cubiertos
+    const happyFoodEmojis = [
+      "😊🍴", "😁🍽", "😋🍽", "😄🍴", "😃🍴", "😆🍽", "🥰🍴", "😄🍴"
+    ];
+
+    // Seleccionar GIF aleatorio
+    const randomGifIndex = Math.floor(Math.random() * eatGifs.length);
+    const gifUrl = eatGifs[randomGifIndex];
+
+    // Seleccionar emoji aleatorio
+    const randomEmojiIndex = Math.floor(Math.random() * happyFoodEmojis.length);
+    const happyFoodEmoji = happyFoodEmojis[randomEmojiIndex];
+
+    // Mensaje sin importar si se responde a alguien
+    const caption = `${happyFoodEmoji} [${user}](tg://user?id=${msg.from.id}) _está comiendo._`;
+
+    // Enviar el GIF
+    await bot.sendAnimation(chatId, gifUrl, {
+      caption: caption,
+      parse_mode: "Markdown"
+    });
+
+  } catch (error) {
+    console.error('Error en el comando /eat o /comer:', error.message);
+
+    // Enviar mensaje de error al usuario
+    bot.sendMessage(msg.chat.id, 'Hubo un problema al procesar tu solicitud. Intenta de nuevo más tarde.');
+  }
+});
+
+bot.onText(/^\/sleep|^\/dormir/, async (msg) => { 
+  try {
+      const chatId = msg.chat.id;
+      const user = msg.from.first_name;
+      const userId = msg.from.id;
+
+      // Lista de GIFs de dormir
+      const sleepGifs = [
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExYTd1bmhieXlldnRjb2J4MW9jdXdlcGRrZ2w4eWJnaW9mdzNneTM2ayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KTv6LHsQM55TwzUyJD/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExYmo1ajFuNXJ3Ymo5OWtwcHJ5OGZseDdmeWdkYjMxMzZzc2hsaTMzdCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/uRLLRgqtSTUsuJAMSd/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExaWF1NWNsYzUwOHpkbDZ5NGMxZHJyNjh3c2FuZDFhNmtrYWhzODhmaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/COsPClnfbqXHxbGIRQ/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExYWc2aWNjMDd2cnN6Mm81YTg4eXgwOTM4bGZnZDFqNWNrMGg5OW1wZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/r6U64j8QlFhh12LG1f/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExd29kMTZqMWt1bGo3M2hvaDN3Nzd3cXQ0dXZkdnphY2tjeGpzZ2pndyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/0ulXxLzChgoARVNU3N/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExc2loaTJtMm12bG04cmRvYWl2bmJtYzQ3cW9kbGlpZnIxY2Q1ODYzdCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/izT1ypMVeLlQQpl0aQ/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExb2p0c2p2eXF5b3owNjBvanM2a21jaThjZm1qMGN5ZnFuanVtamU2aSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/mAVtzyjtrfOIwgMO1B/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExazQzajVnbzU1OXpwdXd0ZXM1c3RzN3NjY3Q4M3U1N3J3aTFqNmNxZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/9jIOLqHTiecYItrPc0/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWdpYXU3dzR2a2x2OW9jMmc0NThsMjBzZXlqajkydHFsMHcxeTF6dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/8RdOJLU6xGoIiZyOZ6/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGRhOHowY3BmaGg4ZzYyZmt0eWNucGF0MXJsMDI4ZW9pd2V6OG1oaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/s6ioVEVcshqkVJiHAd/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3Q1d2puM2liOXlidXQ4ZTY3MWZ6d3FtOHM5NDJleXFzb20wcXdqeiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/j001qmu01pSJLMaIO1/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExN3g0ZGg3bm11c2Q0c3o0azg2Nm5rc3A3MWxueGZmbTB0czdpNzY0ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/sQGqHunKSYKjEVFxsA/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExcWVqODRnbDB1bGhocGJ5czk1anI0bHM0bHdwd2dwZDlwd3c4a2VsdiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/2vC8GHwKVeFWp0TAut/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExcnl6c2psY295OXZyenVsbGtuZzExeWt5bXM2Mnd3N3d5dHBzZGJiMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5uFzvE5wL0qQxy2ME7/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExdnVjZWVyaWExamgyOXZhODl2cGhubXR2ZGw0MmQ2cXk5engwNGxwZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/XZffqX222VBttWu0zr/giphy.gif",
+  
+      ];
+
+      // Seleccionar un GIF aleatorio
+      const randomGifIndex = Math.floor(Math.random() * sleepGifs.length);
+      const gifUrl = sleepGifs[randomGifIndex];
+
+      // Mensaje de respuesta con el nombre enlazado al perfil de Telegram
+      const caption = `[${user}](tg://user?id=${userId}) se va a mimir. 💤`;
+
+      // Enviar el GIF
+      await bot.sendAnimation(chatId, gifUrl, {
+          caption: caption,
+          parse_mode: "Markdown"
+      });
+
+  } catch (error) {
+      console.error('Error en el comando /sleep o /dormir:', error.message);
+
+      // Enviar mensaje de error al usuario
+      bot.sendMessage(msg.chat.id, 'Hubo un problema al procesar tu solicitud. Intenta de nuevo más tarde.');
+  }
+});
+
+bot.onText(/^\/angry|^\/enojo/, async (msg) => { 
+  try {
+      const chatId = msg.chat.id;
+      const user = msg.from.first_name;
+      const userId = msg.from.id;
+      const repliedToUser = msg.reply_to_message ? msg.reply_to_message.from.first_name : null;
+      const repliedToUserId = msg.reply_to_message ? msg.reply_to_message.from.id : null;
+
+       // Lista de GIFs de enojo
+       const angryGifs = [
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXc0cmtnM3JsdG1mZTk2bzk4eW5kZ2kxdWtzeWw0cnd2dHZ6OWl2OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lR4dPI8ugV3YOpUMDg/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOXBtcHpoaTRnMml5OGw1aDYzNW1kdGZuN25td2N4c3dieDZobTQ3aCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/q2TnlcvrPFlZyB1GNP/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExeDFpeDk5bTJwYzZqYXYwbjJ3b3E5enp5d3NhbHlsYTVoYnE3eWN4ZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/7ii3h76Lcjn2pHIp1Q/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExaHNqMXRhbWVjd3h4dGw3ZWllMGw3Z3Nsa2hvMmNxaHg2dGgxM3l3cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/3r4A69Xz88KN6zOhHA/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExbXBseXlwOXBndXI1bnI0dnVpaWNia29wNTk1ZGUxd3Npcms5cmZ6dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VIC3zDm90e9Q2oQhy8/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOTR0eHhuMHMwOGl0cHNoZmVqMDV3dW96NTdnemQ2Mzk5NjR2cTE4ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/uF9IclTrRM9kWEIJTg/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGJqeTUyd3k4MG9obXI5bGxzcGhtOXUxeDdnc3JjNmxscTMyMmxlZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KIQWPuJgu01LZcdFsN/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExb3dodDUwbnBpeGM1YzVneDBnZnh5N3d5ODI0dnlhb3Q5ajgyMzJ1OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/TXVvV60XNBS2PaU3TV/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNG8xNjdsYjhmdGQ5M3R4NjJsZDIzanpmZHc2cnk5OWU4YWF6cmxveiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/2RmA6ms9E6j0SEnYPN/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHoxdmU4ZXRjamtkNnV1NGdvMHF0dDNiM29jZ2NkYnR6bnFhczZzaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ko212e0Z1kr1KctMPn/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHZ5enFheGVib2gzcTA5cHhwMHgwNjdyam93ejM2NTJtd2c0dGUwdSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KZ7xRnLNkEDkOpwaG4/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3RiNzRxOWk4c2ttbGplMzlyMTRpZ212OGhqN3M5MGlkcnExYmtoNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/AShEgsukS3Ct6uWuWB/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOXdrb2dzaW82Nm1nbGE1M2h6eDg2d3hsZXNzcmxldG5pOHJnZ2dydiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Bx5fJdQQoalexeLne6/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZGFmNDR5YTdnNzJmbmNlNW1xbmdnaW1rbTg4NDg1ZWJ0amxnMzM2ZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/dq5HfaVPDn6rif8xnQ/giphy.gif",
+ 
+       ];
+
+      // Seleccionar un GIF aleatorio
+      const randomGifIndex = Math.floor(Math.random() * angryGifs.length);
+      const gifUrl = angryGifs[randomGifIndex];
+
+      let caption;
+
+      // Si responde a alguien
+      if (repliedToUser) {
+          caption = ` [${user}](tg://user?id=${userId}) se enojó con [${repliedToUser}](tg://user?id=${repliedToUserId}).😡`;
+      } 
+      // Si no responde a nadie, solo muestra que está enojado
+      else {
+          caption = `[${user}](tg://user?id=${userId}) se enojó. 😡`;
+      }
+
+      // Enviar el GIF
+      await bot.sendAnimation(chatId, gifUrl, {
+          caption: caption,
+          parse_mode: "Markdown"
+      });
+
+  } catch (error) {
+      console.error('Error en el comando /angry o /enojo:', error.message);
+
+      // Enviar mensaje de error al usuario
+      bot.sendMessage(msg.chat.id, 'Hubo un problema al procesar tu solicitud. Intenta de nuevo más tarde.');
+  }
+});
+
+bot.onText(/^\/toque|^\/poke/, async (msg) => { 
+  try {
+      const chatId = msg.chat.id;
+      const user = msg.from.first_name; // Nombre del usuario que envía el comando
+      const userId = msg.from.id; // ID del usuario que envía el comando
+      const repliedToUser = msg.reply_to_message ? msg.reply_to_message.from.first_name : null; // Nombre del usuario al que se le responde
+      const repliedToUserId = msg.reply_to_message ? msg.reply_to_message.from.id : null; // ID del usuario al que se le responde
+
+      // Comprobar si se respondió a alguien
+      if (!repliedToUser) {
+          return; // No hacer nada si no se está respondiendo a alguien
+      }
+
+      // Lista de GIFs de tocar/poke
+      const pokeGifs = [
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExdWRwemd2YTIzMGJqMjk4dnd3cjlubGN6MXZtMDgydTU4Y2ptZmtzbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/pWd3gD577gOqs/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExbDhuMWN0YTRvcXE5N3lrMTJxYzJvcjMzbHZocDc5ejcyaGU5YnBvOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/aZSMD7CpgU4Za/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZTR1aTBnNmhqZnExMTJ2cG13bWlvOTc1dzEzbWVlbGZjdXZwOWFucyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/LXTQN2kRbaqAw/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGV6bDNncHh5aGVkMnRjbDFmaW15d212NjM2amt0ems0dHN6cTZubCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/FdinyvXRa8zekBkcdK/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExYTZxNDBhd2w4NzU4enRycDhxeTd1eGZtNDk2b2RwcnFvY2V1YjgxaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Cy6PX2IRtzbjy/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExcWppMGJzbGRqNG92eHV6ejJzdnJqaTl2bDdpcXB4YXN5M28zam43ZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9dg/S35fOlzII8l7rw8ibU/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExcmc1amJna291NGV4dHc1aWg5aDAxMWcya3o5Nmg3aTJoeWJ2dDV5aSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/aUb0p8RAJYSdcfYRj6/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGcwcm8yc2dnbGdrZDNnbm5tdWhpaWR0dmExdDl0NzBtMnc1NXE0OSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/8GPIfQ6lwRLDU6lHDh/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExdHExejE2Y2U2c3R0NmY1MTM5ZmlwdzF3c3NmdzRpbDY4YWF2bzM3ciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wxxh2d7ZU6wuTnznTj/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExMG16MWt2cHkyM2plbGJvb3Q0cGhjcmZ2OWk0ZmU4MmNwN2EyN3JvMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/uiXdWE8DJL2tthFY2Q/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExMnIyMjNsdTV3N2J5M3FjOG9wc3JkN2FpdWEybmxoczM2MTFuc2M4YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/HCWNafzNzc6nvG8jyR/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExdjg1ajZyejdxenN0d2N3OWdtOWhxcWtmcGE4bWlmMWluZ2FsMGx2ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/rQ2qfmQwzHBFLacEpt/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZTQ3NWJxOGUzcDU2cDFzN2Z5aWtmNHh6bWN5cnQxYzFhNGNlcmd0eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/hjtcSm9ANRNrWWPHdR/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExdTY2c3c3OXRnM2V4Z2dnNnBydnk1Mzlza2xqZWpwZ3M4Nm53aDdwayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/T7oejZsV0v9EnSTg6E/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExMXZrMjVoZ2Z4cXc3ZTcyZTV3bWoxeDljNW9sbDdxaDZrZTY0ejNiciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/8JCYk3o7YwhYoJK1RZ/giphy.gif",
+        "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExc3cydHFsaG1obzZyZTZjNXMwY3RxcTNodXBkdnJsemEwNjFobmZmdSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YI8N22l4WtbHZKAD5I/giphy.gif",
+      ];
+
+      // Seleccionar GIF aleatorio
+      const randomGifIndex = Math.floor(Math.random() * pokeGifs.length);
+      const gifUrl = pokeGifs[randomGifIndex];
+
+      // Mensaje de respuesta con enlaces a los perfiles de ambos usuarios
+      const caption = ` [${user}](tg://user?id=${userId}) le dio un pequeño toque a [${repliedToUser}](tg://user?id=${repliedToUserId})👉.`;
+
+      // Enviar el GIF
+      await bot.sendAnimation(chatId, gifUrl, {
+          caption: caption,
+          parse_mode: "Markdown"
+      });
+
+  } catch (error) {
+      console.error('Error en el comando /tocar o /poke:', error.message);
+
+      // Enviar mensaje de error al usuario
+      bot.sendMessage(msg.chat.id, 'Hubo un problema al procesar tu solicitud. Intenta de nuevo más tarde.');
+  }
+});
