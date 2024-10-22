@@ -7572,7 +7572,7 @@ bot.onText(/\/anunciar/, (msg) => {
   }
 });
 
-//COMANDO GBAN
+/* //COMANDO GBAN
 const gbanFile = 'gban.json';
 
 let gbanList = [];
@@ -7678,7 +7678,7 @@ bot.on('new_chat_members', (msg) => {
       });
     }
   });
-});
+}); */
 
 
 
@@ -10264,7 +10264,7 @@ bot.onText(/\/bola8 (.+)/, (msg, match) => {
   const pregunta = match[1]; // La pregunta que se hizo
   const respuestaAleatoria = respuestas[Math.floor(Math.random() * respuestas.length)];
 
-  bot.sendMessage(chatId, `🎱 Tú pregunta es: "${pregunta}"\\n🪄 Respuesta: ${respuestaAleatoria}`);
+  bot.sendMessage(chatId, `🎱 Tú pregunta es: "${pregunta}"\n\n🪄 Respuesta: ${respuestaAleatoria}`);
 });
 
 bot.onText(/^\/laugh|^\/reir/, async (msg) => {
@@ -10592,3 +10592,194 @@ bot.onText(/^\/toque|^\/poke/, async (msg) => {
       bot.sendMessage(msg.chat.id, 'Hubo un problema al procesar tu solicitud. Intenta de nuevo más tarde.');
   }
 });
+
+const allowedAdmins = [1701653200, 1667685372, 1708427708]; // IDs de administradores
+let bannedPeople = {}; // Inicializa la lista de baneados
+
+async function getBanned() {
+  const bannedList = await db.collection('gbanlist').get();
+  bannedPeople = {}; // Actualiza la variable global
+  bannedList.forEach(doc => {
+    bannedPeople[doc.id] = doc.data();
+  });
+  return bannedPeople;
+}
+
+async function updateBanned(id, username) {
+  await db.collection('gbanlist').doc(String(id)).set({ username });
+}
+
+bot.onText(/^\/gban/, (msg) => {
+  if (allowedAdmins.includes(msg.from.id)) {
+    const idText = msg.text.split("/gban ");
+    const chatId = msg.chat.id;
+    if (msg.reply_to_message || idText[1]) {
+      getBanned().then((data) => {
+        if (data) {
+          let id, username;
+          if (msg.reply_to_message) {
+            id = msg.reply_to_message.from.id;
+            username = msg.reply_to_message.from.username || "Usuario sin username";
+            globalBanning(id, username, data, msg, chatId);
+          } else {
+            if (idText[1]) {
+              // Obtener datos del usuario por ID
+              bot
+                .getChatMember(chatId, idText[1])
+                .then((userdata) => {
+                  id = idText[1];
+                  username = userdata.user.username || "Usuario sin username";
+                  globalBanning(parseInt(id), username, data, msg, chatId);
+                })
+                .catch((e) => {
+                  console.log(e);
+                  // Si no se encuentra, se toma la ID directamente
+                  id = idText[1];
+                  username = "Usuario sin username"; // Asignar un nombre genérico si no hay username
+                  globalBanning(parseInt(id), username, data, msg, chatId);
+                });
+            }
+          }
+        }
+      });
+    } else {
+      bot.sendMessage(
+        chatId,
+        "🐬_Responde a un mensaje o agrega la ID de un usuario, para usar este comando._",
+        {
+          reply_to_message_id: msg.message_id,
+          parse_mode: "Markdown",
+        }
+      );
+    }
+  }
+});
+
+function globalBanning(id, username, data, msg, chatId) {
+  try {
+    if (!(id in data)) {
+      updateBanned(id, username).then(() => {
+        username = toEscapeMSg(username);
+        bot.sendMessage(
+          chatId,
+          "🐬Ban global aplicado a: " + username + " con la ID: " + id,
+          {
+            reply_to_message_id: msg.message_id,
+            parse_mode: "Markdown",
+          }
+        );
+
+        // Intenta expulsar al usuario si está en el grupo
+        bot.getChatMember(chatId, id)
+          .then(() => {
+            bot.kickChatMember(msg.chat.id, id);
+          })
+          .catch((err) => {
+            console.log("No se puede banear, el usuario no está en el grupo. Se ha aplicado el baneo global.");
+          });
+      });
+    } else {
+      bot.sendMessage(chatId, "_🐬Ya está en lista negra titán._", {
+        reply_to_message_id: msg.message_id,
+        parse_mode: "Markdown",
+      });
+    }
+  } catch (err) {
+    console.log("globalBanning error");
+    console.log(err);
+  }
+}
+
+// Comando para listar baneados y enviar como .txt
+bot.onText(/^\/listgban/, async (msg) => {
+  if (allowedAdmins.includes(msg.from.id)) {
+    const data = await getBanned();
+    const bannedListMessage = Object.entries(data).map(([id, userData]) => `ID: ${id}, Username: ${userData.username}`).join('\n');
+
+    const filePath = 'banned_list.txt'; // Nombre del archivo
+    fs.writeFileSync(filePath, bannedListMessage, 'utf8'); // Crear el archivo
+
+    bot.sendDocument(msg.chat.id, filePath, {}, { reply_to_message_id: msg.message_id })
+      .then(() => {
+        console.log('Lista de baneados enviada.');
+      })
+      .catch((error) => {
+        console.error('Error al enviar el documento: ', error);
+      });
+  }
+});
+
+// Comando para desbanear
+bot.onText(/^\/ungban/, (msg) => {
+  if (allowedAdmins.includes(msg.from.id)) {
+    const idText = msg.text.split("/ungban ");
+    const chatId = msg.chat.id;
+    if (idText[1]) {
+      const id = idText[1];
+      db.collection('gbanlist').doc(id).delete()
+        .then(() => {
+          bot.sendMessage(chatId, `🐬 Usuario con ID: ${id} desbaneado.`);
+        })
+        .catch((error) => {
+          bot.sendMessage(chatId, "🐬 No se pudo desbanear a ese usuario.");
+          console.error("Error al desbanear: ", error);
+        });
+    } else {
+      bot.sendMessage(chatId, "🐬_Por favor, proporciona la ID del usuario que deseas desbanear._");
+    }
+  }
+});
+
+// Expulsar automáticamente a miembros baneados
+bot.on('new_chat_members', (msg) => {
+  const newMembers = msg.new_chat_members;
+  getBanned().then((data) => {
+    newMembers.forEach(member => {
+      if (data[member.id]) {
+        bot.kickChatMember(msg.chat.id, member.id);
+      }
+    });
+  });
+});
+
+// Mensaje de advertencia al escribir si está baneado
+bot.on('message', (msg) => {
+  if (msg.text && !msg.from.is_bot) {
+    getBanned().then((data) => {
+      if (data[msg.from.id]) {
+        bot.kickChatMember(msg.chat.id, msg.from.id);
+      }
+    });
+  }
+});
+
+// Función para escapar mensajes en Markdown
+function toEscapeMSg(text) {
+  return text.replace(/_/gi, "\\_")
+             .replace(/\*/gi, "\\*")
+             .replace(/~/gi, "\\~")
+             .replace(/`/gi, "\\`");
+}
+// Expulsar automáticamente a miembros baneados globalmente cuando ingresan a un grupo nuevo
+bot.on('new_chat_members', (msg) => {
+  const newMembers = msg.new_chat_members;
+  const chatId = msg.chat.id;
+  
+  // Actualizar lista de baneados desde la base de datos
+  getBanned().then((data) => {
+    newMembers.forEach(member => {
+      if (data[member.id]) {
+        bot.kickChatMember(chatId, member.id)
+          .then(() => {
+            bot.sendMessage(chatId, `🐬 ¡Oh no! el usuario <b>${member.first_name}</b> || "Sin información"} es pontencialmente peligroso y ha sido baneado globalmente del grupo.\n\nID: <code>${member.id}</code>`, {parse_mode: "HTML"});
+          })
+          .catch((err) => {
+            console.log(`Error al expulsar a ${member.username || member.id}:`, err);
+          });
+      }
+    });
+  });
+});
+
+// Inicia el bot
+console.log('Bot iniciado. Escuchando comandos...');
