@@ -900,7 +900,7 @@ bot.onText(/^\/emisionanime/, async (msg) => {
   }
 });
 
- const usuariosAutorizados = ['5512177961','1509028898','6796621406','1293385615','1040078824', '1667685372', '1701653200', '929203318', "1271825317", "1812043697", "1708427708", "2098540678", "1812043697", "1065469951",  "6614100434", "6376167775"];
+ const usuariosAutorizados = ['6993612339', '5512177961','1509028898','6796621406','1293385615','1040078824', '1667685372', '1701653200', '929203318', "1271825317", "1812043697", "1708427708", "2098540678", "1812043697", "1065469951",  "6614100434", "6376167775"];
 
  bot.onText(/\/superusuarios/, async (msg) => {
   const chatId = msg.chat.id;
@@ -8167,7 +8167,7 @@ bot.onText(/\/anonimo (.+) (.+)/, async (msg, match) => {
 }); */
 
 
-const allowedUserIds = ['1701653200', '5271375405', '5802106297', '1187188121', '5843858713', '5512177961', '5591717437', '5544977908', '959658757', '6394321121', "1873607826", "1271825317"]; // Agrega las IDs autorizadas aquí.
+const allowedUserIds = ['1701653200','6993612339', '5271375405', '5802106297', '1187188121', '5843858713', '5512177961', '5591717437', '5544977908', '959658757', '6394321121', "1873607826", "1271825317"]; // Agrega las IDs autorizadas aquí.
 
 const anonymousMessages = {};
 
@@ -8185,7 +8185,7 @@ bot.onText(/\/anonimo (.+)/, async (msg, match) => {
             anonymousMessages[targetUserId] = { senderUserId, chatId, message };
 
             // Solicitar al usuario que envíe una respuesta.
-            bot.sendMessage(targetUserId, '🚨En el siguiente mensaje *(SIN RESPONDER A ESTE)*, envía tu respuesta *(SOLO TEXTO)*.', {parse_mode: "Markdown"});
+            bot.sendMessage(targetUserId, '🚨En el siguiente mensaje *(SIN MANTENER LA SELECCIÓN A ESTE)*, envía tu respuesta *(SOLO TEXTO)*.', {parse_mode: "Markdown"});
             
             // Confirmar al remitente del comando que el mensaje ha sido enviado.
             bot.sendMessage(chatId, '*¡Mensaje anónimo enviado con éxito🐋!*', {parse_mode: "Markdown"});
